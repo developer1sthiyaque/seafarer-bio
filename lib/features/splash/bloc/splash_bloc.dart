@@ -21,7 +21,9 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
       log("IS ONBOARDING COMPLETE ${PreferenceService.isOnboardingCompleted}");
       if (!PreferenceService.isOnboardingCompleted) {
         emit(SplashNavigateToOnboarding());
-      } else if (!PreferenceService.isLoggedIn&&!PreferenceService.isProfileCompleted) {
+      } if(PreferenceService.isOnboardingCompleted){
+        emit(SplashNavigateToLogin());
+      }else if (!PreferenceService.isLoggedIn&&!PreferenceService.isProfileCompleted) {
         emit(SplashNavigateToLogin());
       } else if(PreferenceService.isLoggedIn){
         emit(SplashNavigateToDashboard());

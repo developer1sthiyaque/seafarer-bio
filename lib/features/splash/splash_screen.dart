@@ -54,13 +54,13 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       body: BlocListener<SplashBloc, SplashState>(
         listener: (context, state) {
-          // if(state is SplashNavigateToOnboarding){
-          //   if(context.mounted)Navigator.pushReplacementNamed(context, AppRoutes.onboarding);
-          // }
-          //
-          // if(state is SplashNavigateToLogin){
-          //   if(context.mounted)Navigator.pushReplacementNamed(context, AppRoutes.login);
-          // }
+          if(state is SplashNavigateToOnboarding){
+            if(context.mounted)Navigator.pushReplacementNamed(context, AppRoutes.onboarding);
+          }
+
+          if(state is SplashNavigateToLogin){
+            if(context.mounted)Navigator.pushReplacementNamed(context, AppRoutes.login);
+          }
           if (state is SplashNavigateToOnboarding) {
             _handleNavigation();
           }
