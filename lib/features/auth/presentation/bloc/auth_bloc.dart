@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:seafarer_bio_data/core/utils/shared_preferences.dart';
 import 'package:bloc/bloc.dart';
@@ -56,7 +57,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(const AuthError('Sign In Failed'));
       }
     } on FirebaseAuthException catch (e) {
-      emit(AuthError(e.message ?? 'An unknown error occurred'));
+      switch(e){
+        case FirebaseAuthException(code: 'user-not-found'):
+          emit(const AuthError('User not found,please register'));
+          break;
+          case FirebaseAuthException(code: 'wrong-password'):
+          emit(const AuthError('Wrong password'));
+          break;
+          case FirebaseAuthException(code: 'invalid-email'):
+          emit(const AuthError('Invalid email'));
+          break;
+        default:
+          emit(const AuthError('An unknown error occurred'));
+      }
     } catch (e) {
       emit(AuthError(e.toString()));
     }
@@ -75,8 +88,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(const AuthError('Sign Up Failed'));
       }
     } on FirebaseAuthException catch (e) {
-      emit(AuthError(e.message ?? 'An unknown error occurred'));
+      switch(e){
+        case FirebaseAuthException(code: 'email-already-in-use'):
+          emit(const AuthError('Email already in use'));
+          break;
+          case FirebaseAuthException(code: 'invalid-email'):
+          emit(const AuthError('Invalid email'));
+          break;
+          case FirebaseAuthException(code: 'weak-password'):
+          emit(const AuthError('Weak password'));
+          break;
+          default:
+            emit(const AuthError('An unknown error occurred'));
+      }
     } catch (e) {
+      log("Exception on signup:${e.toString()}");
       emit(AuthError(e.toString()));
     }
   }

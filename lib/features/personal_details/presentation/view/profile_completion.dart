@@ -57,6 +57,9 @@ class _ProfileCompletionState extends State<ProfileCompletion> {
   final StepProgressController _stepProgressController = StepProgressController(
     totalSteps: 3,
   );
+  final ScrollController _scrollController = ScrollController();
+  final FocusNode _postFocusNode = FocusNode();
+// Repeat for other fields if needed
   int currentStep = 0;
   int _currentPage = 0;
   DateTime? _userVisaExpiry;
@@ -89,6 +92,18 @@ class _ProfileCompletionState extends State<ProfileCompletion> {
   @override
   void initState() {
     super.initState();
+    _postFocusNode.addListener(() {
+      if (_postFocusNode.hasFocus) {
+        // Wait a tiny bit for the keyboard to fully pop up
+        Future.delayed(const Duration(milliseconds: 300), () {
+          _scrollController.animateTo(
+            _scrollController.position.maxScrollExtent, // Or a specific offset
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOut,
+          );
+        });
+      }
+    });
     _controller.addListener(() {
       setState(() {
         _currentPage = _controller.page!.toInt();
@@ -684,6 +699,7 @@ class DocumentWrapperWidget extends StatelessWidget {
               "${wrapper.name.capitalize()} Number",
           hint:
               "Enter ${wrapper.name} number",
+          validator: (value) => AppValidators.required(value,'${wrapper.name.capitalize()} number'),
         ),
         AppDatePicker(
           controller: wrapper
@@ -706,7 +722,9 @@ class DocumentWrapperWidget extends StatelessWidget {
             wrapper.expiryController
                     .text =
                 "${date.day}/${date.month}/${date.year}";
+
           },
+          validator: (value) => AppValidators.required(value,'${wrapper.name} validity'),
         ),
         AppTextFormField(
           controller: wrapper
@@ -719,6 +737,7 @@ class DocumentWrapperWidget extends StatelessWidget {
           "${wrapper.name.capitalize()} Issued Place",
           hint:
           "Enter your ${wrapper.name} issued place",
+          validator: (value) => AppValidators.required(value,'${wrapper.name.capitalize()} issued place'),
         ),
         AppDatePicker(
           controller: wrapper
@@ -742,6 +761,7 @@ class DocumentWrapperWidget extends StatelessWidget {
                 .text =
             "${date.day}/${date.month}/${date.year}";
           },
+          validator: (value) => AppValidators.required(value,'${wrapper.name.capitalize()} issued date'),
         ),
         SizedBox(height: 16,),
       ],

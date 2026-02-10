@@ -106,7 +106,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         textInputType: TextInputType.name,
                         label: 'First name',
                         hint: 'Enter your first name',
-                        textCapitalization: TextCapitalization.words,
+                        textCapitalization: TextCapitalization.sentences,
                         validator: (value) {
                           return AppValidators.name(value);
                         },
@@ -116,7 +116,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         textInputType: TextInputType.name,
                         label: 'Last name',
                         hint: 'Enter your last name',
-                        textCapitalization: TextCapitalization.words,
+                        textCapitalization: TextCapitalization.sentences,
                         validator: (value) {
                           return AppValidators.name(value);
                         },

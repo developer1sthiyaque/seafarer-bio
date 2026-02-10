@@ -40,7 +40,7 @@ class AppValidators {
     if (value == null || value.isEmpty) {
       return 'Password is required';
     }
-    if (value.length < 8) {
+    if (value.length <= 8) {
       return 'Password must be at least 8 characters';
     }
     // Optional: Add regex for complexity (uppercase, numbers, etc.)

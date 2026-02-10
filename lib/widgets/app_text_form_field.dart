@@ -13,6 +13,7 @@ class AppTextFormField extends StatelessWidget {
   final TextInputAction textInputAction;
   final TextCapitalization textCapitalization;
   final Widget suffixIconWidget;
+  final FocusNode? focusNode;
   const AppTextFormField({
     super.key,
     required this.label,
@@ -25,7 +26,8 @@ class AppTextFormField extends StatelessWidget {
     this.textInputType =  TextInputType.text,
     this.textInputAction =  TextInputAction.next,
     this.textCapitalization =  TextCapitalization.none,
-    this.suffixIconWidget = const SizedBox.shrink()
+    this.suffixIconWidget = const SizedBox.shrink(),
+    this.focusNode,
   });
 
   @override
@@ -40,6 +42,7 @@ class AppTextFormField extends StatelessWidget {
           keyboardType: textInputType,
           textInputAction: textInputAction,
           textCapitalization: textCapitalization,
+          focusNode: focusNode,
           decoration: InputDecoration(
             alignLabelWithHint: true,
             floatingLabelBehavior: FloatingLabelBehavior.always,

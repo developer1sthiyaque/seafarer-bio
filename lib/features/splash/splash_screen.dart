@@ -55,14 +55,26 @@ class _SplashScreenState extends State<SplashScreen> {
       body: BlocListener<SplashBloc, SplashState>(
         listener: (context, state) {
           if(state is SplashNavigateToOnboarding){
-            if(context.mounted)Navigator.pushReplacementNamed(context, AppRoutes.onboarding);
+            _handleNavigation();
+            // Navigator.of(context).pushNamedAndRemoveUntil(
+            //   AppRoutes.onboarding,
+            //       (route) => false, // removes ALL previous routes
+            // );
           }
 
           if(state is SplashNavigateToLogin){
-            if(context.mounted)Navigator.pushReplacementNamed(context, AppRoutes.login);
-          }
-          if (state is SplashNavigateToOnboarding) {
             _handleNavigation();
+            // Navigator.of(context).pushNamedAndRemoveUntil(
+            //   AppRoutes.login,
+            //       (route) => false, // removes ALL previous routes
+            // );
+          }
+          if(state is SplashNavigateToProfileCompletion){
+            _handleNavigation();
+            // Navigator.of(context).pushNamedAndRemoveUntil(
+            //   AppRoutes.profileCompletion,
+            //       (route) => false, // removes ALL previous routes
+            // );
           }
         },
         child: Center(

@@ -45,12 +45,22 @@ class _LoginPageState extends State<LoginPage> {
               );
             } else if (state is Authenticated) {
               context.read<ProfileBloc>().add(LoadProfile(PreferenceService.userId.toString()));
+
+              if (PreferenceService.isProfileCompleted) {
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  AppRoutes.home,
+                      (route) => false, // removes ALL previous routes
+                );
+                Navigator.pushReplacementNamed(context, AppRoutes.home);
+              } else {
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  AppRoutes.profileCompletion,
+                      (route) => false, // removes ALL previous routes
+                );
+              }
               // Navigate to HomePage or dashboard
               // For now, it will just pop if there's any screen below
-              Navigator.of(context).pushNamedAndRemoveUntil(
-                AppRoutes.home,
-                    (route) => false, // removes ALL previous routes
-              );
+
             }
 
           },
@@ -107,7 +117,7 @@ class _LoginPageState extends State<LoginPage> {
                     },),
                     const SizedBox(height: 20),
                     AppButton(title: 'Sign In', onTap: () {
-                      if(!_formLoginKey.currentState!.validate()){
+                      if(_formLoginKey.currentState!.validate()){
                         context.read<AuthBloc>().add(SignInEvent(
                           email: _emailController.text,
                           password: _passwordController.text,
