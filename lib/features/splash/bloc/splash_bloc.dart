@@ -29,6 +29,8 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
         emit(SplashNavigateToProfileCompletion());
       } else if(PreferenceService.isLoggedIn && PreferenceService.isProfileCompleted){
         emit(SplashNavigateToDashboard());
+      }else{
+        emit(SplashLoading());
       }
     },);
   }

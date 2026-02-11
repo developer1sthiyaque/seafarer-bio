@@ -76,6 +76,13 @@ class _SplashScreenState extends State<SplashScreen> {
             //       (route) => false, // removes ALL previous routes
             // );
           }
+
+          if(state is SplashNavigateToDashboard){
+            Navigator.of(context).pushNamedAndRemoveUntil(
+              AppRoutes.home,
+                  (route) => false, // removes ALL previous routes
+            );
+          }
         },
         child: Center(
           child: Column(

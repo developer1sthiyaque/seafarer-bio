@@ -69,11 +69,7 @@ class HomePage extends StatelessWidget {
             padding: const EdgeInsets.only(right: 16.0),
             child: InkWell(
                 onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => EditDetails(),
-                      ));
+                  Navigator.pushNamed(context, AppRoutes.editProfile);
                 },
                 child: SvgPicture.asset('assets/icons/edit.svg',colorFilter: ColorFilter.mode(AppColors.appScaffold, BlendMode.srcIn),)),
           ),
@@ -251,173 +247,164 @@ class HomePage extends StatelessWidget {
                       color: AppColors.appPrimary,
                       letterSpacing: 0.5
                   ),),
-                  // SingleChildScrollView(
-                  //   scrollDirection: Axis.horizontal, // Horizontal scroll for wide tables
-                  //   child: DataTable(
-                  //     columnSpacing: 20,
-                  //     headingRowColor: MaterialStateProperty.all(Colors.grey[100]),
-                  //     columns: const [
-                  //       DataColumn(label: Text('Vessel Name')),
-                  //       DataColumn(label: Text('Rank')),
-                  //       DataColumn(label: Text('Type')),
-                  //       DataColumn(label: Text('From')),
-                  //       DataColumn(label: Text('To')),
-                  //     ],
-                  //     rows: const [
-                  //       DataRow(cells: [
-                  //         DataCell(Text('MV Iran Cheg')),
-                  //         DataCell(Text('AB')),
-                  //         DataCell(Text('Bulk')),
-                  //         DataCell(Text('27.10.00')),
-                  //         DataCell(Text('26.08.01')),
-                  //       ]),
-                  //       DataRow(cells: [
-                  //         DataCell(Text('MV Jupiter LI')),
-                  //         DataCell(Text('Oiler')),
-                  //         DataCell(Text('Bulk')),
-                  //         DataCell(Text('01.01.02')),
-                  //         DataCell(Text('04.10.02')),
-                  //       ]),
-                  //     ],
-                  //   ),
-                  // ),
-                  ListView.builder(
-                    padding: EdgeInsets.zero,
-                    scrollDirection: Axis.vertical,
-                    physics: NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: profile.seaExperiences.length,
-                    itemBuilder: (context, index) =>
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
-                          child: Container(
-                            width: double.maxFinite,
-                            decoration: BoxDecoration(
-                              color: AppColors.appPrimary.withOpacity(0.15),
-                              borderRadius: BorderRadius.circular(12),
-                              // boxShadow: [
-                              //   BoxShadow(
-                              //     color: Colors.white24,
-                              //     blurRadius: 0.6,
-                              //     spreadRadius: 6.0
-                              //   )
-                              // ]
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Ship Name",
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w400,
-                                        color: Colors.grey),
-                                  ),
-                                  Text(
-                                    profile.seaExperiences[index].vesselName,
-                                    style:Theme.of(context).textTheme.titleMedium?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      color: AppColors.appTextColor,
-                                    ),),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment
-                                        .spaceBetween,
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment
-                                            .start,
-                                        children: [
-                                          Text(
-                                            "Type",
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w400,
-                                                color: Colors.grey),
-                                          ),
-                                          Text(
-                                            profile.seaExperiences[index].vesselType,
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w600),
-                                          ),
-                                        ],
-                                      ),
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment
-                                            .start,
-                                        children: [
-                                          Text(
-                                            "Rank",
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w400,
-                                                color: Colors.grey),
-                                          ),
-                                          Text(
-                                            profile.seaExperiences[index].rank,
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w600),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: 16,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment
-                                        .spaceBetween,
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment
-                                            .start,
-                                        children: [
-                                          Text(
-                                            "From",
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w400,
-                                                color: Colors.grey),
-                                          ),
-                                          Text(
-                                            profile.seaExperiences[index].from,
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w600),
-                                          ),
-                                        ],
-                                      ),
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment
-                                            .start,
-                                        children: [
-                                          Text(
-                                            "To",
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w400,
-                                                color: Colors.grey),
-                                          ),
-                                          Text(
-                                            profile.seaExperiences[index].to,
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w600),
-                                          ),
-                                        ],
-                                      )
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Table(
+                      border: TableBorder.all(color: Colors.grey.shade300),
+                      defaultColumnWidth: const IntrinsicColumnWidth(),
+                      children: [
+                        _buildTableHeader([
+                          'Name of vessel',
+                          'Company name',
+                          'Type of vessel',
+                          'G.R.T',
+                          'B.H.P',
+                          'Rank',
+                          'From',
+                          'To',
+                          'Period'
+                          ]),
+                        ...profile.seaExperiences.map((e) => _buildTableRow([e.vesselName, e.companyName,e.vesselType, e.grt, e.bhp,e.rank, e.from, e.to, e.period,]),),
+                      ],
+                    ),
                   ),
+                  // ListView.builder(
+                  //   padding: EdgeInsets.zero,
+                  //   scrollDirection: Axis.vertical,
+                  //   physics: NeverScrollableScrollPhysics(),
+                  //   shrinkWrap: true,
+                  //   itemCount: profile.seaExperiences.length,
+                  //   itemBuilder: (context, index) =>
+                  //       Padding(
+                  //         padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  //         child: Container(
+                  //           width: double.maxFinite,
+                  //           decoration: BoxDecoration(
+                  //             color: AppColors.appPrimary.withOpacity(0.15),
+                  //             borderRadius: BorderRadius.circular(12),
+                  //             // boxShadow: [
+                  //             //   BoxShadow(
+                  //             //     color: Colors.white24,
+                  //             //     blurRadius: 0.6,
+                  //             //     spreadRadius: 6.0
+                  //             //   )
+                  //             // ]
+                  //           ),
+                  //           child: Padding(
+                  //             padding: const EdgeInsets.all(8.0),
+                  //             child: Column(
+                  //               crossAxisAlignment: CrossAxisAlignment.start,
+                  //               children: [
+                  //                 Text(
+                  //                   "Ship Name",
+                  //                   style: TextStyle(
+                  //                       fontSize: 14,
+                  //                       fontWeight: FontWeight.w400,
+                  //                       color: Colors.grey),
+                  //                 ),
+                  //                 Text(
+                  //                   profile.seaExperiences[index].vesselName,
+                  //                   style:Theme.of(context).textTheme.titleMedium?.copyWith(
+                  //                     fontWeight: FontWeight.bold,
+                  //                     color: AppColors.appTextColor,
+                  //                   ),),
+                  //                 Row(
+                  //                   mainAxisAlignment: MainAxisAlignment
+                  //                       .spaceBetween,
+                  //                   children: [
+                  //                     Column(
+                  //                       crossAxisAlignment: CrossAxisAlignment
+                  //                           .start,
+                  //                       children: [
+                  //                         Text(
+                  //                           "Type",
+                  //                           style: TextStyle(
+                  //                               fontSize: 14,
+                  //                               fontWeight: FontWeight.w400,
+                  //                               color: Colors.grey),
+                  //                         ),
+                  //                         Text(
+                  //                           profile.seaExperiences[index].vesselType,
+                  //                           style: TextStyle(
+                  //                               fontSize: 16,
+                  //                               fontWeight: FontWeight.w600),
+                  //                         ),
+                  //                       ],
+                  //                     ),
+                  //                     Column(
+                  //                       crossAxisAlignment: CrossAxisAlignment
+                  //                           .start,
+                  //                       children: [
+                  //                         Text(
+                  //                           "Rank",
+                  //                           style: TextStyle(
+                  //                               fontSize: 14,
+                  //                               fontWeight: FontWeight.w400,
+                  //                               color: Colors.grey),
+                  //                         ),
+                  //                         Text(
+                  //                           profile.seaExperiences[index].rank,
+                  //                           style: TextStyle(
+                  //                               fontSize: 16,
+                  //                               fontWeight: FontWeight.w600),
+                  //                         ),
+                  //                       ],
+                  //                     ),
+                  //                   ],
+                  //                 ),
+                  //                 SizedBox(
+                  //                   height: 16,
+                  //                 ),
+                  //                 Row(
+                  //                   mainAxisAlignment: MainAxisAlignment
+                  //                       .spaceBetween,
+                  //                   children: [
+                  //                     Column(
+                  //                       crossAxisAlignment: CrossAxisAlignment
+                  //                           .start,
+                  //                       children: [
+                  //                         Text(
+                  //                           "From",
+                  //                           style: TextStyle(
+                  //                               fontSize: 14,
+                  //                               fontWeight: FontWeight.w400,
+                  //                               color: Colors.grey),
+                  //                         ),
+                  //                         Text(
+                  //                           profile.seaExperiences[index].from,
+                  //                           style: TextStyle(
+                  //                               fontSize: 16,
+                  //                               fontWeight: FontWeight.w600),
+                  //                         ),
+                  //                       ],
+                  //                     ),
+                  //                     Column(
+                  //                       crossAxisAlignment: CrossAxisAlignment
+                  //                           .start,
+                  //                       children: [
+                  //                         Text(
+                  //                           "To",
+                  //                           style: TextStyle(
+                  //                               fontSize: 14,
+                  //                               fontWeight: FontWeight.w400,
+                  //                               color: Colors.grey),
+                  //                         ),
+                  //                         Text(
+                  //                           profile.seaExperiences[index].to,
+                  //                           style: TextStyle(
+                  //                               fontSize: 16,
+                  //                               fontWeight: FontWeight.w600),
+                  //                         ),
+                  //                       ],
+                  //                     )
+                  //                   ],
+                  //                 )
+                  //               ],
+                  //             ),
+                  //           ),
+                  //         ),
+                  //       ),
+                  // ),
                   const SizedBox(height: 40),
                 ],
               ),

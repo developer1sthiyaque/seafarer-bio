@@ -158,56 +158,80 @@ class Course extends Equatable {
 class SeaExperience extends Equatable {
   final String? id;
   final String vesselName;
+  final String companyName;
   final String vesselType;
+  final String grt;
+  final String bhp;
   final String rank;
   final String from;
   final String to;
+  final String period;
 
   const SeaExperience({
     this.id,
     required this.vesselName,
+    required this.companyName,
     required this.vesselType,
+    required this.grt,
+    required this.bhp,
     required this.rank,
     required this.from,
     required this.to,
+    required this.period,
   });
 
   factory SeaExperience.fromFirestore(Map<String, dynamic> data, {String? id}) {
     return SeaExperience(
       id: id,
       vesselName: data['vesselName'] ?? '',
+      companyName: data['companyName'] ?? '',
       vesselType: data['type'] ?? '',
       rank: data['rank'] ?? '',
+      grt: data['grt'] ?? '',
+      bhp: data['bhp'] ?? '',
       from: data['from'] ?? '',
       to: data['to'] ?? '',
+      period: data['period'] ?? '',
     );
   }
 
   Map<String, dynamic> toFirestore() {
     return {
       "vesselName": vesselName,
+      "companyName": companyName,
       "type": vesselType,
+      "grt": grt,
+      "bhp": bhp,
       "rank": rank,
       "from": from,
       "to": to,
+      "period": period,
     };
   }
 
   SeaExperience copyWith({
     String? id,
     String? vesselName,
+    String? companyName,
     String? vesselType,
+    String? grt,
+    String? bhp,
     String? rank,
     String? from,
     String? to,
+    String? period,
   }) {
     return SeaExperience(
       id: id ?? this.id,
       vesselName: vesselName ?? this.vesselName,
+      companyName: companyName ?? this.companyName,
       vesselType: vesselType ?? this.vesselType,
+      grt: grt ?? this.grt,
+      bhp: bhp ?? this.bhp,
       rank: rank ?? this.rank,
       from: from ?? this.from,
       to: to ?? this.to,
+      period: period ?? this.period,
     );
   }
 

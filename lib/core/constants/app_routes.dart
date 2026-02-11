@@ -1,6 +1,7 @@
 import 'package:seafarer_bio_data/features/auth/presentation/pages/login_page.dart';
 import 'package:seafarer_bio_data/features/auth/presentation/pages/signup_page.dart';
 import 'package:seafarer_bio_data/features/onboarding/onboarding_page.dart';
+import 'package:seafarer_bio_data/features/personal_details/presentation/view/edit_details.dart';
 import 'package:seafarer_bio_data/features/personal_details/presentation/view/home_page.dart';
 import 'package:seafarer_bio_data/features/personal_details/presentation/view/profile_completion.dart';
 import 'package:seafarer_bio_data/features/splash/splash_screen.dart';
@@ -14,6 +15,7 @@ class AppRoutes{
   static const login = '/login';
   static const signup = '/signup';
   static const home = '/home';
+  static const editProfile = '/edit-profile';
   static const profileCompletion = '/profile-completion';
 
 
@@ -31,6 +33,8 @@ class AppRoutes{
         );
       case home:
         return MaterialPageRoute(builder: (context) => const HomePage());
+        case editProfile:
+        return MaterialPageRoute(builder: (context) => const EditDetails());
 
       case profileCompletion:
         return MaterialPageRoute(builder: (context) => const ProfileCompletion(),);

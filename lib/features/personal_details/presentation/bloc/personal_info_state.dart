@@ -30,3 +30,8 @@ class CertificateUpdateSuccess extends ProfileState {
   CertificateUpdateSuccess(this.profile);
 }     // Trigger for Final Navigation
 class ProfileCompleted extends ProfileState {}
+
+class ProfileFullUpdated extends ProfileState {
+  final Profile profile;
+  ProfileFullUpdated(this.profile);
+}

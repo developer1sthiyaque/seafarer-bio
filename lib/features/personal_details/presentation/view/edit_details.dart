@@ -7,6 +7,8 @@ import 'package:seafarer_bio_data/features/personal_details/domain/entities/sea_
 import 'package:seafarer_bio_data/features/personal_details/presentation/bloc/personal_info_bloc.dart';
 import 'package:seafarer_bio_data/features/personal_details/presentation/bloc/personal_info_event.dart';
 import 'package:seafarer_bio_data/features/personal_details/presentation/bloc/personal_info_state.dart';
+import 'package:seafarer_bio_data/features/personal_details/presentation/widgets/course_wrapper_widget.dart';
+import 'package:seafarer_bio_data/features/personal_details/presentation/widgets/document_wrapper_widget.dart';
 import 'package:seafarer_bio_data/widgets/app_button.dart';
 import 'package:seafarer_bio_data/widgets/app_date_picker.dart';
 import 'package:seafarer_bio_data/widgets/app_text_form_field.dart';
@@ -46,27 +48,7 @@ class _EditDetailsState extends State<EditDetails> {
   final TextEditingController _visaExpiryTextController =
   TextEditingController();
 
-  List<String> languageList = [
-    "English",
-    "Hindi",
-    "Malayalam",
-    "Tamil",
-    "Telugu",
-    "Kannada",
-    "Punjabi",
-    "Marathi",
-    "Bengali",
-    "Odia",
-    "Urdu",
-    "Spanish",
-    "Japanese",
-    "Chinese",
-    "Arabic",
-    "Portuguese",
-    "Russian",
-    "Korean"
-  ];
-  Set<String> selectedLanguages = {"English"};
+
   late ProfileBloc profileBloc;
   late ProfileLoaded profileLoadedState;
   List<ProfileControllerWrapper> _docWrappers = [];
@@ -76,6 +58,9 @@ class _EditDetailsState extends State<EditDetails> {
   List<SeaExperienceControllerWrapper> get seaExperienceList => _seaExperienceList;
 
   late PersonalDetails personalDetails;
+  bool _isUpdatingProfile = false;
+
+
 
 
   @override
@@ -96,8 +81,6 @@ class _EditDetailsState extends State<EditDetails> {
      _nationalityTextController.text=profileLoadedState.profile.personalDetails.nationality;
      _postTextController.text=profileLoadedState.profile.personalDetails.postAppliedFor;
      _fatherNameTextController.text=profileLoadedState.profile.personalDetails.fatherName;
-     selectedLanguages.clear();
-     selectedLanguages.addAll(profileLoadedState.profile.personalDetails.languages);
      _docWrappers = profileLoadedState.profile.documents.map((doc) {
        return ProfileControllerWrapper(
          name: doc.name,
@@ -119,10 +102,14 @@ class _EditDetailsState extends State<EditDetails> {
      _seaExperienceList=profileLoadedState.profile.seaExperiences.map((e) {
        return SeaExperienceControllerWrapper(
          vesselName: e.vesselName,
+         company: e.companyName,
          vesselType: e.vesselType,
+         grt: e.grt,
+         bhp: e.bhp,
          rank: e.rank,
          fromDate: e.from,
          toDate: e.to,
+         period: e.period,
        );
      },).toList();
   }
@@ -135,6 +122,9 @@ class _EditDetailsState extends State<EditDetails> {
         title: Text("My Bio Data"),
       ),
       body: BlocListener<ProfileBloc,ProfileState>(listener: (context, state) {
+        if(state is ProfileLoaded){
+          Navigator.of(context).pop();
+        }
 
       },child:BlocBuilder<ProfileBloc,ProfileState>(builder: (context, state) {
         if (state is ProfileLoading) {
@@ -213,34 +203,6 @@ class _EditDetailsState extends State<EditDetails> {
                     hint: "enter you nationality",
                     controller:_nationalityTextController,
                   ),
-                  Wrap(
-                children: languageList
-                    .map((String lang) {
-                  return Padding(
-                    padding:
-                    const EdgeInsets.all(4.0),
-                    child: ChoiceChip(
-                      label: Text(
-                          lang), // Wrap the string in a Text widget
-                      selected: selectedLanguages
-                          .contains(
-                          lang), // Check if this specific chip is selected
-                      onSelected:
-                          (bool selected) {
-                        setState(() {
-                          if (selected) {
-                            selectedLanguages.add(
-                                lang); // Add to set
-                          } else {
-                            selectedLanguages.remove(
-                                lang); // Remove from set
-                          }
-                        });
-                      },
-                    ),
-                  );
-                }).toList(),
-                            ), // CHIPS TO MULTIPLE LANGUAGE PICK
                   const SizedBox(height: 16),
 
                   // --- DOCUMENTS TABLE SECTION ---
@@ -253,7 +215,9 @@ class _EditDetailsState extends State<EditDetails> {
                         color: AppColors.appPrimary,
                         letterSpacing: 0.5
                       ),),
-                      SvgPicture.asset('assets/icons/add-icon.svg')
+                      InkWell(onTap: (){
+                        _showAddDocumentSheet('Documents');
+                      },child: SvgPicture.asset('assets/icons/add-icon.svg'))
                     ],
                   ),
                   SizedBox(
@@ -265,50 +229,7 @@ class _EditDetailsState extends State<EditDetails> {
                     const EdgeInsets
                         .only(
                         bottom: 16.0),
-                    child: Row(
-                      mainAxisAlignment:
-                      MainAxisAlignment
-                          .spaceBetween,
-                      children: [
-                        AppTextFormField(
-                          controller: wrapper
-                              .numberController,
-                          width: MediaQuery
-                              .sizeOf(
-                              context)
-                              .width *
-                              0.43,
-                          label:
-                          wrapper.name,
-                          hint:
-                          "Enter ${wrapper.name} number",
-                        ),
-                        AppDatePicker(
-                          controller: wrapper
-                              .expiryController,
-                          width: MediaQuery
-                              .sizeOf(
-                              context)
-                              .width *
-                              0.43,
-                          label:
-                          "${wrapper.name} Expiry",
-                          firstDate:
-                          DateTime(
-                              1900),
-                          lastDate:
-                          DateTime(
-                              2100),
-                          onDateSelected:
-                              (date) {
-                            // You can format the date to string here as needed for your entity
-                            wrapper.expiryController
-                                .text =
-                            "${date.day}/${date.month}/${date.year}";
-                          },
-                        ),
-                      ],
-                    ),
+                    child: DocumentWrapperWidget(wrapper: wrapper),
                   ))
                       .toList(),
                   // const SizedBox(height: 8),
@@ -323,63 +244,16 @@ class _EditDetailsState extends State<EditDetails> {
                           color: AppColors.appPrimary,
                           letterSpacing: 0.5
                       ),),
-                      SvgPicture.asset('assets/icons/add-icon.svg')
+                      InkWell(onTap: (){
+                        _showAddDocumentSheet('Courses');
+                      },child: SvgPicture.asset('assets/icons/add-icon.svg'))
                     ],
                   ),
                   SizedBox(
                     height: 8,
                   ),
                   ..._certificateWrapperList
-                      .map((wrapper) => Padding(
-                    padding:
-                    const EdgeInsets
-                        .only(
-                        bottom: 16.0),
-                    child: Row(
-                      mainAxisAlignment:
-                      MainAxisAlignment
-                          .spaceBetween,
-                      children: [
-                        AppTextFormField(
-                          controller: wrapper
-                              .numberController,
-                          width: MediaQuery
-                              .sizeOf(
-                              context)
-                              .width *
-                              0.43,
-                          label:
-                          wrapper.name,
-                          hint:
-                          "Enter ${wrapper.name} number",
-                        ),
-                        AppDatePicker(
-                          controller: wrapper
-                              .expiryController,
-                          width: MediaQuery
-                              .sizeOf(
-                              context)
-                              .width *
-                              0.43,
-                          label:
-                          "${wrapper.name} Expiry",
-                          firstDate:
-                          DateTime(
-                              1900),
-                          lastDate:
-                          DateTime(
-                              2100),
-                          onDateSelected:
-                              (date) {
-                            // You can format the date to string here as needed for your entity
-                            wrapper.expiryController
-                                .text =
-                            "${date.day}/${date.month}/${date.year}";
-                          },
-                        ),
-                      ],
-                    ),
-                  ))
+                      .map((wrapper) => CourseWrapperWidget(wrapper: wrapper,))
                       .toList(),
                   const SizedBox(height: 16),
 
@@ -400,7 +274,8 @@ class _EditDetailsState extends State<EditDetails> {
                           child: SvgPicture.asset('assets/icons/add-icon.svg'))
                     ],
                   ),
-                  seaExperienceList.isEmpty?NotFoundWidget(title: 'Not Found', desc: 'No Sea Experience, please add your experience by clicking add button'):ListView.builder(
+                  seaExperienceList.isEmpty?NotFoundWidget(title: 'Not Found', desc: 'No Sea Experience, please add your experience by clicking add button'):
+                  ListView.builder(
                     padding: EdgeInsets.zero,
                     scrollDirection: Axis.vertical,
                     physics: NeverScrollableScrollPhysics(),
@@ -413,6 +288,9 @@ class _EditDetailsState extends State<EditDetails> {
                     alignment: Alignment.center,
                     child: AppButton(
                       onTap: () {
+                        setState(() {
+                          _isUpdatingProfile=true;
+                        });
                         context.read<ProfileBloc>().add(
                           UpdateFullProfileEvent(
                             personalDetails: PersonalDetails(
@@ -422,7 +300,6 @@ class _EditDetailsState extends State<EditDetails> {
                                 fatherName: _fatherNameTextController.text,
                                 dob: _dobTextController.text,
                                 nationality: _nationalityTextController.text,
-                                languages: selectedLanguages.toList()
                             ),
                             documents: _docWrappers.map((w) => w.toEntity()).toList(),
                             courses: _certificateWrapperList.map((w) => w.toEntity()).toList(),
@@ -467,6 +344,64 @@ class _EditDetailsState extends State<EditDetails> {
                 child: Text(val, style: const TextStyle(fontSize: 12)),
               ))
           .toList(),
+    );
+  }
+
+  void _addNewDocument(String title, String name) {
+    switch (title) {
+      case "Documents":
+        setState(() {
+          _docWrappers.add(ProfileControllerWrapper(name: name));
+        });
+        break;
+      case "Courses":
+        setState(() {
+          _certificateWrapperList.add(ProfileCourseControllerWrapper(name: name));
+        });
+        break;
+    }
+  }
+
+  void _showAddDocumentSheet(String type) {
+    final TextEditingController nameCtrl = TextEditingController();
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context)
+              .viewInsets
+              .bottom, // Moves sheet above keyboard
+          left: 20, right: 20, top: 20,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            AppTextView(title: "Add New $type Type",textStyle: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: AppColors.appPrimary,
+                letterSpacing: 0.5
+            ),),
+            const SizedBox(height: 10),
+            AppTextFormField(
+              controller: nameCtrl,
+              label: "$type Name",
+              hint: "Enter your document name",
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                _addNewDocument(type, nameCtrl.text);
+                Navigator.pop(context);
+              },
+              child: const Text("Add to List"),
+            ),
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
     );
   }
 
@@ -582,20 +517,28 @@ class _EditDetailsState extends State<EditDetails> {
                   title: "Add Experience", onTap: () {
                   final newExp = SeaExperience(
                     vesselName: wrapper.vesselNameController.text,
+                    companyName: wrapper.companyNameController.text,
                     vesselType: wrapper.vesselTypeController.text,
+                    grt: wrapper.grtController.text,
+                    bhp: wrapper.bhpController.text,
                     rank: wrapper.rankController.text,
                     from: wrapper.fromDateController.text,
                     to: wrapper.toDateController.text,
+                    period: wrapper.periodController.text,
                   );
 
 
                   seaExperienceList.add(
                       SeaExperienceControllerWrapper(
                         vesselName: newExp.vesselName,
+                        company: newExp.companyName,
                         vesselType: newExp.vesselType,
+                        grt: newExp.grt,
+                        bhp: newExp.bhp,
                         rank: newExp.rank,
                         fromDate: newExp.from,
                         toDate: newExp.to,
+                        period: newExp.period,
                       )
                   );
                   setState(() {
