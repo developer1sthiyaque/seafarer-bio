@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:seafarer_bio_data/features/personal_details/domain/entities/profile_entity.dart';
 import 'package:seafarer_bio_data/features/personal_details/presentation/bloc/personal_info_event.dart';
 import 'package:seafarer_bio_data/features/personal_details/presentation/bloc/personal_info_state.dart';
@@ -184,7 +185,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
     try {
       await updateProfile(updatedProfile); // Single Firestore Write
-      emit(ProfileFullUpdated(updatedProfile));
+      emit(ProfileLoaded(updatedProfile));
       // emit(AllChangesSavedSuccess()); // Optional success notification
     } catch (e) {
       emit(ProfileError(e.toString()));

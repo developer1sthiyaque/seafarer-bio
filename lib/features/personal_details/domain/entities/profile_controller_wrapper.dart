@@ -23,8 +23,8 @@ class ProfileControllerWrapper {
   Document toEntity() => Document(
     name: name,
     number: numberController.text,
-    issueDate: numberController.text,
-    place: numberController.text,
+    issueDate: issueDateController.text,
+    place: issuePlaceController.text,
     validity: expiryController.text,
   );
 

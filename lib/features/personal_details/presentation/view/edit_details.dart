@@ -123,7 +123,15 @@ class _EditDetailsState extends State<EditDetails> {
       ),
       body: BlocListener<ProfileBloc,ProfileState>(listener: (context, state) {
         if(state is ProfileLoaded){
-          Navigator.of(context).pop();
+          // Navigator.of(context).pop();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: AppTextView(
+              title: 'Profile Updated Successfully',
+              textStyle: Theme.of(context).textTheme.titleSmall!.copyWith(fontSize: 14,color: AppColors.appSurface),
+              textAlign: TextAlign.center,
+
+            ),backgroundColor: AppColors.appTextColor,)
+          );
         }
 
       },child:BlocBuilder<ProfileBloc,ProfileState>(builder: (context, state) {
@@ -281,7 +289,13 @@ class _EditDetailsState extends State<EditDetails> {
                     physics: NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     itemCount: seaExperienceList.length,
-                    itemBuilder: (context, index) => SeaExperienceWidget(seaExperienceControllerWrapper:seaExperienceList[index]),
+                    itemBuilder: (context, index) => SeaExperienceWidget(seaExperienceControllerWrapper:seaExperienceList[index],onDelete: (){
+                      setState(() {
+                        seaExperienceList.removeAt(index);
+                      });
+                    },onEdit: () {
+                      _showAddExperienceSheet(context, existingWrapper: seaExperienceList[index]);
+                    },),
                   ),
                   const SizedBox(height: 40),
                   Align(
@@ -405,8 +419,9 @@ class _EditDetailsState extends State<EditDetails> {
     );
   }
 
-  void _showAddExperienceSheet(BuildContext context,) {
-    final wrapper = SeaExperienceControllerWrapper();
+  void _showAddExperienceSheet(BuildContext context, {SeaExperienceControllerWrapper? existingWrapper}) {
+    final isEditing = existingWrapper != null;
+    final wrapper = existingWrapper ?? SeaExperienceControllerWrapper();
 
     showModalBottomSheet(
       context: context,
@@ -427,7 +442,7 @@ class _EditDetailsState extends State<EditDetails> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  AppTextView(title: "Add Sea Experience",textStyle: TextStyle(
+                  AppTextView(title:isEditing ? "Edit Sea Experience" : "Add Sea Experience",textStyle: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: AppColors.appPrimary,
@@ -514,36 +529,49 @@ class _EditDetailsState extends State<EditDetails> {
               Align(
                 alignment: Alignment.center,
                 child: AppButton(
-                  title: "Add Experience", onTap: () {
-                  final newExp = SeaExperience(
-                    vesselName: wrapper.vesselNameController.text,
-                    companyName: wrapper.companyNameController.text,
-                    vesselType: wrapper.vesselTypeController.text,
-                    grt: wrapper.grtController.text,
-                    bhp: wrapper.bhpController.text,
-                    rank: wrapper.rankController.text,
-                    from: wrapper.fromDateController.text,
-                    to: wrapper.toDateController.text,
-                    period: wrapper.periodController.text,
-                  );
+                  title: isEditing ? "Edit Sea Experience" : "Add Experience", onTap: () {
+                  if (!isEditing) {
+                    // Only add to list if we are creating a NEW one
+                    setState(() {
+                      seaExperienceList.add(wrapper);
+                    });
+                  } else {
+                    // If editing, the controllers are already linked to the list item,
+                    // so we just need to refresh the UI.
+                    setState(() {});
+
+                  }
 
 
-                  seaExperienceList.add(
-                      SeaExperienceControllerWrapper(
-                        vesselName: newExp.vesselName,
-                        company: newExp.companyName,
-                        vesselType: newExp.vesselType,
-                        grt: newExp.grt,
-                        bhp: newExp.bhp,
-                        rank: newExp.rank,
-                        fromDate: newExp.from,
-                        toDate: newExp.to,
-                        period: newExp.period,
-                      )
-                  );
-                  setState(() {
-
-                  });
+                  // final newExp = SeaExperience(
+                  //   vesselName: wrapper.vesselNameController.text,
+                  //   companyName: wrapper.companyNameController.text,
+                  //   vesselType: wrapper.vesselTypeController.text,
+                  //   grt: wrapper.grtController.text,
+                  //   bhp: wrapper.bhpController.text,
+                  //   rank: wrapper.rankController.text,
+                  //   from: wrapper.fromDateController.text,
+                  //   to: wrapper.toDateController.text,
+                  //   period: wrapper.periodController.text,
+                  // );
+                  //
+                  //
+                  // seaExperienceList.add(
+                  //     SeaExperienceControllerWrapper(
+                  //       vesselName: newExp.vesselName,
+                  //       company: newExp.companyName,
+                  //       vesselType: newExp.vesselType,
+                  //       grt: newExp.grt,
+                  //       bhp: newExp.bhp,
+                  //       rank: newExp.rank,
+                  //       fromDate: newExp.from,
+                  //       toDate: newExp.to,
+                  //       period: newExp.period,
+                  //     )
+                  // );
+                  // setState(() {
+                  //
+                  // });
                   Navigator.pop(context);
                 },
                 ),
@@ -558,9 +586,13 @@ class _EditDetailsState extends State<EditDetails> {
 
 class SeaExperienceWidget extends StatelessWidget {
   final SeaExperienceControllerWrapper seaExperienceControllerWrapper;
+  final VoidCallback onEdit;
+  final VoidCallback onDelete;
   const SeaExperienceWidget({
     super.key,
     required this.seaExperienceControllerWrapper,
+    required this.onEdit,
+    required this.onDelete,
   });
 
   @override
@@ -585,12 +617,30 @@ class SeaExperienceWidget extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "Ship Name",
-                style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.grey),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Ship Name",
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.grey),
+                  ),
+                  Row(
+                    children: [
+                      InkWell(
+                        onTap: onEdit,
+                        child: Icon(Icons.edit_note, color: Colors.blue, size: 24),
+                      ),
+                      const SizedBox(width: 16),
+                      InkWell(
+                        onTap: onDelete,
+                        child: Icon(Icons.delete_outline, color: Colors.red, size: 24),
+                      ),
+                    ],
+                  )
+                ],
               ),
               Text(
                 seaExperienceControllerWrapper.vesselNameController.text,
