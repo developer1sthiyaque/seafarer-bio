@@ -6,6 +6,7 @@ import 'package:seafarer_bio_data/core/utils/shared_preferences.dart';
 import 'package:seafarer_bio_data/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:seafarer_bio_data/features/personal_details/presentation/bloc/personal_info_bloc.dart';
 import 'package:seafarer_bio_data/features/personal_details/presentation/bloc/personal_info_event.dart';
+import 'package:seafarer_bio_data/features/personal_details/presentation/bloc/personal_info_state.dart';
 import 'package:seafarer_bio_data/widgets/app_button.dart';
 import 'package:seafarer_bio_data/widgets/app_text_form_field.dart';
 import 'package:seafarer_bio_data/widgets/app_text_view.dart';
@@ -37,33 +38,42 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: BlocConsumer<AuthBloc, AuthState>(
-          listener: (context, state) {
-            if (state is AuthError) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.message)),
-              );
-            } else if (state is Authenticated) {
-              context.read<ProfileBloc>().add(LoadProfile(PreferenceService.userId.toString()));
+        child:MultiBlocListener(listeners:[
+          BlocListener<AuthBloc, AuthState>(
+              listener: (context, state) {
+                if (state is AuthError) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(state.message)),
+                  );
+                } else if (state is Authenticated) {
+                  PreferenceService.setLoggedIn(true);
+                  context.read<ProfileBloc>().add(LoadProfile(PreferenceService.userId.toString()));
+                  // Navigate to HomePage or dashboard
+                  // For now, it will just pop if there's any screen below
 
-              if (PreferenceService.isProfileCompleted) {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                  AppRoutes.home,
-                      (route) => false, // removes ALL previous routes
-                );
-                Navigator.pushReplacementNamed(context, AppRoutes.home);
-              } else {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                  AppRoutes.profileCompletion,
-                      (route) => false, // removes ALL previous routes
-                );
+                }
+
+              },
+          ),
+            BlocListener<ProfileBloc,ProfileState>(
+            listener: (context, state) {
+              if(state is ProfileLoaded){
+                if (PreferenceService.isProfileCompleted||state.profile.isProfileCompleted) {
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                    AppRoutes.home,
+                        (route) => false, // removes ALL previous routes
+                  );
+                  Navigator.pushReplacementNamed(context, AppRoutes.home);
+                } else {
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                    AppRoutes.profileCompletion,
+                        (route) => false, // removes ALL previous routes
+                  );
+                }
               }
-              // Navigate to HomePage or dashboard
-              // For now, it will just pop if there's any screen below
-
-            }
-
-          },
+            },
+            ),
+        ], child: BlocBuilder<AuthBloc, AuthState>(
           builder: (context, state) {
             final isObscure = state is AuthPasswordObscuredState
                 ? state.isPasswordObscured
@@ -72,7 +82,7 @@ class _LoginPageState extends State<LoginPage> {
             if (state is AuthLoading) {
               return const Center(child: CircularProgressIndicator());
             }
-            return SingleChildScrollView(
+          return SingleChildScrollView(
 
               child: Form(
                 key: _formLoginKey,
@@ -108,13 +118,13 @@ class _LoginPageState extends State<LoginPage> {
                     AppTextFormField(label: 'Password', controller: _passwordController, hint: 'Enter your password',textInputAction: TextInputAction.done,textInputType: TextInputType.visiblePassword,
                       obscureText: isObscure,
                       suffixIconWidget: InkWell(
-                        onTap: (){
-                          context.read<AuthBloc>().add(TogglePasswordVisibility());
-                        },
+                          onTap: (){
+                            context.read<AuthBloc>().add(TogglePasswordVisibility());
+                          },
                           child: SvgPicture.asset(isObscure?'assets/icons/eye_off.svg':'assets/icons/eye.svg',height: 24,width: 24,fit: BoxFit.scaleDown,)),
                       validator: (value) {
-                      return AppValidators.password(value);
-                    },),
+                        return AppValidators.password(value);
+                      },),
                     const SizedBox(height: 20),
                     AppButton(title: 'Sign In', onTap: () {
                       if(_formLoginKey.currentState!.validate()){
@@ -139,7 +149,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
             );
           },
-        ),
+        ),),
       ),
     );
   }

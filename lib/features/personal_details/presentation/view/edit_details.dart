@@ -1,4 +1,11 @@
+import 'dart:convert';
+import 'dart:developer';
+import 'dart:io';
+import 'dart:math' hide log;
+
+import 'package:image_picker/image_picker.dart';
 import 'package:seafarer_bio_data/core/constants/app_colors.dart';
+import 'package:seafarer_bio_data/core/services/app_permission_service.dart';
 import 'package:seafarer_bio_data/core/utils/shared_preferences.dart';
 import 'package:seafarer_bio_data/features/personal_details/domain/entities/profile_controller_wrapper.dart';
 import 'package:seafarer_bio_data/features/personal_details/domain/entities/profile_course_controller_wrapper.dart';
@@ -14,6 +21,7 @@ import 'package:seafarer_bio_data/widgets/app_date_picker.dart';
 import 'package:seafarer_bio_data/widgets/app_text_form_field.dart';
 import 'package:seafarer_bio_data/widgets/app_text_view.dart';
 import 'package:seafarer_bio_data/widgets/app_text_with_label.dart';
+import 'package:seafarer_bio_data/widgets/bottomsheet/bottom_sheet_upload_image.dart';
 import 'package:seafarer_bio_data/widgets/not_found_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -60,7 +68,9 @@ class _EditDetailsState extends State<EditDetails> {
   late PersonalDetails personalDetails;
   bool _isUpdatingProfile = false;
 
-
+  final ImagePicker _picker = ImagePicker();
+  dynamic _pickImageError;
+  String? _pickedImagePath;
 
 
   @override
@@ -71,6 +81,43 @@ class _EditDetailsState extends State<EditDetails> {
     super.initState();
 
     bindProfileData();
+  }
+
+  void fetchImage()async {
+    try {
+      final XFile? pickedFile = await _picker.pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 512,
+        maxHeight: 512,
+        imageQuality: 80,
+      );
+      setState(() {
+        log("IMAGE PICKED:$pickedFile");
+        if (pickedFile != null) {
+          _pickedImagePath=pickedFile.path;
+          log("PATH:${_pickedImagePath}");
+          // uploadImage(pickedFile.path);
+        }
+      });
+    } catch (e) {
+      setState(() {
+        _pickImageError = e;
+      });
+    }
+  }
+
+  void uploadImage(String imagePath) async {
+    final bytes = await File(imagePath).readAsBytes();
+    final base64Image = base64Encode(bytes);
+    log("BASE64Image:${base64Image}");
+    // await FirebaseFirestore.instance
+    //     .collection('onboarding_assets')
+    //     .doc('profile')
+    //     .set({
+    //   'imageBase64': base64Image,
+    // });
+    // return base64Image;
+
   }
 
   void bindProfileData() {
@@ -180,15 +227,26 @@ class _EditDetailsState extends State<EditDetails> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 18.0,top: 8),
-                        child: Container(
-                          width: 100,
-                          height: 120,
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
-                            image: const DecorationImage(
-                              image: AssetImage(
-                                  'assets/images/passport.jpg'),
-                              fit: BoxFit.cover,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            width: 100,
+                            height: 120,
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey),
+                              image: const DecorationImage(
+                                image: AssetImage('assets/images/passport.jpg'),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            child: Center(
+                              child: InkWell(
+                                  onTap: () async {
+                                  var permissionGranted=  await AppPermissionService.requestPhotosPermission();
+
+                                  if(permissionGranted) fetchImage();
+                                  },
+                                  child: SvgPicture.asset('assets/icons/camera-add.svg',height: 24,width: 24,)),
                             ),
                           ),
                         ),
@@ -461,7 +519,7 @@ class _EditDetailsState extends State<EditDetails> {
               AppTextFormField(
                 controller: wrapper.vesselNameController,
                 label: "Ship Name",
-                hint: "e.g. MV Jupiter LI",
+                hint: "Enter your ship/vessel name",
               ),
               const SizedBox(height: 16),
 
@@ -472,7 +530,7 @@ class _EditDetailsState extends State<EditDetails> {
                     child: AppTextFormField(
                       controller: wrapper.vesselTypeController,
                       label: "Type",
-                      hint: "e.g. Bulk",
+                      hint: "vessel type",
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -480,7 +538,7 @@ class _EditDetailsState extends State<EditDetails> {
                     child: AppTextFormField(
                       controller: wrapper.rankController,
                       label: "Rank",
-                      hint: "e.g. Oiler",
+                      hint: "your rank",
                     ),
                   ),
                 ],

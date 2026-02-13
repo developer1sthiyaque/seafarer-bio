@@ -13,11 +13,23 @@ class AppPermissionService {
 
   /// Photos (If you ever save to gallery)
   static Future<bool> requestPhotosPermission() async {
-    if (await Permission.photos.isGranted) {
+    var status = await Permission.photos.status;
+    if (status.isGranted) {
       return true;
     }
 
-    final status = await Permission.photos.request();
+    if (status.isPermanentlyDenied) {
+      await openAppSettings();
+      return false;
+    }
+
+    // Otherwise, try to request it
+    status = await Permission.photos.request();
+
+    if (status.isPermanentlyDenied) {
+      await openAppSettings();
+      return false;
+    }
     return status.isGranted;
   }
 

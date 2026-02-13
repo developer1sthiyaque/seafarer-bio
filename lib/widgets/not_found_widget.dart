@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:seafarer_bio_data/core/constants/app_colors.dart';
 
 class NotFoundWidget extends StatelessWidget {
   final String title;
@@ -15,7 +16,7 @@ class NotFoundWidget extends StatelessWidget {
       height: MediaQuery.sizeOf(context).height*0.15,
       width: MediaQuery.sizeOf(context).width,
       decoration: BoxDecoration(
-        color: Colors.amber.shade200,
+        color: AppColors.appSurface,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Padding(

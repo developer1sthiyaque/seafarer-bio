@@ -121,47 +121,104 @@ class ProfilePdfBuilder {
     );
   }
 
+  // static pw.Widget _buildSeaExperience(Profile profile) {
+  //   return pw.Column(
+  //     crossAxisAlignment: pw.CrossAxisAlignment.start,
+  //     children: [
+  //       _sectionTitle('Sea Experience'),
+  //
+  //       ...profile.seaExperiences.map(
+  //             (e) => pw.Container(
+  //           margin: const pw.EdgeInsets.symmetric(vertical: 6),
+  //           padding: const pw.EdgeInsets.all(8),
+  //           decoration: pw.BoxDecoration(
+  //             color: PdfColors.blue50,
+  //             borderRadius: pw.BorderRadius.circular(6),
+  //           ),
+  //           child: pw.Column(
+  //             crossAxisAlignment: pw.CrossAxisAlignment.start,
+  //             children: [
+  //               pw.Text('Ship Name: ${e.vesselName}',
+  //                   style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+  //               pw.Row(
+  //                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+  //                 children: [
+  //                   pw.Text('Type: ${e.vesselType}'),
+  //                   pw.Text('Rank: ${e.rank}'),
+  //                 ],
+  //               ),
+  //               pw.Row(
+  //                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+  //                 children: [
+  //                   pw.Text('From: ${e.from}'),
+  //                   pw.Text('To: ${e.to}'),
+  //                 ],
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
+
   static pw.Widget _buildSeaExperience(Profile profile) {
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         _sectionTitle('Sea Experience'),
 
-        ...profile.seaExperiences.map(
-              (e) => pw.Container(
-            margin: const pw.EdgeInsets.symmetric(vertical: 6),
-            padding: const pw.EdgeInsets.all(8),
-            decoration: pw.BoxDecoration(
-              color: PdfColors.blue50,
-              borderRadius: pw.BorderRadius.circular(6),
-            ),
-            child: pw.Column(
-              crossAxisAlignment: pw.CrossAxisAlignment.start,
-              children: [
-                pw.Text('Ship Name: ${e.vesselName}',
-                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                pw.Row(
-                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                  children: [
-                    pw.Text('Type: ${e.vesselType}'),
-                    pw.Text('Rank: ${e.rank}'),
-                  ],
-                ),
-                pw.Row(
-                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                  children: [
-                    pw.Text('From: ${e.from}'),
-                    pw.Text('To: ${e.to}'),
-                  ],
-                ),
-              ],
-            ),
+        pw.Table.fromTextArray(
+          headers: [
+            'Name of vessel',
+            'Company name',
+            'Type of vessel',
+            'G.R.T',
+            'B.H.P',
+            'Rank',
+            'From',
+            'To',
+            'Period'
+          ],
+          data: profile.seaExperiences.map((e) => [
+            e.vesselName,
+            e.companyName,
+            e.vesselType,
+            e.grt,
+            e.bhp,
+            e.rank,
+            e.from,
+            e.to,
+            e.period,
+          ]).toList(),
+          // Table Decoration & Styling
+          border: pw.TableBorder.all(color: PdfColors.grey400),
+          headerStyle: pw.TextStyle(
+            fontSize: 8, // Smaller font to fit 9 columns
+            fontWeight: pw.FontWeight.bold,
           ),
+          cellStyle: const pw.TextStyle(
+            fontSize: 8, // Smaller font to fit 9 columns
+          ),
+          headerDecoration: const pw.BoxDecoration(color: PdfColors.grey300),
+          cellAlignment: pw.Alignment.centerLeft,
+
+          // Optional: Adjust specific column widths if needed
+          columnWidths: {
+            0: const pw.FlexColumnWidth(2), // Vessel Name usually longer
+            1: const pw.FlexColumnWidth(2), // Company Name usually longer
+            2: const pw.FlexColumnWidth(1.5), // Type
+            3: const pw.FlexColumnWidth(1), // GRT
+            4: const pw.FlexColumnWidth(1), // BHP
+            5: const pw.FlexColumnWidth(1.2), // Rank
+            6: const pw.FlexColumnWidth(1.2), // From
+            7: const pw.FlexColumnWidth(1.2), // To
+            8: const pw.FlexColumnWidth(1), // Period
+          },
         ),
       ],
     );
   }
-
   // ---------------- HELPERS ----------------
 
   static pw.Widget _labelValue(String label, String value) {

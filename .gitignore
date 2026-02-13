@@ -34,11 +34,13 @@ android/app/release/
 # =========================
 # iOS / macOS
 # =========================
-ios/Pods/
-ios/.symlinks/
-ios/Flutter/.last_build_id
-ios/Flutter/Generated.xcconfig
-ios/Flutter/flutter_export_environment.sh
+**ios/Pods/
+**ios/.symlinks/
+**ios/Flutter/.last_build_id
+**ios/Flutter/Generated.xcconfig
+**ios/Flutter/flutter_export_environment.sh
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
 
 macos/Pods/
 macos/Flutter/ephemeral/
@@ -64,3 +66,13 @@ macos/Flutter/ephemeral/
 # Firebase secrets
 android/app/google-services.json
 ios/Runner/GoogleService-Info.plist
+
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.idea/
+.vscode/
+*.iml
