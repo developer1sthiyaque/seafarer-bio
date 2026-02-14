@@ -35,21 +35,25 @@ class SeaExperienceControllerWrapper {
 
   SeaExperience toEntity() => SeaExperience(
     vesselName: vesselNameController.text,
-    companyName: vesselTypeController.text,
+    companyName: companyNameController.text,
     vesselType: vesselTypeController.text,
-    grt: vesselTypeController.text,
-    bhp: vesselTypeController.text,
+    grt: grtController.text,
+    bhp: bhpController.text,
     rank: rankController.text,
     from: fromDateController.text,
     to: toDateController.text,
-    period: toDateController.text,
+    period: periodController.text,
   );
 
   void dispose() {
     vesselNameController.dispose();
+    companyNameController.dispose();
     vesselTypeController.dispose();
+    grtController.dispose();
+    bhpController.dispose();
     rankController.dispose();
     fromDateController.dispose();
     toDateController.dispose();
+    periodController.dispose();
   }
 }

@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:math' hide log;
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:seafarer_bio_data/core/constants/app_colors.dart';
 import 'package:seafarer_bio_data/core/services/app_permission_service.dart';
@@ -71,6 +73,8 @@ class _EditDetailsState extends State<EditDetails> {
   final ImagePicker _picker = ImagePicker();
   dynamic _pickImageError;
   String? _pickedImagePath;
+  String base64Image="";
+  Uint8List base64Decoded=Uint8List(0);
 
 
   @override
@@ -83,7 +87,39 @@ class _EditDetailsState extends State<EditDetails> {
     bindProfileData();
   }
 
-  void fetchImage()async {
+  void _calculatePeriod(SeaExperienceControllerWrapper wrapper) {
+    if (wrapper.fromDateController.text.isNotEmpty && wrapper.toDateController.text.isNotEmpty) {
+      try {
+        // Parsing the dd.mm.yyyy format used in your date picker
+        List<String> fromParts = wrapper.fromDateController.text.split('.');
+        List<String> toParts = wrapper.toDateController.text.split('.');
+
+        DateTime from = DateTime(int.parse(fromParts[2]), int.parse(fromParts[1]), int.parse(fromParts[0]));
+        DateTime to = DateTime(int.parse(toParts[2]), int.parse(toParts[1]), int.parse(toParts[0]));
+
+        if (to.isAfter(from)) {
+          int months = (to.year - from.year) * 12 + (to.month - from.month);
+
+          // If the end day is earlier than the start day, the last month isn't fully completed
+          if (to.day < from.day) {
+            months--;
+          }
+
+          // Ensure we don't show negative numbers
+          wrapper.periodController.text = months < 0 ? "0" : months.toString();
+        } else {
+          wrapper.periodController.text = "0";
+        }
+        setState(() {
+
+        });
+      } catch (e) {
+        log("Date parsing error: $e");
+      }
+    }
+  }
+
+  void fetchImage(String userId) async {
     try {
       final XFile? pickedFile = await _picker.pickImage(
         source: ImageSource.gallery,
@@ -95,10 +131,11 @@ class _EditDetailsState extends State<EditDetails> {
         log("IMAGE PICKED:$pickedFile");
         if (pickedFile != null) {
           _pickedImagePath=pickedFile.path;
-          log("PATH:${_pickedImagePath}");
-          // uploadImage(pickedFile.path);
         }
       });
+      log("PATH:${_pickedImagePath}");
+      final imageUpload= await uploadImage(userId,_pickedImagePath.toString());
+      log("IMAGE UPLOAD:${imageUpload.toString()}");
     } catch (e) {
       setState(() {
         _pickImageError = e;
@@ -106,17 +143,11 @@ class _EditDetailsState extends State<EditDetails> {
     }
   }
 
-  void uploadImage(String imagePath) async {
+  Future<String> uploadImage(String userId,String imagePath) async {
     final bytes = await File(imagePath).readAsBytes();
-    final base64Image = base64Encode(bytes);
-    log("BASE64Image:${base64Image}");
-    // await FirebaseFirestore.instance
-    //     .collection('onboarding_assets')
-    //     .doc('profile')
-    //     .set({
-    //   'imageBase64': base64Image,
-    // });
-    // return base64Image;
+    base64Image = base64Encode(bytes);
+    log("BASE64Image:$base64Image");
+    return base64Image;
 
   }
 
@@ -128,6 +159,8 @@ class _EditDetailsState extends State<EditDetails> {
      _nationalityTextController.text=profileLoadedState.profile.personalDetails.nationality;
      _postTextController.text=profileLoadedState.profile.personalDetails.postAppliedFor;
      _fatherNameTextController.text=profileLoadedState.profile.personalDetails.fatherName;
+      base64Decoded=base64Decode(profileLoadedState.profile.personalDetails.profilePic);
+
      _docWrappers = profileLoadedState.profile.documents.map((doc) {
        return ProfileControllerWrapper(
          name: doc.name,
@@ -227,28 +260,42 @@ class _EditDetailsState extends State<EditDetails> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 18.0,top: 8),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            width: 100,
-                            height: 120,
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey),
-                              image: const DecorationImage(
-                                image: AssetImage('assets/images/passport.jpg'),
-                                fit: BoxFit.cover,
+                        child: Stack(
+                          children: [
+                            Container(
+                              width: 100,
+                              height: 120,
+                              margin: EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.grey),
+                                image: DecorationImage(
+                                  image: _pickedImagePath!=null?FileImage(File(_pickedImagePath!))
+                                      : MemoryImage(base64Decoded),
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
-                            child: Center(
+                            Positioned(
+                              top: 0,right: 0,
                               child: InkWell(
                                   onTap: () async {
-                                  var permissionGranted=  await AppPermissionService.requestPhotosPermission();
+                                    var permissionGranted=  await AppPermissionService.requestPhotosPermission();
 
-                                  if(permissionGranted) fetchImage();
+                                    if(permissionGranted) fetchImage(profile.userId);
                                   },
-                                  child: SvgPicture.asset('assets/icons/camera-add.svg',height: 24,width: 24,)),
-                            ),
-                          ),
+                                  child: Container(
+                                      height: 36,
+                                      width: 36,
+                                      decoration: BoxDecoration(
+                                          color: AppColors.appSurface,
+                                          borderRadius: BorderRadius.circular(36)
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(4.0),
+                                        child: Center(child: SvgPicture.asset('assets/icons/camera-add.svg',fit: BoxFit.scaleDown,)),
+                                      ))),
+                            )
+                          ],
                         ),
                       ),
                     ],
@@ -372,6 +419,8 @@ class _EditDetailsState extends State<EditDetails> {
                                 fatherName: _fatherNameTextController.text,
                                 dob: _dobTextController.text,
                                 nationality: _nationalityTextController.text,
+                                profilePic: base64Image,
+
                             ),
                             documents: _docWrappers.map((w) => w.toEntity()).toList(),
                             courses: _certificateWrapperList.map((w) => w.toEntity()).toList(),
@@ -521,6 +570,11 @@ class _EditDetailsState extends State<EditDetails> {
                 label: "Ship Name",
                 hint: "Enter your ship/vessel name",
               ),
+              AppTextFormField(
+                controller: wrapper.companyNameController,
+                label: "Company Name",
+                hint: "Enter your company name",
+              ),
               const SizedBox(height: 16),
 
               // Type & Rank Row
@@ -554,6 +608,8 @@ class _EditDetailsState extends State<EditDetails> {
                       label: "From",
                       onDateSelected: (date) {
                         wrapper.fromDateController.text = "${date.day}.${date.month}.${date.year}";
+                        _calculatePeriod(wrapper);
+                        setState(() {});
                       },
                       firstDate:
                       DateTime(
@@ -570,6 +626,8 @@ class _EditDetailsState extends State<EditDetails> {
                       label: "To",
                       onDateSelected: (date) {
                         wrapper.toDateController.text = "${date.day}.${date.month}.${date.year}";
+                        _calculatePeriod(wrapper);
+                        setState(() {});
                       },
                       firstDate:
                       DateTime(
@@ -581,6 +639,38 @@ class _EditDetailsState extends State<EditDetails> {
                   ),
                 ],
               ),
+              const SizedBox(height: 16),
+
+              Row(
+                children: [
+                  Expanded(
+                    child: AppTextFormField(
+                      controller: wrapper.grtController,
+                      label: "GRT",
+                      hint: "Your ship's Gross Register Tonnage",
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: AppTextFormField(
+                      controller: wrapper.bhpController,
+                      label: "BHP",
+                      hint: "Your ship's Brake Horsepower",
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  AppTextView(title: "Period:", textStyle: TextStyle()),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16.0),
+                    child: AppTextView(title: "${wrapper.periodController.text} (in months)", textStyle: TextStyle()),
+                  ),//to date minus from date will get period served in month
+                ],
+              ),
+
               const SizedBox(height: 32),
 
               // Action Button

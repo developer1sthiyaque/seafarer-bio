@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:permission_handler/permission_handler.dart';
 
 class AppPermissionService {
@@ -13,25 +15,18 @@ class AppPermissionService {
 
   /// Photos (If you ever save to gallery)
   static Future<bool> requestPhotosPermission() async {
-    var status = await Permission.photos.status;
-    if (status.isGranted) {
-      return true;
+    var status = await Permission.storage.status;
+    log("STATUS1: ${status.name}");
+
+    if (status.isDenied) {
+      status = await Permission.storage.request();
+      log("STATUS2: ${status.name}");
     }
 
-    if (status.isPermanentlyDenied) {
-      await openAppSettings();
-      return false;
-    }
 
-    // Otherwise, try to request it
-    status = await Permission.photos.request();
-
-    if (status.isPermanentlyDenied) {
-      await openAppSettings();
-      return false;
-    }
     return status.isGranted;
   }
+
 
   /// Open App Settings
   static Future<void> openSettings() async {

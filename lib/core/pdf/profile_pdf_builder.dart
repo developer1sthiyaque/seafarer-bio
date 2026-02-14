@@ -73,7 +73,6 @@ class ProfilePdfBuilder {
               _labelValue("Father's Name", p.fatherName),
               _labelValue('Date of Birth', p.dob),
               _labelValue('Nationality', p.nationality),
-              _labelValue('Languages', p.languages.join(', ')),
             ],
           ),
         ),

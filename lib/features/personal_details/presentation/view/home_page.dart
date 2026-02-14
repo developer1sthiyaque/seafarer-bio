@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:seafarer_bio_data/core/constants/app_colors.dart';
 import 'package:seafarer_bio_data/core/constants/app_routes.dart';
 import 'package:seafarer_bio_data/core/pdf/profile_pdf_builder.dart';
@@ -114,6 +117,7 @@ class HomePage extends StatelessWidget {
         }
         if (state is ProfileLoaded) {
           final profile = state.profile;
+         final decodeImage=base64Decode(profile.personalDetails.profilePic);
 
           return SingleChildScrollView(
             child: Padding(
@@ -154,24 +158,30 @@ class HomePage extends StatelessWidget {
                             ),
                           ),
                           // Profile Image Placeholder
-                          Container(
+                          profile.personalDetails.profilePic.isNotEmpty?Container(
                             width: 100,
                             height: 120,
                             decoration: BoxDecoration(
                               border: Border.all(color: Colors.grey),
-                              image: const DecorationImage(
-                                image: AssetImage('assets/images/passport.jpg'),
+                              image: DecorationImage(
+                                image:MemoryImage(decodeImage),
                                 fit: BoxFit.cover,
                               ),
                             ),
+                          ):Container(
+                            width: 100,
+                            height: 120,
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey),
+                            ),
+                            child: Center(child: AppTextView(title: 'No Photo', textStyle: TextStyle(
+                              fontSize: 16,fontWeight: FontWeight.w600,color: AppColors.appTextColor
+                            )),),
                           ),
                         ],
                       ),
                       AppTextWithLabel(
                           label: "Nationality", title: profile.personalDetails.nationality),
-                      AppTextWithLabel(
-                          label: "Languages",
-                          title: profile.personalDetails.languages.join(', ')),
                     ],
                   ),
 

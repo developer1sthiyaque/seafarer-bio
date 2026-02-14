@@ -8,7 +8,7 @@ class PersonalDetails extends Equatable {
   final String fatherName;
   final String dob;
   final String nationality;
-  final List<String> languages;
+  final String profilePic;
 
   const PersonalDetails({
     required this.postAppliedFor,
@@ -17,7 +17,7 @@ class PersonalDetails extends Equatable {
     required this.fatherName,
     required this.dob,
     required this.nationality,
-    this.languages = const [],
+    required this.profilePic,
   });
 
   factory PersonalDetails.fromFirestore(Map<String, dynamic> data) {
@@ -28,7 +28,7 @@ class PersonalDetails extends Equatable {
       fatherName: data['fatherName'] ?? '',
       dob: data['dob'] ?? '',
       nationality: data['nationality'] ?? '',
-      languages: List<String>.from(data['languages'] ?? []),
+      profilePic: data['profilePic'] ?? '',
     );
   }
 
@@ -40,7 +40,7 @@ class PersonalDetails extends Equatable {
       'fatherName': fatherName,
       'dob': dob,
       'nationality': nationality,
-      'languages': languages,
+      'profilePic': profilePic,
     };
   }
 
@@ -52,7 +52,7 @@ class PersonalDetails extends Equatable {
         fatherName,
         dob,
         nationality,
-        languages,
+        profilePic,
       ];
 }
 
@@ -85,8 +85,8 @@ class Document extends Equatable {
     return {
       'name': name,
       'number': number,
-      'issued-date': number,
-      'issued-place': number,
+      'issued-date': issueDate,
+      'issued-place': place,
       'validity': validity,
     };
   }
@@ -236,7 +236,7 @@ class SeaExperience extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, vesselName,vesselType, rank, from, to];
+  List<Object?> get props => [id, vesselName,companyName,vesselType,grt,bhp, rank, from, to,period];
 }
 
 class Profile extends Equatable {

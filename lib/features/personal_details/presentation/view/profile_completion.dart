@@ -562,7 +562,7 @@ class _ProfileCompletionState extends State<ProfileCompletion> {
                                           dob: _dobTextController.text,
                                           nationality:
                                           _nationalityTextController.text,
-                                          languages: selectedLanguages.toList(),
+                                          profilePic: '',
                                           postAppliedFor: _postTextController.text,
                                           fatherName:
                                           _fatherNameTextController.text,

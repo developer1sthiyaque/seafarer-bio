@@ -31,7 +31,7 @@ class SignUpUseCase {
         fatherName: '',
         dob: '',
         nationality: '',
-        languages: const [],
+        profilePic: '',
       ),
       documents: const [],
       courses: const [],
