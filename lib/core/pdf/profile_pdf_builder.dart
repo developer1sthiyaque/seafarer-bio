@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:seafarer_bio_data/features/personal_details/domain/entities/profile_entity.dart';
 import 'package:pdf/pdf.dart';
@@ -84,7 +85,7 @@ class ProfilePdfBuilder {
           decoration: pw.BoxDecoration(
             border: pw.Border.all(color: PdfColors.grey400),
           ),
-          child: pw.Center(
+          child: p.profilePic.isNotEmpty?pw.Image(pw.MemoryImage(base64Decode(p.profilePic))):pw.Center(
             child: pw.Text('Photo'),
           ),
         ),

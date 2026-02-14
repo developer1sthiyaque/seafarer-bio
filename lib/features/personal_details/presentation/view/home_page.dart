@@ -36,17 +36,17 @@ class HomePage extends StatelessWidget {
             padding: const EdgeInsets.only(right: 16.0),
             child: InkWell(
                 onTap: () async{
-                  /*if(state is ProfileLoaded){
-                    await ProfilePdfBuilder.generateAndSave(profile: state.profile);
-                  }*/
-
                   if(state is ProfileLoaded){
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => PdfPreviewPage(profile: state.profile,),
-                        ));
+                    await ProfilePdfBuilder.generateAndSave(profile: state.profile);
                   }
+
+                  // if(state is ProfileLoaded){
+                  //   Navigator.push(
+                  //       context,
+                  //       MaterialPageRoute(
+                  //         builder: (context) => PdfPreviewPage(profile: state.profile,),
+                  //       ));
+                  // }
                   ///DOWNLOAD PDF to device
                   ///CHECK STORAGE PERMISSION ios && android
                   ///create an common app_permission class, which will have all type of permission, storage, image, document, for both ios and android

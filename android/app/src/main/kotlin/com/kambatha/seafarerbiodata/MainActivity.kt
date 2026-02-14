@@ -1,4 +1,4 @@
-package com.kambatha.seafarer_bio_data
+package com.kambatha.seafarerbiodata
 
 import io.flutter.embedding.android.FlutterActivity
 
