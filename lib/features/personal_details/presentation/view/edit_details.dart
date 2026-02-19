@@ -159,6 +159,7 @@ class _EditDetailsState extends State<EditDetails> {
      _nationalityTextController.text=profileLoadedState.profile.personalDetails.nationality;
      _postTextController.text=profileLoadedState.profile.personalDetails.postAppliedFor;
      _fatherNameTextController.text=profileLoadedState.profile.personalDetails.fatherName;
+      base64Image=profileLoadedState.profile.personalDetails.profilePic;
       base64Decoded=base64Decode(profileLoadedState.profile.personalDetails.profilePic);
 
      _docWrappers = profileLoadedState.profile.documents.map((doc) {
@@ -192,6 +193,10 @@ class _EditDetailsState extends State<EditDetails> {
          period: e.period,
        );
      },).toList();
+
+     setState(() {
+
+     });
   }
 
   @override
