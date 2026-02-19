@@ -9,9 +9,11 @@ import 'package:seafarer_bio_data/widgets/app_text_view.dart';
 
 class CourseWrapperWidget extends StatelessWidget {
   final ProfileCourseControllerWrapper wrapper;
+  final VoidCallback? onDelete;
   const CourseWrapperWidget({
     super.key,
     required this.wrapper,
+    this.onDelete,
   });
 
   @override
@@ -24,7 +26,21 @@ class CourseWrapperWidget extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.only(bottom: 8.0),
-          child: AppTextView(title: wrapper.name.capitalize(), textStyle:  const TextStyle(fontSize: 16,color: AppColors.appPrimary, fontWeight: FontWeight.w600),),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              AppTextView(title: wrapper.name.capitalize(), textStyle:  const TextStyle(fontSize: 16,color: AppColors.appPrimary, fontWeight: FontWeight.w600),),
+              if (onDelete != null)
+                GestureDetector(
+                  onTap: onDelete,
+                  child: const Icon(
+                    Icons.cancel, // or Icons.close
+                    color: Colors.redAccent,
+                    size: 22,
+                  ),
+                ),
+            ],
+          ),
         ),
         AppTextFormField(
           controller: wrapper

@@ -270,15 +270,22 @@ class _EditDetailsState extends State<EditDetails> {
                             Container(
                               width: 100,
                               height: 120,
-                              margin: EdgeInsets.all(8),
+                              margin: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
                                 border: Border.all(color: Colors.grey),
-                                image: DecorationImage(
-                                  image: _pickedImagePath!=null?FileImage(File(_pickedImagePath!))
-                                      : MemoryImage(base64Decoded),
-                                  fit: BoxFit.cover,
-                                ),
                               ),
+                              child: _pickedImagePath != null
+                                  ? Image.file(File(_pickedImagePath!), fit: BoxFit.cover)
+                                  : base64Decoded.isNotEmpty
+                                  ? Image.memory(base64Decoded, fit: BoxFit.cover)
+                                  : Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Center(
+                                      child: AppTextView(title: 'No Photo', textStyle: TextStyle(
+                                        fontWeight: FontWeight.w600,fontSize: 16,color: AppColors.appTextColor
+                                      )),
+                                    ),
+                                  ),
                             ),
                             Positioned(
                               top: 0,right: 0,
@@ -347,7 +354,11 @@ class _EditDetailsState extends State<EditDetails> {
                     const EdgeInsets
                         .only(
                         bottom: 16.0),
-                    child: DocumentWrapperWidget(wrapper: wrapper),
+                    child: DocumentWrapperWidget(wrapper: wrapper,onDelete: () {
+                      setState(() {
+                        _docWrappers.removeAt(_docWrappers.indexOf(wrapper));
+                      });
+                    },),
                   ))
                       .toList(),
                   // const SizedBox(height: 8),
@@ -371,7 +382,12 @@ class _EditDetailsState extends State<EditDetails> {
                     height: 8,
                   ),
                   ..._certificateWrapperList
-                      .map((wrapper) => CourseWrapperWidget(wrapper: wrapper,))
+                      .map((wrapper) => CourseWrapperWidget(wrapper: wrapper,onDelete: () {
+                    setState(() {
+                      _certificateWrapperList.removeAt(_certificateWrapperList.indexOf(wrapper));
+                    });
+
+                      },))
                       .toList(),
                   const SizedBox(height: 16),
 
