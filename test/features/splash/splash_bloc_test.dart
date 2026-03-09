@@ -1,11 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:get_it/get_it.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:seafarer_bio_data/core/utils/shared_preferences.dart';
 import 'package:seafarer_bio_data/features/splash/bloc/splash_bloc.dart';
 import 'package:seafarer_bio_data/features/splash/bloc/splash_event.dart';
 import 'package:seafarer_bio_data/features/splash/bloc/splash_state.dart';
-import 'package:seafarer_bio_data/core/utils/shared_preferences.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

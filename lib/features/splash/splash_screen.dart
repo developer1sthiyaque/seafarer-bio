@@ -21,6 +21,8 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  bool _isSplashTimerFinished = false;
+
   @override
   void initState() {
     super.initState();
@@ -57,26 +59,26 @@ class _SplashScreenState extends State<SplashScreen> {
         BlocListener<SplashBloc, SplashState>(
             listener: (context, state) {
               if(state is SplashNavigateToOnboarding){
-                _handleNavigation();
-                // Navigator.of(context).pushNamedAndRemoveUntil(
-                //   AppRoutes.onboarding,
-                //       (route) => false, // removes ALL previous routes
-                // );
+                // _handleNavigation();
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  AppRoutes.onboarding,
+                      (route) => false, // removes ALL previous routes
+                );
               }
 
               if(state is SplashNavigateToLogin){
-                _handleNavigation();
-                // Navigator.of(context).pushNamedAndRemoveUntil(
-                //   AppRoutes.login,
-                //       (route) => false, // removes ALL previous routes
-                // );
+                // _handleNavigation();
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  AppRoutes.login,
+                      (route) => false, // removes ALL previous routes
+                );
               }
               if(state is SplashNavigateToProfileCompletion){
-                _handleNavigation();
-                // Navigator.of(context).pushNamedAndRemoveUntil(
-                //   AppRoutes.profileCompletion,
-                //       (route) => false, // removes ALL previous routes
-                // );
+                // _handleNavigation();
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  AppRoutes.profileCompletion,
+                      (route) => false, // removes ALL previous routes
+                );
               }
 
               if(state is SplashNavigateToDashboard){
@@ -86,11 +88,11 @@ class _SplashScreenState extends State<SplashScreen> {
                 );
               }
             },
-        ),
-        BlocListener<AuthBloc, AuthState>(
+          ),
+          BlocListener<AuthBloc, AuthState>(
             listener: (context, state) {
-              if(state is Authenticated){
-                if(!PreferenceService.isLoggedIn){
+              if (state is Authenticated) {
+                if (!PreferenceService.isLoggedIn) {
                   PreferenceService.setLoggedIn(true);
                 }
                 context.read<ProfileBloc>().add(LoadProfile(PreferenceService.userId.toString()));
