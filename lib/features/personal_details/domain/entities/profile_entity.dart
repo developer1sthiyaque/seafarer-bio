@@ -281,6 +281,7 @@ class Profile extends Equatable {
               .toList() ??
           const [],
       isProfileCompleted: data?['isProfileCompleted'] ?? false,
+      isPremiumPaid: data?['isPremium'] ?? false,
     );
   }
 

@@ -191,6 +191,7 @@ class HomePage extends StatelessWidget {
       body: BlocListener<AuthBloc,AuthState>(listener: (context, state)async {
         if(state is Authenticated){
           final userId=state.user.uid;
+          log("USER ID:${userId}");
           context.read<ProfileBloc>().add(LoadProfile(userId));
 
         }
