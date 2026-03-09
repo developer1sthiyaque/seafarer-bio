@@ -72,7 +72,7 @@ class HomePage extends StatelessWidget {
                   //   fileName: 'invoice.pdf',
                   // );
                 },
-                child: SvgPicture.asset('assets/icons/pdf_icon.svg',height: 24,width: 24,)),
+                child: SvgPicture.asset('assets/icons/pdf_icon.svg',height: 20,width: 20,)),
           ),),
           BlocBuilder<SubscriptionBloc, SubscriptionState>(
             builder: (context, subscriptionState) {
@@ -122,12 +122,12 @@ class HomePage extends StatelessWidget {
                           }
                         }
                       },
-                      child: Icon(
-                        Icons.description, // Using a generic doc icon for now
+                      child: SvgPicture.asset(
+                        'assets/icons/file_doc.svg', // Using a generic doc icon for now
                         color: ((subscriptionState is SubscriptionActive) ||
                             (profileState is ProfileLoaded &&
                                 profileState.profile.isPremiumPaid))
-                            ? AppColors.appPrimary
+                            ? AppColors.appScaffold
                             : Colors.grey,
                       ),
                     ),
