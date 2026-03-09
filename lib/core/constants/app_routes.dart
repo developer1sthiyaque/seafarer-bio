@@ -6,6 +6,7 @@ import 'package:seafarer_bio_data/features/personal_details/presentation/view/ho
 import 'package:seafarer_bio_data/features/personal_details/presentation/view/profile_completion.dart';
 import 'package:seafarer_bio_data/features/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:seafarer_bio_data/features/subscription/presentation/view/subscription_page.dart';
 
 class AppRoutes{
   AppRoutes._();
@@ -17,6 +18,7 @@ class AppRoutes{
   static const home = '/home';
   static const editProfile = '/edit-profile';
   static const profileCompletion = '/profile-completion';
+  static const subscription = '/subscription';
 
 
   static Route<dynamic> generatedRoutes(RouteSettings routeSettings) {
@@ -38,6 +40,9 @@ class AppRoutes{
 
       case profileCompletion:
         return MaterialPageRoute(builder: (context) => const ProfileCompletion(),);
+      case subscription:
+        return MaterialPageRoute(
+            builder: (context) => const SubscriptionPage());
 
       default:
         throw const FormatException("Route not found!, check routes again");

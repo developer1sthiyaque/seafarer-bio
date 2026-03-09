@@ -1,10 +1,13 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:purchases_ui_flutter/purchases_ui_flutter.dart';
 import 'package:seafarer_bio_data/core/constants/app_colors.dart';
 import 'package:seafarer_bio_data/core/constants/app_routes.dart';
 import 'package:seafarer_bio_data/core/pdf/profile_pdf_builder.dart';
 import 'package:seafarer_bio_data/core/services/app_permission_service.dart';
+import 'package:seafarer_bio_data/core/services/docx_export_service.dart';
+import 'package:seafarer_bio_data/core/services/file_save_service.dart';
 import 'package:seafarer_bio_data/core/services/pdf_download_service.dart';
 import 'package:seafarer_bio_data/core/utils/shared_preferences.dart';
 import 'package:seafarer_bio_data/features/auth/presentation/bloc/auth_bloc.dart';
@@ -13,6 +16,9 @@ import 'package:seafarer_bio_data/features/personal_details/presentation/bloc/pe
 import 'package:seafarer_bio_data/features/personal_details/presentation/bloc/personal_info_state.dart';
 import 'package:seafarer_bio_data/features/personal_details/presentation/view/edit_details.dart';
 import 'package:seafarer_bio_data/features/personal_details/presentation/view/pdf_preview.dart';
+import 'package:seafarer_bio_data/features/subscription/presentation/bloc/subscription_bloc.dart';
+import 'package:seafarer_bio_data/features/subscription/presentation/bloc/subscription_event.dart';
+import 'package:seafarer_bio_data/features/subscription/presentation/bloc/subscription_state.dart';
 import 'package:seafarer_bio_data/widgets/app_text_view.dart';
 import 'package:seafarer_bio_data/widgets/app_text_with_label.dart';
 import 'package:flutter/material.dart';
@@ -68,6 +74,95 @@ class HomePage extends StatelessWidget {
                 },
                 child: SvgPicture.asset('assets/icons/pdf_icon.svg',height: 24,width: 24,)),
           ),),
+          BlocBuilder<SubscriptionBloc, SubscriptionState>(
+            builder: (context, subscriptionState) {
+              return BlocBuilder<ProfileBloc, ProfileState>(
+                builder: (context, profileState) {
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 16.0),
+                    child: InkWell(
+                      onTap: () async {
+                        if (profileState is ProfileLoaded) {
+                          final isPremium =
+                              subscriptionState is SubscriptionActive ||
+                                  profileState.profile.isPremiumPaid;
+
+                          if (isPremium) {
+                            // Show loading
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Generating DOCX...')),
+                            );
+
+                            final bytes =
+                            await DocxExportService.generateSeafarerDocx(
+                                profileState.profile);
+                            final fileName =
+                                'Seafarer_Biodata_${profileState.profile.personalDetails.lastname}.docx';
+
+                            await FileSaveService.saveAndOpen(
+                              bytes: bytes,
+                              fileName: fileName,
+                            );
+                          } else {
+                            // Show premium message or navigate to subscription screen
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: const Text(
+                                    'DOCX Export is a Pro feature. Please subscribe to unlock.'),
+                                action: SnackBarAction(
+                                  label: 'Upgrade',
+                                  onPressed: () {
+                                    Navigator.pushNamed(
+                                        context, AppRoutes.subscription);
+                                  },
+                                ),
+                              ),
+                            );
+                          }
+                        }
+                      },
+                      child: Icon(
+                        Icons.description, // Using a generic doc icon for now
+                        color: ((subscriptionState is SubscriptionActive) ||
+                            (profileState is ProfileLoaded &&
+                                profileState.profile.isPremiumPaid))
+                            ? AppColors.appPrimary
+                            : Colors.grey,
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+          ),
+          BlocBuilder<SubscriptionBloc, SubscriptionState>(
+            builder: (context, subscriptionState) {
+              return BlocBuilder<ProfileBloc, ProfileState>(
+                builder: (context, profileState) {
+                  final isPremium = subscriptionState is SubscriptionActive ||
+                      (profileState is ProfileLoaded &&
+                          profileState.profile.isPremiumPaid);
+                  if (!isPremium) return const SizedBox.shrink();
+
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 16.0),
+                    child: InkWell(
+                      onTap: () async {
+                        await RevenueCatUI.presentCustomerCenter();
+                        if (context.mounted) {
+                          context.read<SubscriptionBloc>().add(FetchPlans());
+                        }
+                      },
+                      child: const Icon(Icons.workspace_premium,
+                          color: Colors.amber),
+                    ),
+                  );
+                },
+              );
+            },
+          ),
+
           Padding(
             padding: const EdgeInsets.only(right: 16.0),
             child: InkWell(

@@ -185,7 +185,7 @@ class _ProfileCompletionState extends State<ProfileCompletion> {
                     opacity: state is ProfileLoading
                         ? 0.5
                         : 1.0, // Dim while loading
-                    child: Expanded(child: IgnorePointer(
+                    child: IgnorePointer(
                       ignoring: state is ProfileLoading, // Prevent double taps
                       child: PageView.builder(
                         controller: _controller,
@@ -519,7 +519,7 @@ class _ProfileCompletionState extends State<ProfileCompletion> {
                           ),
                         ),
                       ),
-                    ),),
+                    ),
                   ),
 
                   // Positioned Stepper and Buttons
