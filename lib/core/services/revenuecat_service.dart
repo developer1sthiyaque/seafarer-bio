@@ -1,18 +1,25 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
+import 'package:seafarer_bio_data/core/config/environment.dart';
 
 class RevenueCatService {
-  static const String _apiKey = 'test_nVaERCNFqZmdhCQxxlVmZllXyqS';
   static const String entitlementId = 'bioapp Pro';
 
   Future<void> init() async {
     try {
       await Purchases.setLogLevel(LogLevel.debug);
 
+      final apiKey = Environment.instance.revenueCatApiKey;
+
+      if (apiKey.isEmpty) {
+        debugPrint('⚠️  RevenueCat API key is not set in environment file.');
+        return;
+      }
+
       late PurchasesConfiguration configuration;
       if (Platform.isAndroid || Platform.isIOS) {
-        configuration = PurchasesConfiguration(_apiKey);
+        configuration = PurchasesConfiguration(apiKey);
         await Purchases.configure(configuration);
       } else {
         debugPrint('RevenueCat is not supported on this platform');

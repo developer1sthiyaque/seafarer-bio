@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:seafarer_bio_data/core/config/environment.dart';
 import 'package:seafarer_bio_data/core/constants/app_routes.dart';
 import 'package:seafarer_bio_data/core/constants/app_theme.dart';
 import 'package:seafarer_bio_data/core/di/injection_container.dart';
@@ -15,6 +18,13 @@ import 'package:seafarer_bio_data/features/subscription/presentation/bloc/subscr
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  const flavor = String.fromEnvironment('FLAVOR', defaultValue: 'dev');
+
+  final env = flavor == 'prod' ? Env.prod : Env.dev;
+
+  await Environment.instance.initialize(env);
+
   await FirebaseServices().initializeFirebase();
   await PreferenceService.init();
   await setupLocator();
@@ -29,15 +39,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<SplashBloc>(
-          create: (_) => sl<SplashBloc>(),
-        ),
-        BlocProvider<AuthBloc>(
-          create: (_) => sl<AuthBloc>(),
-        ),
-        BlocProvider<ProfileBloc>(
-          create: (_) => sl<ProfileBloc>(),
-        ),
+        BlocProvider<SplashBloc>(create: (_) => sl<SplashBloc>()),
+        BlocProvider<AuthBloc>(create: (_) => sl<AuthBloc>()),
+        BlocProvider<ProfileBloc>(create: (_) => sl<ProfileBloc>()),
         BlocProvider<SubscriptionBloc>(
           create: (_) => sl<SubscriptionBloc>()..add(FetchPlans()),
         ),
@@ -45,12 +49,10 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Bio data app',
-        theme:AppTheme.lightTheme,
+        theme: AppTheme.lightTheme,
         initialRoute: AppRoutes.splash,
         onGenerateRoute: AppRoutes.generatedRoutes,
       ),
     );
   }
 }
-
-
