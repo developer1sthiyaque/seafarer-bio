@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "323712181914",
+    "project_id": "biodata-2a4c8",
+    "storage_bucket": "biodata-2a4c8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:323712181914:android:d8711c3dd6c736f8272123",
+        "android_client_info": {
+          "package_name": "com.kambatha.seafarerbiodata"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBN2giDtaFkM4DU9w6KLC67L5e7_ayt_AU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:323712181914:android:1d97f3e65f065e31272123",
+        "android_client_info": {
+          "package_name": "com.kambatha.seafarerbiodata.dev"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBN2giDtaFkM4DU9w6KLC67L5e7_ayt_AU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

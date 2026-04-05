@@ -13,6 +13,13 @@
 .pub/
 build/
 
+
+# Secrets and sensitive files
+*.jks
+keystore.properties
+google-services.json # Only if you use different ones per env and don't want them committed (but you just did!)
+GoogleService-Info.plist # Similarly for iOS
+
 # =========================
 # IDEs
 # =========================
@@ -76,3 +83,4 @@ ios/Runner/GoogleService-Info.plist
 .idea/
 .vscode/
 *.iml
+*.env.*
