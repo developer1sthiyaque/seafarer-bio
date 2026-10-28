@@ -3,7 +3,7 @@ import 'dart:developer';
 
 import 'package:seafarer_bio_data/core/services/revenuecat_service.dart';
 import 'package:seafarer_bio_data/core/utils/shared_preferences.dart';
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -154,7 +154,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   void _onTogglePasswordVisibility(
       TogglePasswordVisibility event, Emitter<AuthState> emit) {
     _isPasswordObscured = !_isPasswordObscured;
-    emit(AuthPasswordVisibilityChanged(_isPasswordObscured));
+    emit(AuthPasswordObscuredState(isPasswordObscured: _isPasswordObscured));
   }
 
   @override

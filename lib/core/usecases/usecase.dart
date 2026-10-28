@@ -1,11 +1,11 @@
 import 'package:equatable/equatable.dart';
 
-abstract class UseCase<Type, Params> {
-  Future<Type> call(Params params);
+abstract class UseCase<T, Params> {
+  Future<T> call(Params params);
 }
 
-abstract class StreamUseCase<Type, Params> {
-  Stream<Type> call(Params params);
+abstract class StreamUseCase<T, Params> {
+  Stream<T> call(Params params);
 }
 
 class NoParams extends Equatable {

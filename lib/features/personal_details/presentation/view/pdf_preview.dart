@@ -5,7 +5,6 @@ import 'package:seafarer_bio_data/features/personal_details/domain/entities/prof
 import 'package:flutter/material.dart';
 import 'package:printing/printing.dart';
 import 'dart:typed_data';
-import 'package:flutter/material.dart';
 
 
 class PdfPreviewPage extends StatelessWidget {
@@ -27,6 +26,7 @@ class PdfPreviewPage extends StatelessWidget {
             onPressed: () async {
               await ProfilePdfBuilder.generateAndSave(profile: profile);
 
+              if (!context.mounted) return;
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('PDF downloaded successfully')),
               );

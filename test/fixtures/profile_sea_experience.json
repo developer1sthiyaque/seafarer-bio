@@ -1,0 +1,70 @@
+{
+  "userId": "user_sea_004",
+  "personalDetails": {
+    "postAppliedFor": "Second Engineer",
+    "firstname": "Isthiyaque",
+    "lastname": "Kambathagothi",
+    "fatherName": "Abdul Rauf Kambathagothi",
+    "dob": "17/7/1987",
+    "nationality": "Indian",
+    "profilePic": ""
+  },
+  "documents": [
+    {
+      "name": "Passport",
+      "number": "P1234567",
+      "issued-date": "12/3/2018",
+      "issued-place": "Bangalore",
+      "validity": "11/3/2028"
+    },
+    {
+      "name": "CDC",
+      "number": "MUM123456",
+      "issued-date": "1/2/2019",
+      "issued-place": "Mumbai",
+      "validity": "31/1/2029"
+    }
+  ],
+  "courses": [
+    {
+      "title": "Medical",
+      "number": "MED-99871",
+      "issued-date": "5/1/2020",
+      "issued-place": "Mumbai",
+      "validity": "4/1/2025"
+    },
+    {
+      "title": "STCW",
+      "number": "STCW-4412",
+      "issued-date": "9/9/2019",
+      "issued-place": "Chennai",
+      "validity": "8/9/2024"
+    }
+  ],
+  "seaExperiences": [
+    {
+      "vesselName": "MV Ocean Pioneer",
+      "companyName": "Blue Horizon Shipping",
+      "type": "Bulk Carrier",
+      "grt": "48500",
+      "bhp": "12000",
+      "rank": "Third Engineer",
+      "from": "1.4.2021",
+      "to": "1.12.2021",
+      "period": "8"
+    },
+    {
+      "vesselName": "MT Coral Star",
+      "companyName": "Anchor Marine Pvt Ltd",
+      "type": "Oil Tanker",
+      "grt": "62000",
+      "bhp": "15500",
+      "rank": "Second Engineer",
+      "from": "15.2.2022",
+      "to": "15.11.2022",
+      "period": "9"
+    }
+  ],
+  "isProfileCompleted": true,
+  "isPremium": true
+}

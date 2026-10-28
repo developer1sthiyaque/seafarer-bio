@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:seafarer_bio_data/core/constants/app_routes.dart';
 import 'package:seafarer_bio_data/core/utils/shared_preferences.dart';
 import 'package:seafarer_bio_data/features/personal_details/presentation/bloc/personal_info_bloc.dart';
@@ -21,35 +19,11 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  bool _isSplashTimerFinished = false;
-
   @override
   void initState() {
     super.initState();
     // Start the timer immediately
     context.read<SplashBloc>().add(LoadSplash());
-  }
-
-  void _handleNavigation() {
-    final authState = context.read<AuthBloc>().state;
-
-    if (authState is Authenticated) {
-      // Load profile and navigate
-      context.read<ProfileBloc>().add(LoadProfile(authState.user.uid));
-
-      if (PreferenceService.isProfileCompleted) {
-        Navigator.pushReplacementNamed(context, AppRoutes.home);
-      } else {
-        Navigator.pushReplacementNamed(context, AppRoutes.profileCompletion);
-      }
-    } else {
-      // Logic for Unauthenticated
-      if (!PreferenceService.isOnboardingCompleted) {
-        Navigator.pushReplacementNamed(context, AppRoutes.onboarding);
-      } else {
-        Navigator.pushReplacementNamed(context, AppRoutes.login);
-      }
-    }
   }
 
   @override

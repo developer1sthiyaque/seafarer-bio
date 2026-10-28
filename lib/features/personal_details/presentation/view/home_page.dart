@@ -5,17 +5,13 @@ import 'package:purchases_ui_flutter/purchases_ui_flutter.dart';
 import 'package:seafarer_bio_data/core/constants/app_colors.dart';
 import 'package:seafarer_bio_data/core/constants/app_routes.dart';
 import 'package:seafarer_bio_data/core/pdf/profile_pdf_builder.dart';
-import 'package:seafarer_bio_data/core/services/app_permission_service.dart';
 import 'package:seafarer_bio_data/core/services/docx_export_service.dart';
 import 'package:seafarer_bio_data/core/services/file_save_service.dart';
-import 'package:seafarer_bio_data/core/services/pdf_download_service.dart';
 import 'package:seafarer_bio_data/core/utils/shared_preferences.dart';
 import 'package:seafarer_bio_data/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:seafarer_bio_data/features/personal_details/presentation/bloc/personal_info_bloc.dart';
 import 'package:seafarer_bio_data/features/personal_details/presentation/bloc/personal_info_event.dart';
 import 'package:seafarer_bio_data/features/personal_details/presentation/bloc/personal_info_state.dart';
-import 'package:seafarer_bio_data/features/personal_details/presentation/view/edit_details.dart';
-import 'package:seafarer_bio_data/features/personal_details/presentation/view/pdf_preview.dart';
 import 'package:seafarer_bio_data/features/subscription/presentation/bloc/subscription_bloc.dart';
 import 'package:seafarer_bio_data/features/subscription/presentation/bloc/subscription_event.dart';
 import 'package:seafarer_bio_data/features/subscription/presentation/bloc/subscription_state.dart';
@@ -202,7 +198,7 @@ class HomePage extends StatelessWidget {
       body: BlocListener<AuthBloc,AuthState>(listener: (context, state)async {
         if(state is Authenticated){
           final userId=state.user.uid;
-          log("USER ID:${userId}");
+          log("USER ID:$userId");
           context.read<ProfileBloc>().add(LoadProfile(userId));
 
         }

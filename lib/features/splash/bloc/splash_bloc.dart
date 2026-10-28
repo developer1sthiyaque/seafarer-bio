@@ -17,11 +17,11 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
     emit(SplashLoading());
     await Future.delayed(const Duration(seconds: 3)).then((value) async{
       log("IS USER LOGIN ${PreferenceService.isLoggedIn}");
-      log("IS PROFILE COMPLETE ${PreferenceService.isLoggedIn}");
+      log("IS PROFILE COMPLETE ${PreferenceService.isProfileCompleted}");
       log("IS ONBOARDING COMPLETE ${PreferenceService.isOnboardingCompleted}");
       if (!PreferenceService.isOnboardingCompleted) {
         emit(SplashNavigateToOnboarding());
-      } if(PreferenceService.isOnboardingCompleted && !PreferenceService.isLoggedIn){
+      } else if(PreferenceService.isOnboardingCompleted && !PreferenceService.isLoggedIn){
         emit(SplashNavigateToLogin());
       }else if (!PreferenceService.isLoggedIn&&!PreferenceService.isProfileCompleted) {
         emit(SplashNavigateToLogin());

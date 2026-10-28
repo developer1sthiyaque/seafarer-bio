@@ -1,0 +1,33 @@
+{
+  "userId": "user_no_photo_002",
+  "personalDetails": {
+    "postAppliedFor": "Fourth Engineer",
+    "firstname": "Isthiyaque",
+    "lastname": "Kambathagothi",
+    "fatherName": "Abdul Rauf Kambathagothi",
+    "dob": "17/7/1987",
+    "nationality": "Indian",
+    "profilePic": ""
+  },
+  "documents": [
+    {
+      "name": "Passport",
+      "number": "P1234567",
+      "issued-date": "12/3/2018",
+      "issued-place": "Bangalore",
+      "validity": "11/3/2028"
+    }
+  ],
+  "courses": [
+    {
+      "title": "Medical",
+      "number": "MED-99871",
+      "issued-date": "5/1/2020",
+      "issued-place": "Mumbai",
+      "validity": "4/1/2025"
+    }
+  ],
+  "seaExperiences": [],
+  "isProfileCompleted": true,
+  "isPremium": false
+}

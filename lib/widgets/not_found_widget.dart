@@ -12,8 +12,10 @@ class NotFoundWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 16),
-      height: MediaQuery.sizeOf(context).height*0.15,
+      margin: const EdgeInsets.only(top: 16),
+      constraints: BoxConstraints(
+        minHeight: MediaQuery.sizeOf(context).height * 0.15,
+      ),
       width: MediaQuery.sizeOf(context).width,
       decoration: BoxDecoration(
         color: AppColors.appSurface,

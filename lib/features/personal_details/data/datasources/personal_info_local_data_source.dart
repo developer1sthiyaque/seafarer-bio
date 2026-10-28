@@ -1,5 +1,3 @@
-import 'package:seafarer_bio_data/features/personal_details/data/models/personal_info_model.dart';
-
 // data/datasources/profile_remote_datasource.dart
 
 import 'package:cloud_firestore/cloud_firestore.dart';

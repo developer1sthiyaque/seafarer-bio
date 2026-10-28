@@ -83,6 +83,24 @@ class RevenueCatService {
     }
   }
 
+  Future<CustomerInfo?> purchasePackage(Package package) async {
+    final purchaseResult = await Purchases.purchase(
+      PurchaseParams.package(package),
+    );
+    if (!_customerInfoController.isClosed) {
+      _customerInfoController.add(purchaseResult.customerInfo);
+    }
+    return purchaseResult.customerInfo;
+  }
+
+  Future<CustomerInfo?> restorePurchases() async {
+    final customerInfo = await Purchases.restorePurchases();
+    if (!_customerInfoController.isClosed) {
+      _customerInfoController.add(customerInfo);
+    }
+    return customerInfo;
+  }
+
   bool isProSubscriber(CustomerInfo? customerInfo) {
     if (customerInfo == null) return false;
     final activeEntitlement =

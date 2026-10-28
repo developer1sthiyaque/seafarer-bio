@@ -64,13 +64,10 @@ class SubscriptionPackage {
     SubscriptionPackage(
       id: 'weekly_plan',
       name: 'Weekly',
-      price: 29.0,
-      currency: '₹',
+      price: 3.99,
+      currency: '\$',
       durationInDays: 7,
-      benefits: [
-        'Advanced DOCX Export',
-        'Basic Templates',
-      ],
+      benefits: ['Advanced DOCX Export', 'Basic Templates'],
     ),
     SubscriptionPackage(
       id: 'monthly_plan',
@@ -90,10 +87,7 @@ class SubscriptionPackage {
       price: 699.0,
       currency: '₹',
       durationInDays: 365,
-      benefits: [
-        'All Monthly Benefits',
-        'Priority Support',
-      ],
+      benefits: ['All Monthly Benefits', 'Priority Support'],
     ),
   ];
 }

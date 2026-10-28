@@ -84,3 +84,7 @@ ios/Runner/GoogleService-Info.plist
 .vscode/
 *.iml
 *.env.*
+
+# Firebase Functions
+functions/node_modules/
+functions/lib/

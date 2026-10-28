@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:seafarer_bio_data/core/constants/app_colors.dart';
@@ -209,7 +208,7 @@ class _DotsIndicator extends StatelessWidget {
           decoration: BoxDecoration(
             color: isActive
                 ? AppColors.appAccent
-                : AppColors.appSecondary.withOpacity(0.3),
+                : AppColors.appSecondary.withValues(alpha: 0.3),
             borderRadius: BorderRadius.circular(10),
           ),
         );

@@ -109,11 +109,10 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     emit(SubscriptionLoading());
     try {
       if (event.package.rcPackage != null) {
-        final purchaseResult = await Purchases.purchase(
-          PurchaseParams.package(event.package.rcPackage!),
+        final customerInfo = await _revenueCatService.purchasePackage(
+          event.package.rcPackage!,
         );
-        final isPro =
-            _revenueCatService.isProSubscriber(purchaseResult.customerInfo);
+        final isPro = _revenueCatService.isProSubscriber(customerInfo);
 
         if (isPro) {
           emit(SubscriptionActive(event.package));
@@ -150,7 +149,7 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
   ) async {
     emit(SubscriptionLoading());
     try {
-      final customerInfo = await Purchases.restorePurchases();
+      final customerInfo = await _revenueCatService.restorePurchases();
       final isPro = _revenueCatService.isProSubscriber(customerInfo);
 
       if (isPro) {

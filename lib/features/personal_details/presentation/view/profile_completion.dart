@@ -15,7 +15,6 @@ import 'package:seafarer_bio_data/widgets/app_button.dart';
 import 'package:seafarer_bio_data/widgets/app_date_picker.dart';
 import 'package:seafarer_bio_data/widgets/app_text_form_field.dart';
 import 'package:seafarer_bio_data/widgets/app_text_view.dart';
-import 'package:seafarer_bio_data/widgets/app_text_with_label.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -62,9 +61,6 @@ class _ProfileCompletionState extends State<ProfileCompletion> {
 // Repeat for other fields if needed
   int currentStep = 0;
   int _currentPage = 0;
-  DateTime? _userVisaExpiry;
-  DateTime? _userPassportExpiry;
-  DateTime? _userCDCExpiry;
   Set<String> selectedLanguages = {"English"};
   List<String> languageList = [
     "English",
@@ -87,8 +83,8 @@ class _ProfileCompletionState extends State<ProfileCompletion> {
     "Korean"
   ];
 
-  List<ProfileControllerWrapper> _docWrappers = [];
-  List<ProfileCourseControllerWrapper> _certificateWrapperList = [];
+  final List<ProfileControllerWrapper> _docWrappers = [];
+  final List<ProfileCourseControllerWrapper> _certificateWrapperList = [];
   @override
   void initState() {
     super.initState();
@@ -109,9 +105,35 @@ class _ProfileCompletionState extends State<ProfileCompletion> {
         _currentPage = _controller.page!.toInt();
       });
     });
-    log("CURRENT STEP ON INIT:${currentStep}");
-    log("CURRENT PAGE ON INIT:${_currentPage}");
+    log("CURRENT STEP ON INIT:$currentStep");
+    log("CURRENT PAGE ON INIT:$_currentPage");
 
+  }
+
+  @override
+  void dispose() {
+    _firstNameTextController.dispose();
+    _lastNameTextController.dispose();
+    _dobTextController.dispose();
+    _nationalityTextController.dispose();
+    _postTextController.dispose();
+    _fatherNameTextController.dispose();
+    _passportTextController.dispose();
+    _passportExpiryTextController.dispose();
+    _cdcTextController.dispose();
+    _cdcExpiryTextController.dispose();
+    _visaTextController.dispose();
+    _visaExpiryTextController.dispose();
+    _controller.dispose();
+    _scrollController.dispose();
+    _postFocusNode.dispose();
+    for (final wrapper in _docWrappers) {
+      wrapper.dispose();
+    }
+    for (final wrapper in _certificateWrapperList) {
+      wrapper.dispose();
+    }
+    super.dispose();
   }
 
   void bindData(Profile profile) {
@@ -151,7 +173,7 @@ class _ProfileCompletionState extends State<ProfileCompletion> {
             );
             }
           }
-          log("LOG STATE IS :${state}");
+          log("LOG STATE IS :$state");
           if (state is PersonalDetailsUpdateSuccess ||
               state is DocumentsUpdateSuccess) {
             if (_controller.hasClients) {
@@ -548,8 +570,8 @@ class _ProfileCompletionState extends State<ProfileCompletion> {
                       child: AppButton(
                         onTap: () {
                           log("ON TAP NEXT BUTTON");
-                          log("CURRENT STEP:${currentStep}");
-                          log("CURRENT PAGE:${_currentPage}");
+                          log("CURRENT STEP:$currentStep");
+                          log("CURRENT PAGE:$_currentPage");
                           //page change function
                           switch (_currentPage) {
                             case 0:
@@ -574,7 +596,7 @@ class _ProfileCompletionState extends State<ProfileCompletion> {
                                 List<Document> documentsToSave = _docWrappers
                                     .map((w) => w.toEntity())
                                     .toList();
-                                log("LOG STATE IS :${state}");
+                                log("LOG STATE IS :$state");
                                 // Trigger your BLoC event
                                 context.read<ProfileBloc>().add(
                                   UpdateDocumentsEvent(documentsToSave),

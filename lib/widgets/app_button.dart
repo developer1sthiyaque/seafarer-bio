@@ -19,10 +19,10 @@ class AppButton extends StatelessWidget {
           decoration: BoxDecoration(
             color: AppColors.appAccent,
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: AppColors.appPrimary.withOpacity(0.2)),
+            border: Border.all(color: AppColors.appPrimary.withValues(alpha: 0.2)),
             boxShadow: [
               BoxShadow(
-                color: AppColors.appPrimary.withOpacity(0.1),
+                color: AppColors.appPrimary.withValues(alpha: 0.1),
                 blurRadius: 4,
                 offset: const Offset(0, 2),
               )

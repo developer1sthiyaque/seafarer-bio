@@ -1,10 +1,10 @@
 extension StringExtensions on String {
   // Method to capitalize the first letter
   String capitalize() {
-    if (this.isEmpty) {
+    if (isEmpty) {
       return this;
     }
-    return '${this[0].toUpperCase()}${this.substring(1)}';
+    return '${this[0].toUpperCase()}${substring(1)}';
   }
 
   // Getter to check for a valid email (simple regex example)

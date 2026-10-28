@@ -92,7 +92,7 @@ class Document extends Equatable {
   }
 
   @override
-  List<Object?> get props => [name, number, validity];
+  List<Object?> get props => [name, number, issueDate, place, validity];
 }
 
 class Course extends Equatable {
@@ -146,13 +146,13 @@ class Course extends Equatable {
       title: title ?? this.title,
       number: number ?? this.number,
       issueDate: issueDate ?? this.issueDate,
-      place: issuePlace ?? this.issueDate,
-      validity: duration ?? this.validity,
+      place: issuePlace ?? place,
+      validity: duration ?? validity,
     );
   }
 
   @override
-  List<Object?> get props => [id, title, number, issueDate,place,validity];
+  List<Object?> get props => [id, title, number, issueDate, place, validity];
 }
 
 class SeaExperience extends Equatable {
@@ -322,5 +322,7 @@ class Profile extends Equatable {
         documents,
         courses,
         seaExperiences,
+        isProfileCompleted,
+        isPremiumPaid,
       ];
 }

@@ -1,14 +1,12 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-import 'dart:math' hide log;
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:seafarer_bio_data/core/constants/app_colors.dart';
+import 'package:seafarer_bio_data/core/utils/app_validators.dart';
 import 'package:seafarer_bio_data/core/services/app_permission_service.dart';
-import 'package:seafarer_bio_data/core/utils/shared_preferences.dart';
 import 'package:seafarer_bio_data/features/personal_details/domain/entities/profile_controller_wrapper.dart';
 import 'package:seafarer_bio_data/features/personal_details/domain/entities/profile_course_controller_wrapper.dart';
 import 'package:seafarer_bio_data/features/personal_details/domain/entities/profile_entity.dart';
@@ -22,8 +20,6 @@ import 'package:seafarer_bio_data/widgets/app_button.dart';
 import 'package:seafarer_bio_data/widgets/app_date_picker.dart';
 import 'package:seafarer_bio_data/widgets/app_text_form_field.dart';
 import 'package:seafarer_bio_data/widgets/app_text_view.dart';
-import 'package:seafarer_bio_data/widgets/app_text_with_label.dart';
-import 'package:seafarer_bio_data/widgets/bottomsheet/bottom_sheet_upload_image.dart';
 import 'package:seafarer_bio_data/widgets/not_found_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -37,6 +33,7 @@ class EditDetails extends StatefulWidget {
 }
 
 class _EditDetailsState extends State<EditDetails> {
+  final _formKey = GlobalKey<FormState>();
 
   final TextEditingController _firstNameTextController = TextEditingController();
   final TextEditingController _lastNameTextController = TextEditingController();
@@ -68,10 +65,8 @@ class _EditDetailsState extends State<EditDetails> {
   List<SeaExperienceControllerWrapper> get seaExperienceList => _seaExperienceList;
 
   late PersonalDetails personalDetails;
-  bool _isUpdatingProfile = false;
 
   final ImagePicker _picker = ImagePicker();
-  dynamic _pickImageError;
   String? _pickedImagePath;
   String base64Image="";
   Uint8List base64Decoded=Uint8List(0);
@@ -85,6 +80,32 @@ class _EditDetailsState extends State<EditDetails> {
     super.initState();
 
     bindProfileData();
+  }
+
+  @override
+  void dispose() {
+    _firstNameTextController.dispose();
+    _lastNameTextController.dispose();
+    _dobTextController.dispose();
+    _nationalityTextController.dispose();
+    _postTextController.dispose();
+    _fatherNameTextController.dispose();
+    _passportTextController.dispose();
+    _passportExpiryTextController.dispose();
+    _cdcTextController.dispose();
+    _cdcExpiryTextController.dispose();
+    _visaTextController.dispose();
+    _visaExpiryTextController.dispose();
+    for (final wrapper in _docWrappers) {
+      wrapper.dispose();
+    }
+    for (final wrapper in _certificateWrapperList) {
+      wrapper.dispose();
+    }
+    for (final wrapper in _seaExperienceList) {
+      wrapper.dispose();
+    }
+    super.dispose();
   }
 
   void _calculatePeriod(SeaExperienceControllerWrapper wrapper) {
@@ -133,13 +154,11 @@ class _EditDetailsState extends State<EditDetails> {
           _pickedImagePath=pickedFile.path;
         }
       });
-      log("PATH:${_pickedImagePath}");
+      log("PATH:$_pickedImagePath");
       final imageUpload= await uploadImage(userId,_pickedImagePath.toString());
-      log("IMAGE UPLOAD:${imageUpload.toString()}");
+      log("IMAGE UPLOAD:$imageUpload");
     } catch (e) {
-      setState(() {
-        _pickImageError = e;
-      });
+      log("Pick image error: $e");
     }
   }
 
@@ -232,7 +251,9 @@ class _EditDetailsState extends State<EditDetails> {
           final profile = state.profile;
           return Padding(
               padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 12),
-              child: SingleChildScrollView(
+              child: Form(
+                key: _formKey,
+                child: SingleChildScrollView(
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   // --- PERSONAL INFORMATION SECTION ---
                   Row(
@@ -249,16 +270,19 @@ class _EditDetailsState extends State<EditDetails> {
                               label: "Post Applied For",
                               hint: "enter your post",
                               controller: _postTextController,
+                              validator: (value) => AppValidators.post(value),
                             ),
                             AppTextFormField(
                               label: "First name",
                               hint: "enter your first name",
                               controller: _firstNameTextController,
+                              validator: (value) => AppValidators.name(value),
                             ),
                             AppTextFormField(
                               label: "Last name",
                               hint: "enter your last name",
                               controller: _lastNameTextController,
+                              validator: (value) => AppValidators.name(value),
                             ),
                           ],
                         ),
@@ -317,16 +341,19 @@ class _EditDetailsState extends State<EditDetails> {
                     label: "Father's Name",
                     hint: "enter your father's name",
                     controller: _fatherNameTextController,
+                    validator: (value) => AppValidators.name(value),
                   ),
                   AppTextFormField(
                     label: "Date of Birth",
                     hint: "enter your dob",
                     controller:_dobTextController,
+                    validator: (value) => AppValidators.dob(value),
                   ), // Profile Image Placeholder
                   AppTextFormField(
                     label: "Nationality",
                     hint: "enter you nationality",
                     controller:_nationalityTextController,
+                    validator: (value) => AppValidators.nationality(value),
                   ),
                   const SizedBox(height: 16),
 
@@ -359,8 +386,7 @@ class _EditDetailsState extends State<EditDetails> {
                         _docWrappers.removeAt(_docWrappers.indexOf(wrapper));
                       });
                     },),
-                  ))
-                      .toList(),
+                  )),
                   // const SizedBox(height: 8),
 
                   // --- COURSES / CERTIFICATES SECTION ---
@@ -387,8 +413,7 @@ class _EditDetailsState extends State<EditDetails> {
                       _certificateWrapperList.removeAt(_certificateWrapperList.indexOf(wrapper));
                     });
 
-                      },))
-                      .toList(),
+                      },)),
                   const SizedBox(height: 16),
 
                   // --- WORK HISTORY SECTION ---
@@ -428,33 +453,32 @@ class _EditDetailsState extends State<EditDetails> {
                     alignment: Alignment.center,
                     child: AppButton(
                       onTap: () {
-                        setState(() {
-                          _isUpdatingProfile=true;
-                        });
-                        context.read<ProfileBloc>().add(
-                          UpdateFullProfileEvent(
-                            personalDetails: PersonalDetails(
-                                postAppliedFor: _postTextController.text,
-                                firstname: _firstNameTextController.text,
-                                lastname: _lastNameTextController.text,
-                                fatherName: _fatherNameTextController.text,
-                                dob: _dobTextController.text,
-                                nationality: _nationalityTextController.text,
-                                profilePic: base64Image,
+                        if (_formKey.currentState!.validate()) {
+                          context.read<ProfileBloc>().add(
+                            UpdateFullProfileEvent(
+                              personalDetails: PersonalDetails(
+                                  postAppliedFor: _postTextController.text,
+                                  firstname: _firstNameTextController.text,
+                                  lastname: _lastNameTextController.text,
+                                  fatherName: _fatherNameTextController.text,
+                                  dob: _dobTextController.text,
+                                  nationality: _nationalityTextController.text,
+                                  profilePic: base64Image,
 
+                              ),
+                              documents: _docWrappers.map((w) => w.toEntity()).toList(),
+                              courses: _certificateWrapperList.map((w) => w.toEntity()).toList(),
+                              seaExperiences: seaExperienceList.map((w) => w.toEntity()).toList(), // Your local list from the UI
                             ),
-                            documents: _docWrappers.map((w) => w.toEntity()).toList(),
-                            courses: _certificateWrapperList.map((w) => w.toEntity()).toList(),
-                            seaExperiences: seaExperienceList.map((w) => w.toEntity()).toList(), // Your local list from the UI
-                          ),
-                        );
+                          );
+                        }
                       },
 
                       title: "Save Changes",
                     ),
                   )
                 ]),
-              ));
+              )));  
         }
 
         return SizedBox();
@@ -462,32 +486,6 @@ class _EditDetailsState extends State<EditDetails> {
     );
   }
 
-  // Helper method for Table Headers
-  TableRow _buildTableHeader(List<String> labels) {
-    return TableRow(
-      decoration: BoxDecoration(color: Colors.grey[100]),
-      children: labels
-          .map((label) => Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(label,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 12)),
-              ))
-          .toList(),
-    );
-  }
-
-  // Helper method for Table Rows
-  TableRow _buildTableRow(List<String> values) {
-    return TableRow(
-      children: values
-          .map((val) => Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(val, style: const TextStyle(fontSize: 12)),
-              ))
-          .toList(),
-    );
-  }
 
   void _addNewDocument(String title, String name) {
     switch (title) {
@@ -821,91 +819,101 @@ class SeaExperienceWidget extends StatelessWidget {
                 mainAxisAlignment:
                     MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(
-                    crossAxisAlignment:
-                        CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Type",
-                        style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.grey),
-                      ),
-                      Text(
-                        seaExperienceControllerWrapper.vesselTypeController.text,
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600),
-                      ),
-                    ],
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment:
+                          CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Type",
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.grey),
+                        ),
+                        Text(
+                          seaExperienceControllerWrapper.vesselTypeController.text,
+                          style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ],
+                    ),
                   ),
-                  Column(
-                    crossAxisAlignment:
-                        CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Rank",
-                        style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.grey),
-                      ),
-                      Text(
-                        seaExperienceControllerWrapper.rankController.text,
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600),
-                      ),
-                    ],
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment:
+                          CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Rank",
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.grey),
+                        ),
+                        Text(
+                          seaExperienceControllerWrapper.rankController.text,
+                          style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 16,
               ),
               Row(
                 mainAxisAlignment:
                     MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(
-                    crossAxisAlignment:
-                        CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "From",
-                        style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.grey),
-                      ),
-                      Text(
-                        seaExperienceControllerWrapper.fromDateController.text,
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600),
-                      ),
-                    ],
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment:
+                          CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "From",
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.grey),
+                        ),
+                        Text(
+                          seaExperienceControllerWrapper.fromDateController.text,
+                          style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ],
+                    ),
                   ),
-                  Column(
-                    crossAxisAlignment:
-                        CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "To",
-                        style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.grey),
-                      ),
-                      Text(
-                        seaExperienceControllerWrapper.toDateController.text,
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600),
-                      ),
-                    ],
-                  )
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment:
+                          CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "To",
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.grey),
+                        ),
+                        Text(
+                          seaExperienceControllerWrapper.toDateController.text,
+                          style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               )
             ],

@@ -1,0 +1,17 @@
+{
+  "userId": "user_empty_003",
+  "personalDetails": {
+    "postAppliedFor": "",
+    "firstname": "New",
+    "lastname": "Seafarer",
+    "fatherName": "",
+    "dob": "",
+    "nationality": "",
+    "profilePic": ""
+  },
+  "documents": [],
+  "courses": [],
+  "seaExperiences": [],
+  "isProfileCompleted": false,
+  "isPremium": false
+}
