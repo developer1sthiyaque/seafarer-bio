@@ -2,8 +2,25 @@ import 'dart:typed_data';
 import 'package:docs_gee/docs_gee.dart' as docx;
 import '../../features/personal_details/domain/entities/profile_entity.dart';
 
+class PremiumRequiredException implements Exception {
+  final String message;
+  const PremiumRequiredException([
+    this.message = 'A Pro subscription is required to export DOCX documents.',
+  ]);
+
+  @override
+  String toString() => 'PremiumRequiredException: $message';
+}
+
 class DocxExportService {
-  static Future<Uint8List> generateSeafarerDocx(Profile profile) async {
+  static Future<Uint8List> generateSeafarerDocx(
+    Profile profile, {
+    bool isSubscribed = false,
+  }) async {
+    if (!isSubscribed) {
+      throw const PremiumRequiredException();
+    }
+
     final doc = docx.DocxDocument();
 
     // Title Section

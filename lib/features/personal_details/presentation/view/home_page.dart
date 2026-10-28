@@ -84,28 +84,44 @@ class HomePage extends StatelessWidget {
                       onTap: () async {
                         if (profileState is ProfileLoaded) {
                           final isPremium =
-                              subscriptionState is SubscriptionActive ||
-                                  profileState.profile.isPremiumPaid;
+                              subscriptionState is SubscriptionActive;
 
                           if (isPremium) {
-                            // Show loading
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                   content: Text('Generating DOCX...')),
                             );
 
-                            final bytes =
-                            await DocxExportService.generateSeafarerDocx(
-                                profileState.profile);
-                            final fileName =
-                                'Seafarer_Biodata_${profileState.profile.personalDetails.lastname}.docx';
+                            try {
+                              final bytes =
+                                  await DocxExportService.generateSeafarerDocx(
+                                profileState.profile,
+                                isSubscribed: isPremium,
+                              );
+                              final fileName =
+                                  'Seafarer_Biodata_${profileState.profile.personalDetails.lastname}.docx';
 
-                            await FileSaveService.saveAndOpen(
-                              bytes: bytes,
-                              fileName: fileName,
-                            );
+                              await FileSaveService.saveAndOpen(
+                                bytes: bytes,
+                                fileName: fileName,
+                              );
+                            } on PremiumRequiredException {
+                              if (!context.mounted) return;
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: const Text(
+                                      'DOCX Export is a Pro feature. Please subscribe to unlock.'),
+                                  action: SnackBarAction(
+                                    label: 'Upgrade',
+                                    onPressed: () {
+                                      Navigator.pushNamed(
+                                          context, AppRoutes.subscription);
+                                    },
+                                  ),
+                                ),
+                              );
+                            }
                           } else {
-                            // Show premium message or navigate to subscription screen
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: const Text(
@@ -123,12 +139,13 @@ class HomePage extends StatelessWidget {
                         }
                       },
                       child: SvgPicture.asset(
-                        'assets/icons/file_doc.svg', // Using a generic doc icon for now
-                        color: ((subscriptionState is SubscriptionActive) ||
-                            (profileState is ProfileLoaded &&
-                                profileState.profile.isPremiumPaid))
-                            ? AppColors.appScaffold
-                            : Colors.grey,
+                        'assets/icons/file_doc.svg',
+                        colorFilter: ColorFilter.mode(
+                          (subscriptionState is SubscriptionActive)
+                              ? AppColors.appScaffold
+                              : Colors.grey,
+                          BlendMode.srcIn,
+                        ),
                       ),
                     ),
                   );
@@ -138,27 +155,21 @@ class HomePage extends StatelessWidget {
           ),
           BlocBuilder<SubscriptionBloc, SubscriptionState>(
             builder: (context, subscriptionState) {
-              return BlocBuilder<ProfileBloc, ProfileState>(
-                builder: (context, profileState) {
-                  final isPremium = subscriptionState is SubscriptionActive ||
-                      (profileState is ProfileLoaded &&
-                          profileState.profile.isPremiumPaid);
-                  if (!isPremium) return const SizedBox.shrink();
+              final isPremium = subscriptionState is SubscriptionActive;
+              if (!isPremium) return const SizedBox.shrink();
 
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 16.0),
-                    child: InkWell(
-                      onTap: () async {
-                        await RevenueCatUI.presentCustomerCenter();
-                        if (context.mounted) {
-                          context.read<SubscriptionBloc>().add(FetchPlans());
-                        }
-                      },
-                      child: const Icon(Icons.workspace_premium,
-                          color: Colors.amber),
-                    ),
-                  );
-                },
+              return Padding(
+                padding: const EdgeInsets.only(right: 16.0),
+                child: InkWell(
+                  onTap: () async {
+                    await RevenueCatUI.presentCustomerCenter();
+                    if (context.mounted) {
+                      context.read<SubscriptionBloc>().add(FetchPlans());
+                    }
+                  },
+                  child: const Icon(Icons.workspace_premium,
+                      color: Colors.amber),
+                ),
               );
             },
           ),

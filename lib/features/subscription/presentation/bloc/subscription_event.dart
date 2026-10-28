@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 import '../../data/models/subscription_package.dart';
 
 abstract class SubscriptionEvent extends Equatable {
@@ -20,3 +21,14 @@ class PurchasePlan extends SubscriptionEvent {
 }
 
 class RestorePurchase extends SubscriptionEvent {}
+
+class ResetSubscriptionState extends SubscriptionEvent {}
+
+class CustomerInfoUpdated extends SubscriptionEvent {
+  final CustomerInfo customerInfo;
+
+  const CustomerInfoUpdated(this.customerInfo);
+
+  @override
+  List<Object?> get props => [customerInfo];
+}

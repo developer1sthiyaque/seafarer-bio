@@ -1,32 +1,36 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
+import 'package:seafarer_bio_data/core/config/environment.dart';
+import 'package:seafarer_bio_data/core/constants/payment_constants.dart';
 import '../../domain/entities/subscription_status.dart';
 import '../../domain/repositories/i_subscription_repository.dart';
 
 class SubscriptionRepositoryImpl implements ISubscriptionRepository {
-  static const String _entitlementId = 'pro'; // Default entitlement ID
-
   @override
   Future<void> initialize() async {
-    // Note: These are placeholder keys. The user should replace them with actual RevenueCat API keys.
-    String apiKey = Platform.isAndroid
-        ? 'goog_placeholder_android_key'
-        : 'appl_placeholder_ios_key';
+    final apiKey = Environment.instance.revenueCatApiKey;
+    if (apiKey.isEmpty) {
+      debugPrint('⚠️ RevenueCat API key is not set in environment file.');
+      return;
+    }
 
-    await Purchases.setLogLevel(LogLevel.debug);
-    PurchasesConfiguration configuration = PurchasesConfiguration(apiKey);
-    await Purchases.configure(configuration);
+    if (Platform.isAndroid || Platform.isIOS) {
+      await Purchases.setLogLevel(LogLevel.debug);
+      final configuration = PurchasesConfiguration(apiKey);
+      await Purchases.configure(configuration);
+    }
   }
 
   @override
   Future<SubscriptionStatus> getSubscriptionStatus() async {
     try {
-      CustomerInfo customerInfo = await Purchases.getCustomerInfo();
-      EntitlementInfo? entitlement =
-          customerInfo.entitlements.all[_entitlementId];
+      final customerInfo = await Purchases.getCustomerInfo();
+      final entitlement = customerInfo
+          .entitlements.active[PaymentConstants.kProEntitlementId];
 
-      bool isPremium = entitlement?.isActive ?? false;
-      DateTime? expiryDate = entitlement?.expirationDate != null
+      final isPremium = entitlement?.isActive ?? false;
+      final expiryDate = entitlement?.expirationDate != null
           ? DateTime.parse(entitlement!.expirationDate!)
           : null;
 
@@ -42,10 +46,12 @@ class SubscriptionRepositoryImpl implements ISubscriptionRepository {
   @override
   Future<List<SubscriptionPlan>> getOfferings() async {
     try {
-      Offerings offerings = await Purchases.getOfferings();
-      if (offerings.current != null &&
-          offerings.current!.availablePackages.isNotEmpty) {
-        return offerings.current!.availablePackages.map((package) {
+      final offerings = await Purchases.getOfferings();
+      final offering = offerings.getOffering(PaymentConstants.kOfferingId) ??
+          offerings.current;
+
+      if (offering != null && offering.availablePackages.isNotEmpty) {
+        return offering.availablePackages.map((package) {
           final product = package.storeProduct;
           return SubscriptionPlan(
             id: package.identifier,
@@ -58,7 +64,7 @@ class SubscriptionRepositoryImpl implements ISubscriptionRepository {
         }).toList();
       }
     } catch (e) {
-      // Handle error
+      debugPrint('Error fetching offerings in repository: $e');
     }
     return [];
   }
@@ -66,22 +72,24 @@ class SubscriptionRepositoryImpl implements ISubscriptionRepository {
   @override
   Future<SubscriptionStatus> purchasePlan(SubscriptionPlan plan) async {
     try {
-      // We need the original Package object to perform the purchase.
-      // Since our domain entity only has limited info, we fetch offerings again to find the matching package.
-      Offerings offerings = await Purchases.getOfferings();
+      final offerings = await Purchases.getOfferings();
+      final offering = offerings.getOffering(PaymentConstants.kOfferingId) ??
+          offerings.current;
       Package? packageToPurchase;
 
-      if (offerings.current != null) {
-        packageToPurchase = offerings.current!.availablePackages.firstWhere(
+      if (offering != null) {
+        packageToPurchase = offering.availablePackages.firstWhere(
           (p) => p.identifier == plan.id,
         );
       }
 
       if (packageToPurchase != null) {
-        final result = await Purchases.purchasePackage(packageToPurchase);
+        final result = await Purchases.purchase(
+          PurchaseParams.package(packageToPurchase),
+        );
         final customerInfo = result.customerInfo;
-        EntitlementInfo? entitlement =
-            customerInfo.entitlements.all[_entitlementId];
+        final entitlement = customerInfo
+            .entitlements.active[PaymentConstants.kProEntitlementId];
 
         return SubscriptionStatus(
           isPremium: entitlement?.isActive ?? false,
@@ -91,7 +99,7 @@ class SubscriptionRepositoryImpl implements ISubscriptionRepository {
         );
       }
     } catch (e) {
-      // Handle error or user cancellation
+      debugPrint('Error purchasing plan in repository: $e');
     }
     return await getSubscriptionStatus();
   }
@@ -99,9 +107,9 @@ class SubscriptionRepositoryImpl implements ISubscriptionRepository {
   @override
   Future<SubscriptionStatus> restorePurchases() async {
     try {
-      CustomerInfo customerInfo = await Purchases.restorePurchases();
-      EntitlementInfo? entitlement =
-          customerInfo.entitlements.all[_entitlementId];
+      final customerInfo = await Purchases.restorePurchases();
+      final entitlement = customerInfo
+          .entitlements.active[PaymentConstants.kProEntitlementId];
 
       return SubscriptionStatus(
         isPremium: entitlement?.isActive ?? false,

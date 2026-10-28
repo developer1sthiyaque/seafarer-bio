@@ -1,0 +1,40 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Protected entitlement fields that can only be set via the Admin SDK (e.g. RevenueCat webhook)
+    function hasNoProtectedFields(data) {
+      return !('isPremium' in data) &&
+             !('premiumExpiresAt' in data) &&
+             !('premiumProductId' in data) &&
+             !('premiumUpdatedAt' in data);
+    }
+
+    function doesNotModifyProtectedFields() {
+      return !request.resource.data.diff(resource.data).affectedKeys()
+        .hasAny(['isPremium', 'premiumExpiresAt', 'premiumProductId', 'premiumUpdatedAt']);
+    }
+
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) && hasNoProtectedFields(request.resource.data);
+      allow update: if isOwner(userId) && doesNotModifyProtectedFields();
+      allow delete: if isOwner(userId);
+    }
+
+    match /profiles/{userId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) && hasNoProtectedFields(request.resource.data);
+      allow update: if isOwner(userId) && doesNotModifyProtectedFields();
+      allow delete: if isOwner(userId);
+    }
+  }
+}

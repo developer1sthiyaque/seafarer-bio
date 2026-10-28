@@ -43,6 +43,8 @@ Future<void> setupLocator() async {
         signUpUseCase: sl(),
         signOutUseCase: sl(),
         authRepository: sl(),
+        revenueCatService: sl(),
+        subscriptionBloc: sl.isRegistered<SubscriptionBloc>() ? sl() : null,
       ));
 
   // Personal Details Feature
@@ -60,5 +62,5 @@ Future<void> setupLocator() async {
       ));
 
   // Subscription Feature
-  sl.registerFactory(() => SubscriptionBloc(revenueCatService: sl()));
+  sl.registerLazySingleton(() => SubscriptionBloc(revenueCatService: sl()));
 }

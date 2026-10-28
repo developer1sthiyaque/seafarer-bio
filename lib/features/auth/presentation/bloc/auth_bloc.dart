@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:seafarer_bio_data/core/services/revenuecat_service.dart';
 import 'package:seafarer_bio_data/core/utils/shared_preferences.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -10,6 +11,8 @@ import 'package:seafarer_bio_data/features/auth/domain/usecases/sign_in.dart';
 import 'package:seafarer_bio_data/features/auth/domain/usecases/sign_up.dart';
 import 'package:seafarer_bio_data/features/auth/domain/usecases/sign_out.dart';
 import 'package:seafarer_bio_data/features/auth/domain/repositories/auth_repository.dart';
+import 'package:seafarer_bio_data/features/subscription/presentation/bloc/subscription_bloc.dart';
+import 'package:seafarer_bio_data/features/subscription/presentation/bloc/subscription_event.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
@@ -19,6 +22,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final SignUpUseCase _signUpUseCase;
   final SignOutUseCase _signOutUseCase;
   final AuthRepository _authRepository;
+  final RevenueCatService? _revenueCatService;
+  final SubscriptionBloc? _subscriptionBloc;
 
   late StreamSubscription<User?> _userSubscription;
   bool _isPasswordObscured = true;
@@ -28,10 +33,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     required SignUpUseCase signUpUseCase,
     required SignOutUseCase signOutUseCase,
     required AuthRepository authRepository,
+    RevenueCatService? revenueCatService,
+    SubscriptionBloc? subscriptionBloc,
   })  : _signInUseCase = signInUseCase,
         _signUpUseCase = signUpUseCase,
         _signOutUseCase = signOutUseCase,
         _authRepository = authRepository,
+        _revenueCatService = revenueCatService,
+        _subscriptionBloc = subscriptionBloc,
         super(AuthInitial()) {
     on<SignInEvent>(_onSignInEvent);
     on<SignUpEvent>(_onSignUpEvent);
@@ -52,19 +61,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (user != null) {
         await PreferenceService.setUserId(user.uid);
         await PreferenceService.setLoggedIn(true);
+        await _revenueCatService?.logIn(user.uid);
         emit(Authenticated(user));
       } else {
         emit(const AuthError('Sign In Failed'));
       }
     } on FirebaseAuthException catch (e) {
-      switch(e){
-        case FirebaseAuthException(code: 'user-not-found'):
-          emit(const AuthError('User not found,please register'));
+      switch (e.code) {
+        case 'user-not-found':
+          emit(const AuthError('User not found, please register'));
           break;
-          case FirebaseAuthException(code: 'wrong-password'):
+        case 'wrong-password':
           emit(const AuthError('Wrong password'));
           break;
-          case FirebaseAuthException(code: 'invalid-email'):
+        case 'invalid-email':
           emit(const AuthError('Invalid email'));
           break;
         default:
@@ -79,7 +89,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       SignUpEvent event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
     try {
-      final user = await _signUpUseCase(event.firstname,event.lastname,event.email, event.password);
+      final user = await _signUpUseCase(
+          event.firstname, event.lastname, event.email, event.password);
       if (user != null) {
         await PreferenceService.setUserId(user.uid);
         await PreferenceService.setLoggedIn(false);
@@ -88,18 +99,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(const AuthError('Sign Up Failed'));
       }
     } on FirebaseAuthException catch (e) {
-      switch(e){
-        case FirebaseAuthException(code: 'email-already-in-use'):
+      switch (e.code) {
+        case 'email-already-in-use':
           emit(const AuthError('Email already in use'));
           break;
-          case FirebaseAuthException(code: 'invalid-email'):
+        case 'invalid-email':
           emit(const AuthError('Invalid email'));
           break;
-          case FirebaseAuthException(code: 'weak-password'):
+        case 'weak-password':
           emit(const AuthError('Weak password'));
           break;
-          default:
-            emit(const AuthError('An unknown error occurred'));
+        default:
+          emit(const AuthError('An unknown error occurred'));
       }
     } catch (e) {
       log("Exception on signup:${e.toString()}");
@@ -116,40 +127,39 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       await PreferenceService.setLoggedIn(false);
       await PreferenceService.setProfileCompleted(false);
       await PreferenceService.setOnboardingCompleted(false);
+      await _revenueCatService?.logOut();
+      _subscriptionBloc?.add(ResetSubscriptionState());
       emit(Unauthenticated());
     } catch (e) {
       emit(AuthError(e.toString()));
     }
   }
 
-  void _onAuthStatusChanged(AuthStatusChanged event, Emitter<AuthState> emit) async {
+  void _onAuthStatusChanged(
+      AuthStatusChanged event, Emitter<AuthState> emit) async {
     if (event.user != null) {
+      await _revenueCatService?.logIn(event.user!.uid);
       emit(Authenticated(event.user!));
     } else {
       await PreferenceService.setUserId('');
       await PreferenceService.setLoggedIn(false);
       await PreferenceService.setProfileCompleted(false);
       await PreferenceService.setOnboardingCompleted(false);
+      await _revenueCatService?.logOut();
+      _subscriptionBloc?.add(ResetSubscriptionState());
       emit(Unauthenticated());
     }
   }
 
-
+  void _onTogglePasswordVisibility(
+      TogglePasswordVisibility event, Emitter<AuthState> emit) {
+    _isPasswordObscured = !_isPasswordObscured;
+    emit(AuthPasswordVisibilityChanged(_isPasswordObscured));
+  }
 
   @override
   Future<void> close() {
     _userSubscription.cancel();
     return super.close();
-  }
-
-  void _onTogglePasswordVisibility(
-      TogglePasswordVisibility event,
-      Emitter<AuthState> emit,
-      ) {
-    _isPasswordObscured = !_isPasswordObscured;
-
-    emit(AuthPasswordObscuredState(
-      isPasswordObscured: _isPasswordObscured,
-    ));
   }
 }

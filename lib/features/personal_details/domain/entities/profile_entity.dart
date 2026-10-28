@@ -292,7 +292,6 @@ class Profile extends Equatable {
       'courses': courses.map((course) => course.toFirestore()).toList(),
       'seaExperiences': seaExperiences.map((exp) => exp.toFirestore()).toList(),
       'isProfileCompleted': isProfileCompleted,
-      'isPremium': isPremiumPaid,
     };
   }
 
