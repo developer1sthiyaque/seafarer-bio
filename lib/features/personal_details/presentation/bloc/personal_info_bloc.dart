@@ -3,6 +3,7 @@ import 'package:seafarer_bio_data/features/personal_details/domain/entities/prof
 import 'package:seafarer_bio_data/features/personal_details/presentation/bloc/personal_info_event.dart';
 import 'package:seafarer_bio_data/features/personal_details/presentation/bloc/personal_info_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../domain/usecases/get_profile.dart';
 import '../../domain/usecases/save_profile.dart';
 import '../../domain/usecases/update_profile.dart';
@@ -28,7 +29,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<UpdateSeaExperienceEvent>(_onUpdateSeaExperience);
     // on<CompleteProfile>(_onCompleteProfile);
     on<UpdateFullProfileEvent>(_onUpdateFullProfile);
+    on<SyncSubscriptionStatusEvent>(_onSyncSubscriptionStatus);
   }
+
 
   void _onLoadProfile(LoadProfile event, Emitter<ProfileState> emit) async {
     emit(ProfileLoading());
@@ -190,9 +193,36 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     }
   }
 
+  Future<void> _onSyncSubscriptionStatus(
+    SyncSubscriptionStatusEvent event,
+    Emitter<ProfileState> emit,
+  ) async {
+    if (state is ProfileLoaded) {
+      final currentProfile = (state as ProfileLoaded).profile;
+      if (currentProfile.isPremiumPaid != event.isPremium) {
+        emit(ProfileLoaded(
+          currentProfile.copyWith(isPremium: event.isPremium),
+        ));
+      }
+    }
+
+    try {
+      if (event.userId.isNotEmpty) {
+        await FirebaseFirestore.instance
+            .collection('profiles')
+            .doc(event.userId)
+            .set({'isPremium': event.isPremium}, SetOptions(merge: true));
+      }
+    } catch (e) {
+      // In production, isPremium writes from clients are blocked by firestore.rules
+      // and managed via RevenueCat webhooks. Catch gracefully so local state remains correct.
+    }
+  }
+
   @override
   Future<void> close() {
     _profileSubscription?.cancel();
     return super.close();
   }
 }
+

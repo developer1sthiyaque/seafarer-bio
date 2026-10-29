@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import '../../data/models/subscription_package.dart';
+import '../../data/models/subscription_status_details.dart';
 
 abstract class SubscriptionState extends Equatable {
   const SubscriptionState();
@@ -23,12 +24,14 @@ class PlansLoaded extends SubscriptionState {
 
 class SubscriptionActive extends SubscriptionState {
   final SubscriptionPackage plan;
+  final SubscriptionStatusDetails? details;
 
-  const SubscriptionActive(this.plan);
+  const SubscriptionActive(this.plan, {this.details});
 
   @override
-  List<Object?> get props => [plan];
+  List<Object?> get props => [plan, details];
 }
+
 
 class SubscriptionError extends SubscriptionState {
   final String message;

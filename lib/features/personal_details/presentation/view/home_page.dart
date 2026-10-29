@@ -22,6 +22,7 @@ import 'package:seafarer_bio_data/widgets/app_text_with_label.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:seafarer_bio_data/features/personal_details/presentation/widgets/profile_subscription_card.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -81,8 +82,8 @@ class HomePage extends StatelessWidget {
                     child: InkWell(
                       onTap: () async {
                         if (profileState is ProfileLoaded) {
-                          bool isPremium = (subscriptionState is SubscriptionActive) ||
-                              (profileState.profile.isPremiumPaid == true);
+                          bool isPremium =
+                              subscriptionState is SubscriptionActive;
 
                           // Directly check active entitlements via RevenueCat SDK
                           if (!isPremium &&
@@ -262,7 +263,9 @@ class HomePage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // ProfileSubscriptionCard(profile: profile),
                   // --- PERSONAL INFORMATION SECTION ---
+
                   Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,

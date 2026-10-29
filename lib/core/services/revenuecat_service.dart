@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:seafarer_bio_data/core/config/environment.dart';
 import 'package:seafarer_bio_data/core/constants/payment_constants.dart';
+import 'package:seafarer_bio_data/features/subscription/data/models/subscription_status_details.dart';
 
 class RevenueCatService {
   bool _isConfigured = false;
@@ -82,6 +83,12 @@ class RevenueCatService {
       return null;
     }
   }
+
+  Future<SubscriptionStatusDetails> getSubscriptionDetails() async {
+    final customerInfo = await getCustomerInfo();
+    return SubscriptionStatusDetails.fromCustomerInfo(customerInfo);
+  }
+
 
   Future<CustomerInfo?> purchasePackage(Package package) async {
     final purchaseResult = await Purchases.purchase(

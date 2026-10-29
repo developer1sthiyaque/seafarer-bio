@@ -48,3 +48,14 @@ class UpdateFullProfileEvent extends ProfileEvent {
     this.seaExperiences,
   });
 }
+
+class SyncSubscriptionStatusEvent extends ProfileEvent {
+  final bool isPremium;
+  final String userId;
+
+  SyncSubscriptionStatusEvent({
+    required this.isPremium,
+    required this.userId,
+  });
+}
+
