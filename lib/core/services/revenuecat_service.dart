@@ -103,10 +103,13 @@ class RevenueCatService {
 
   bool isProSubscriber(CustomerInfo? customerInfo) {
     if (customerInfo == null) return false;
-    final activeEntitlement =
-        customerInfo.entitlements.active[PaymentConstants.kProEntitlementId];
+    final active = customerInfo.entitlements.active;
+    final activeEntitlement = active[PaymentConstants.kProEntitlementId] ??
+        active['seafarer_pro'] ??
+        active['pro'];
     return activeEntitlement?.isActive == true;
   }
+
 
   Future<List<Package>> getOfferings() async {
     try {

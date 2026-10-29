@@ -26,10 +26,14 @@ class SubscriptionRepositoryImpl implements ISubscriptionRepository {
   Future<SubscriptionStatus> getSubscriptionStatus() async {
     try {
       final customerInfo = await Purchases.getCustomerInfo();
+      // 1. Inspect all active entitlements
+      print("Active entitlements: ${customerInfo.entitlements.active.keys.toList()}");
       final entitlement = customerInfo
           .entitlements.active[PaymentConstants.kProEntitlementId];
 
       final isPremium = entitlement?.isActive ?? false;
+
+      print("Is Pro Active: $isPremium");
       final expiryDate = entitlement?.expirationDate != null
           ? DateTime.parse(entitlement!.expirationDate!)
           : null;

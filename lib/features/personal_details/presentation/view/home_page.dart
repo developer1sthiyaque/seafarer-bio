@@ -12,6 +12,8 @@ import 'package:seafarer_bio_data/features/auth/presentation/bloc/auth_bloc.dart
 import 'package:seafarer_bio_data/features/personal_details/presentation/bloc/personal_info_bloc.dart';
 import 'package:seafarer_bio_data/features/personal_details/presentation/bloc/personal_info_event.dart';
 import 'package:seafarer_bio_data/features/personal_details/presentation/bloc/personal_info_state.dart';
+import 'package:seafarer_bio_data/core/di/injection_container.dart';
+import 'package:seafarer_bio_data/core/services/revenuecat_service.dart';
 import 'package:seafarer_bio_data/features/subscription/presentation/bloc/subscription_bloc.dart';
 import 'package:seafarer_bio_data/features/subscription/presentation/bloc/subscription_event.dart';
 import 'package:seafarer_bio_data/features/subscription/presentation/bloc/subscription_state.dart';
@@ -79,10 +81,33 @@ class HomePage extends StatelessWidget {
                     child: InkWell(
                       onTap: () async {
                         if (profileState is ProfileLoaded) {
-                          final isPremium =
-                              subscriptionState is SubscriptionActive;
+                          bool isPremium = (subscriptionState is SubscriptionActive) ||
+                              (profileState.profile.isPremiumPaid == true);
+
+                          // Directly check active entitlements via RevenueCat SDK
+                          if (!isPremium &&
+                              sl.isRegistered<RevenueCatService>()) {
+                            try {
+                              final rcService = sl<RevenueCatService>();
+                              final customerInfo =
+                                  await rcService.getCustomerInfo();
+                              if (rcService.isProSubscriber(customerInfo)) {
+                                isPremium = true;
+                                if (context.mounted && customerInfo != null) {
+                                  context.read<SubscriptionBloc>().add(
+                                        CustomerInfoUpdated(customerInfo),
+                                      );
+                                }
+                              }
+                            } catch (e) {
+                              debugPrint(
+                                  'Error checking RevenueCat entitlements directly: $e');
+                            }
+                          }
+
 
                           if (isPremium) {
+                            if (!context.mounted) return;
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                   content: Text('Generating DOCX...')),
@@ -116,8 +141,15 @@ class HomePage extends StatelessWidget {
                                   ),
                                 ),
                               );
+                            } catch (e) {
+                              if (!context.mounted) return;
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    content: Text('Export failed: $e')),
+                              );
                             }
                           } else {
+                            if (!context.mounted) return;
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: const Text(
@@ -133,6 +165,7 @@ class HomePage extends StatelessWidget {
                             );
                           }
                         }
+
                       },
                       child: SvgPicture.asset(
                         'assets/icons/file_doc.svg',
