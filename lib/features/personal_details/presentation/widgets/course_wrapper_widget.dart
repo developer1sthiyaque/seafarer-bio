@@ -10,6 +10,7 @@ import 'package:seafarer_bio_data/widgets/app_text_view.dart';
 class CourseWrapperWidget extends StatelessWidget {
   final ProfileCourseControllerWrapper wrapper;
   final VoidCallback? onDelete;
+
   const CourseWrapperWidget({
     super.key,
     required this.wrapper,
@@ -18,108 +19,112 @@ class CourseWrapperWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment:
-      MainAxisAlignment
-          .spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: 8.0),
-          child: Row(
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: const Color(0xFFEAE6DF),
+          width: 1,
+        ),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x0A0B1F3A),
+            blurRadius: 10,
+            offset: Offset(0, 3),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              AppTextView(title: wrapper.name.capitalize(), textStyle:  const TextStyle(fontSize: 16,color: AppColors.appPrimary, fontWeight: FontWeight.w600),),
+              Row(
+                children: [
+                  Container(
+                    width: 4,
+                    height: 18,
+                    decoration: BoxDecoration(
+                      color: AppColors.secondary,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  AppTextView(
+                    title: wrapper.name.capitalize(),
+                    textStyle: const TextStyle(
+                      fontFamily: 'Playfair Display',
+                      fontSize: 16,
+                      color: AppColors.primaryContainer,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
               if (onDelete != null)
                 GestureDetector(
                   onTap: onDelete,
-                  child: const Icon(
-                    Icons.cancel, // or Icons.close
-                    color: Colors.redAccent,
-                    size: 22,
+                  child: const Padding(
+                    padding: EdgeInsets.all(4.0),
+                    child: Icon(
+                      Icons.cancel,
+                      color: Color(0xFFBA1A1A),
+                      size: 22,
+                    ),
                   ),
                 ),
             ],
           ),
-        ),
-        AppTextFormField(
-          controller: wrapper
-              .numberController,
-          width: MediaQuery
-              .sizeOf(
-              context)
-              .width,
-          label:
-          "${wrapper.name.capitalize()} Number",
-          hint:
-          "Enter ${wrapper.name} number",
-          textInputType: TextInputType.text,
-          textCapitalization: TextCapitalization.words,
-          validator: (value) => AppValidators.required(value,wrapper.name),
-        ),
-        AppDatePicker(
-          controller: wrapper
-              .expiryController,
-          width: MediaQuery
-              .sizeOf(
-              context)
-              .width,
-          label:
-          "${wrapper.name.capitalize()} Validity",
-          validator: (value) => AppValidators.required(value,'${wrapper.name.capitalize()} validity'),
-          firstDate:
-          DateTime(
-              1900),
-          lastDate:
-          DateTime(
-              2100),
-          onDateSelected:
-              (date) {
-            // You can format the date to string here as needed for your entity
-            wrapper.expiryController
-                .text =
-            "${date.day}/${date.month}/${date.year}";
-          },
-        ),
-        AppTextFormField(
-          controller: wrapper
-              .issuePlaceController,
-          width: MediaQuery
-              .sizeOf(
-              context)
-              .width,
-          label:
-          "${wrapper.name.capitalize()} Issued Place",
-          hint:
-          "Enter your ${wrapper.name} issued place",
-          validator: (value) => AppValidators.required(value,'${wrapper.name} issued Place'),
-        ),
-        AppDatePicker(
-          controller: wrapper
-              .issueDateController,
-          width: MediaQuery
-              .sizeOf(
-              context)
-              .width,
-          label:
-          "${wrapper.name.capitalize()} Issued Date",
-          validator: (value) => AppValidators.required(value,'${wrapper.name.capitalize()} issued date'),
-          firstDate:
-          DateTime(
-              1900),
-          lastDate:
-          DateTime(
-              2100),
-          onDateSelected:
-              (date) {
-            // You can format the date to string here as needed for your entity
-            wrapper.issueDateController
-                .text =
-            "${date.day}/${date.month}/${date.year}";
-          },
-        ),
-        SizedBox(height: 16,),
-      ],
+          const SizedBox(height: 12),
+          AppTextFormField(
+            controller: wrapper.numberController,
+            width: double.infinity,
+            label: "${wrapper.name.capitalize()} Number",
+            hint: "Enter ${wrapper.name} number",
+            textInputType: TextInputType.text,
+            textCapitalization: TextCapitalization.words,
+            validator: (value) => AppValidators.required(value, wrapper.name),
+          ),
+          AppDatePicker(
+            controller: wrapper.expiryController,
+            width: double.infinity,
+            label: "${wrapper.name.capitalize()} Validity",
+            validator: (value) => AppValidators.required(
+                value, '${wrapper.name.capitalize()} validity'),
+            firstDate: DateTime(1900),
+            lastDate: DateTime(2100),
+            onDateSelected: (date) {
+              wrapper.expiryController.text =
+                  "${date.day}/${date.month}/${date.year}";
+            },
+          ),
+          AppTextFormField(
+            controller: wrapper.issuePlaceController,
+            width: double.infinity,
+            label: "${wrapper.name.capitalize()} Issued Place",
+            hint: "Enter your ${wrapper.name} issued place",
+            validator: (value) =>
+                AppValidators.required(value, '${wrapper.name} issued Place'),
+          ),
+          AppDatePicker(
+            controller: wrapper.issueDateController,
+            width: double.infinity,
+            label: "${wrapper.name.capitalize()} Issued Date",
+            validator: (value) => AppValidators.required(
+                value, '${wrapper.name.capitalize()} issued date'),
+            firstDate: DateTime(1900),
+            lastDate: DateTime(2100),
+            onDateSelected: (date) {
+              wrapper.issueDateController.text =
+                  "${date.day}/${date.month}/${date.year}";
+            },
+          ),
+        ],
+      ),
     );
   }
 }

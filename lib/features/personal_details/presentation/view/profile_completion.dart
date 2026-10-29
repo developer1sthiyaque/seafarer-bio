@@ -1,23 +1,24 @@
 import 'dart:developer';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:seafarer_bio_data/core/constants/app_colors.dart';
 import 'package:seafarer_bio_data/core/constants/app_routes.dart';
 import 'package:seafarer_bio_data/core/utils/app_validators.dart';
 import 'package:seafarer_bio_data/core/utils/shared_preferences.dart';
-import 'package:seafarer_bio_data/core/utils/string_extensions.dart';
 import 'package:seafarer_bio_data/features/personal_details/domain/entities/profile_controller_wrapper.dart';
 import 'package:seafarer_bio_data/features/personal_details/domain/entities/profile_course_controller_wrapper.dart';
 import 'package:seafarer_bio_data/features/personal_details/domain/entities/profile_entity.dart';
 import 'package:seafarer_bio_data/features/personal_details/presentation/bloc/personal_info_bloc.dart';
 import 'package:seafarer_bio_data/features/personal_details/presentation/bloc/personal_info_event.dart';
 import 'package:seafarer_bio_data/features/personal_details/presentation/bloc/personal_info_state.dart';
+import 'package:seafarer_bio_data/features/personal_details/presentation/widgets/course_wrapper_widget.dart';
+import 'package:seafarer_bio_data/features/personal_details/presentation/widgets/document_wrapper_widget.dart';
 import 'package:seafarer_bio_data/widgets/app_button.dart';
 import 'package:seafarer_bio_data/widgets/app_date_picker.dart';
 import 'package:seafarer_bio_data/widgets/app_text_form_field.dart';
 import 'package:seafarer_bio_data/widgets/app_text_view.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:step_progress/step_progress.dart';
 
 class ProfileCompletion extends StatefulWidget {
@@ -31,26 +32,13 @@ class _ProfileCompletionState extends State<ProfileCompletion> {
   final _form1Key = GlobalKey<FormState>();
   final _form2Key = GlobalKey<FormState>();
   final _form3Key = GlobalKey<FormState>();
+
   final TextEditingController _firstNameTextController = TextEditingController();
   final TextEditingController _lastNameTextController = TextEditingController();
   final TextEditingController _dobTextController = TextEditingController();
-  final TextEditingController _nationalityTextController =
-      TextEditingController();
+  final TextEditingController _nationalityTextController = TextEditingController();
   final TextEditingController _postTextController = TextEditingController();
-  final TextEditingController _fatherNameTextController =
-      TextEditingController();
-  //DOCUMENT
-
-  final TextEditingController _passportTextController = TextEditingController();
-  final TextEditingController _passportExpiryTextController =
-      TextEditingController();
-  final TextEditingController _cdcTextController = TextEditingController();
-  final TextEditingController _cdcExpiryTextController =
-      TextEditingController();
-  final TextEditingController _visaTextController = TextEditingController();
-  final TextEditingController _visaExpiryTextController =
-      TextEditingController();
-  //CERTIFICATE
+  final TextEditingController _fatherNameTextController = TextEditingController();
 
   final PageController _controller = PageController(initialPage: 0);
   final StepProgressController _stepProgressController = StepProgressController(
@@ -58,56 +46,44 @@ class _ProfileCompletionState extends State<ProfileCompletion> {
   );
   final ScrollController _scrollController = ScrollController();
   final FocusNode _postFocusNode = FocusNode();
-// Repeat for other fields if needed
+
   int currentStep = 0;
   int _currentPage = 0;
-  Set<String> selectedLanguages = {"English"};
-  List<String> languageList = [
-    "English",
-    "Hindi",
-    "Malayalam",
-    "Tamil",
-    "Telugu",
-    "Kannada",
-    "Punjabi",
-    "Marathi",
-    "Bengali",
-    "Odia",
-    "Urdu",
-    "Spanish",
-    "Japanese",
-    "Chinese",
-    "Arabic",
-    "Portuguese",
-    "Russian",
-    "Korean"
-  ];
 
   final List<ProfileControllerWrapper> _docWrappers = [];
   final List<ProfileCourseControllerWrapper> _certificateWrapperList = [];
+
+  static const List<String> _stepNames = [
+    'Personal Information',
+    'Documents',
+    'Courses',
+  ];
+
   @override
   void initState() {
     super.initState();
     _postFocusNode.addListener(() {
       if (_postFocusNode.hasFocus) {
-        // Wait a tiny bit for the keyboard to fully pop up
         Future.delayed(const Duration(milliseconds: 300), () {
-          _scrollController.animateTo(
-            _scrollController.position.maxScrollExtent, // Or a specific offset
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeOut,
-          );
+          if (_scrollController.hasClients) {
+            _scrollController.animateTo(
+              _scrollController.position.maxScrollExtent,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeOut,
+            );
+          }
         });
       }
     });
-    _controller.addListener(() {
-      setState(() {
-        _currentPage = _controller.page!.toInt();
-      });
-    });
-    log("CURRENT STEP ON INIT:$currentStep");
-    log("CURRENT PAGE ON INIT:$_currentPage");
 
+    _controller.addListener(() {
+      final page = _controller.page?.round() ?? 0;
+      if (page != _currentPage && mounted) {
+        setState(() {
+          _currentPage = page;
+        });
+      }
+    });
   }
 
   @override
@@ -118,12 +94,6 @@ class _ProfileCompletionState extends State<ProfileCompletion> {
     _nationalityTextController.dispose();
     _postTextController.dispose();
     _fatherNameTextController.dispose();
-    _passportTextController.dispose();
-    _passportExpiryTextController.dispose();
-    _cdcTextController.dispose();
-    _cdcExpiryTextController.dispose();
-    _visaTextController.dispose();
-    _visaExpiryTextController.dispose();
     _controller.dispose();
     _scrollController.dispose();
     _postFocusNode.dispose();
@@ -137,23 +107,24 @@ class _ProfileCompletionState extends State<ProfileCompletion> {
   }
 
   void bindData(Profile profile) {
-    _firstNameTextController.text=profile.personalDetails.firstname;
-    _lastNameTextController.text=profile.personalDetails.lastname;
-    setState(() {
-
-    });
+    _firstNameTextController.text = profile.personalDetails.firstname;
+    _lastNameTextController.text = profile.personalDetails.lastname;
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   void _addNewDocument(String title, String name) {
+    if (name.trim().isEmpty) return;
     switch (title) {
       case "Documents":
         setState(() {
-          _docWrappers.add(ProfileControllerWrapper(name: name));
+          _docWrappers.add(ProfileControllerWrapper(name: name.trim()));
         });
         break;
       case "Courses":
         setState(() {
-          _certificateWrapperList.add(ProfileCourseControllerWrapper(name: name));
+          _certificateWrapperList.add(ProfileCourseControllerWrapper(name: name.trim()));
         });
         break;
     }
@@ -162,471 +133,551 @@ class _ProfileCompletionState extends State<ProfileCompletion> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocListener<ProfileBloc, ProfileState>(
-        listener: (context, state) async {
-          if(state is CertificateUpdateSuccess){
-            await PreferenceService.setProfileCompleted(true);
-            if(context.mounted) {
-              Navigator.pushNamedAndRemoveUntil(context, AppRoutes.home, (_) => false,);
-              context.read<ProfileBloc>().add(
-              LoadProfile(PreferenceService.userId.toString()),
-            );
+      backgroundColor: AppColors.surface,
+      body: SafeArea(
+        child: BlocListener<ProfileBloc, ProfileState>(
+          listener: (context, state) async {
+            if (state is CertificateUpdateSuccess) {
+              await PreferenceService.setProfileCompleted(true);
+              if (context.mounted) {
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  AppRoutes.home,
+                  (_) => false,
+                );
+                context.read<ProfileBloc>().add(
+                      LoadProfile(PreferenceService.userId.toString()),
+                    );
+              }
             }
-          }
-          log("LOG STATE IS :$state");
-          if (state is PersonalDetailsUpdateSuccess ||
-              state is DocumentsUpdateSuccess) {
-            if (_controller.hasClients) {
-              _controller.nextPage(
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeIn,
-              );
-              // _controller.animateToPage(
-              //   nextTarget,
-              //   duration: const Duration(milliseconds: 300),
-              //   curve: Curves.easeIn,
-              // );
-            }
-          }
 
-          if(state is ProfileLoaded){
-            bindData(state.profile);
-          }
-        },
-        child: BlocBuilder<ProfileBloc, ProfileState>(
-          builder: (context, state) {
-            if (state is ProfileLoaded ||
-                state is DocumentsUpdateSuccess ||
-                state is PersonalDetailsUpdateSuccess ||
-                state is CertificateUpdateSuccess ||
-                state is ProfileLoading) {
-              return Stack(
-                children: [
-                  // Main Content (PageView) - Always stays in the tree
-                  Opacity(
-                    opacity: state is ProfileLoading
-                        ? 0.5
-                        : 1.0, // Dim while loading
-                    child: IgnorePointer(
-                      ignoring: state is ProfileLoading, // Prevent double taps
-                      child: PageView.builder(
-                        controller: _controller,
-                        itemCount: 3,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemBuilder: (context, index) => Container(
-                          margin: EdgeInsets.only(top: 120, bottom: 0),
-                          height: MediaQuery.sizeOf(context).height,
-                          width: double.maxFinite,
-                          decoration: BoxDecoration(
-                            // color: index==0?Colors.indigo.shade200:index==1?Colors.red.shade200:Colors.green.shade200,
-                            borderRadius: BorderRadius.circular(12),
+            if (state is PersonalDetailsUpdateSuccess ||
+                state is DocumentsUpdateSuccess) {
+              if (_controller.hasClients) {
+                _controller.nextPage(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeIn,
+                );
+              }
+            }
+
+            if (state is ProfileLoaded) {
+              bindData(state.profile);
+            }
+          },
+          child: BlocBuilder<ProfileBloc, ProfileState>(
+            builder: (context, state) {
+              if (state is ProfileLoaded ||
+                  state is DocumentsUpdateSuccess ||
+                  state is PersonalDetailsUpdateSuccess ||
+                  state is CertificateUpdateSuccess ||
+                  state is ProfileLoading) {
+                return Stack(
+                  children: [
+                    Column(
+                      children: [
+                        // --- Header Area ---
+                        Container(
+                          padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
+                          decoration: const BoxDecoration(
+                            color: AppColors.surface,
                           ),
-                          child: SingleChildScrollView(
-                            physics: const AlwaysScrollableScrollPhysics(),
-                            padding: const EdgeInsets.only(left: 16.0,right: 16.0,bottom: 70),
-                            child: index == 0
-                                ? Form(
-                                  key: _form1Key,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.start,
-                                    children: [
-                                      AppTextView(
-                                        title: "Personal Information",textStyle: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                          color: AppColors.appPrimary,
-                                          letterSpacing: 0.5
-                                      ),),
-                                      SizedBox(
-                                        height: 16,
-                                      ),
-                                      AppTextFormField(
-                                        label: "First Name",
-                                        hint: "enter your first name",
-                                        textCapitalization: TextCapitalization.sentences,
-                                        textInputAction: TextInputAction.next,
-                                        controller: _firstNameTextController,
-                                        validator: (value) =>
-                                            AppValidators.name(value),
-                                      ),
-                                      AppTextFormField(
-                                        label: "Last ame",
-                                        hint: "enter your last name",
-                                        textCapitalization: TextCapitalization.sentences,
-                                        textInputAction: TextInputAction.next,
-                                        controller: _lastNameTextController,
-                                        validator: (value) =>
-                                            AppValidators.name(value),
-                                      ),
-                                      AppTextFormField(
-                                        label: "Post Applied For",
-                                        hint: "enter your post",
-                                        textCapitalization: TextCapitalization.sentences,
-                                        textInputAction: TextInputAction.next,
-                                        controller: _postTextController,
-                                        validator: (value) =>
-                                            AppValidators.post(value),
-                                      ),
-                                      AppTextFormField(
-                                        label: "Father's Name",
-                                        hint: "enter your father's name",
-                                        textCapitalization: TextCapitalization.sentences,
-                                        textInputAction: TextInputAction.next,
-                                        controller:
-                                        _fatherNameTextController,
-                                        validator: (value) =>
-                                            AppValidators.name(value),
-                                      ),
-                                      AppDatePicker(
-                                        controller: _dobTextController,
-                                        width: MediaQuery
-                                            .sizeOf(
-                                            context)
-                                            .width,
-                                        label:
-                                        "Date of Birth",
-                                        firstDate:
-                                        DateTime(
-                                            1900),
-                                        lastDate:
-                                        DateTime(
-                                            2003),
-                                        onDateSelected: (date) {
-                                          // You can format the date to string here as needed for your entity
-                                          _dobTextController
-                                              .text =
-                                          "${date.day}/${date.month}/${date.year}";
-                                        },
-                                        validator: (value) => AppValidators.dob(value),
-                                      ),
-                                      // AppTextFormField(
-                                      //   label: "Date of Birth",
-                                      //   hint: "enter your dob",
-                                      //   controller: _dobTextController,
-                                      //   validator: (value) =>
-                                      //       AppValidators.dob(value),
-                                      // ),
-                                      AppTextFormField(
-                                        label: "Nationality",
-                                        hint: "enter you nationality",
-                                        textCapitalization: TextCapitalization.sentences,
-                                        textInputAction: TextInputAction.next,
-                                        controller:
-                                        _nationalityTextController,
-                                        validator: (value) =>
-                                            AppValidators.name(value),
-                                      ),
-                                      /* Wrap(
-                                              children: languageList
-                                                  .map((String lang) {
-                                                return Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(4.0),
-                                                  child: ChoiceChip(
-                                                    label: Text(
-                                                        lang), // Wrap the string in a Text widget
-                                                    selected: selectedLanguages
-                                                        .contains(
-                                                            lang), // Check if this specific chip is selected
-                                                    onSelected:
-                                                        (bool selected) {
-                                                      setState(() {
-                                                        if (selected) {
-                                                          selectedLanguages.add(
-                                                              lang); // Add to set
-                                                        } else {
-                                                          selectedLanguages.remove(
-                                                              lang); // Remove from set
-                                                        }
-                                                      });
-                                                    },
-                                                  ),
-                                                );
-                                              }).toList(),
-                                            )*/
-                                    ],
-                                  ),
-                                )
-                                : index == 1
-                                ? Form(
-                                  key: _form2Key,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          AppTextView(
-                                            title: "Documents",textStyle: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold,
-                                              color: AppColors.appPrimary,
-                                              letterSpacing: 0.5
-                                          ),),
-                                          Padding(
-                                            padding:
-                                            const EdgeInsets.all(
-                                                4.0),
-                                            child: InkWell(
-                                              onTap: () =>
-                                                  _showAddDocumentSheet(
-                                                      "Documents"),
-                                              child: Row(
-                                                children: [
-                                                  Padding(
-                                                    padding:
-                                                    const EdgeInsets
-                                                        .symmetric(
-                                                        horizontal:
-                                                        8.0),
-                                                    child: AppTextView(
-                                                      title:
-                                                      "Add Documents",textStyle: TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight: FontWeight.bold,
-                                                        color: AppColors.appPrimary,
-                                                        letterSpacing: 0.5
-                                                    ),),
-                                                  ),
-                                                  SvgPicture.asset(
-                                                      'assets/icons/add-icon.svg'),
-                                                ],
-                                              ),
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                      SizedBox(
-                                        height: 16,
-                                      ),
-                                      ..._docWrappers
-                                          .map((wrapper) => Padding(
-                                        padding:
-                                        const EdgeInsets
-                                            .only(
-                                            bottom: 16.0),
-                                        child: DocumentWrapperWidget(wrapper: wrapper),
-                                      )),
-                                    ],
-                                  ),
-                                )
-                                : Form(
-                              key: _form3Key,
-                              child: Column(
-                                crossAxisAlignment:
-                                CrossAxisAlignment.start,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
                                 children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment
-                                        .spaceBetween,
-                                    children: [
-                                      AppTextView(
-                                        title: "Courses",textStyle: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                          color: AppColors.appPrimary,
-                                          letterSpacing: 0.5
-                                      ),),
-                                      Padding(
-                                        padding:
-                                        const EdgeInsets.all(
-                                            4.0),
-                                        child: InkWell(
-                                          onTap: () => _showAddDocumentSheet(
-                                              "Courses"),
-
-                                          child: Row(
-                                            children: [
-                                              Padding(
-                                                padding:
-                                                const EdgeInsets
-                                                    .symmetric(
-                                                    horizontal:
-                                                    8.0),
-                                                child: AppTextView(
-                                                  title:
-                                                  "Add Courses",textStyle: TextStyle(
-                                                    fontSize: 18,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: AppColors.appPrimary,
-                                                    letterSpacing: 0.5
-                                                ),),
-                                              ),
-                                              SvgPicture.asset(
-                                                  'assets/icons/add-icon.svg'),
-                                            ],
-                                          ),
-                                        ),
-                                      )
-                                    ],
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8, vertical: 3),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.secondaryContainer,
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                    child: const Text(
+                                      'OFFICER DOSSIER ENROLLMENT',
+                                      style: TextStyle(
+                                        fontFamily: 'Plus Jakarta Sans',
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: 1.0,
+                                        color: AppColors.secondary,
+                                      ),
+                                    ),
                                   ),
-                                  _certificateWrapperList.isEmpty?Center(child: Text("No Courses Found"),): ListView.builder(
-                                    shrinkWrap: true,
-                                    physics: const NeverScrollableScrollPhysics(),
-                                    padding: EdgeInsets.zero,
-                                    itemCount: _certificateWrapperList.length,
-                                    itemBuilder:
-                                        (context, index) =>
-                                        // Padding(
-                                        //   padding:
-                                        //   const EdgeInsets.only(
-                                        //       top: 8.0,
-                                        //       bottom: 0),
-                                        //   child: Container(
-                                        //     width: 240,
-                                        //     decoration: BoxDecoration(
-                                        //         borderRadius:
-                                        //         BorderRadius
-                                        //             .circular(8)),
-                                        //     child: Padding(
-                                        //       padding:
-                                        //       const EdgeInsets
-                                        //           .only(
-                                        //           bottom: 16.0),
-                                        //       child: Row(
-                                        //         mainAxisAlignment:
-                                        //         MainAxisAlignment
-                                        //             .spaceBetween,
-                                        //         children: [
-                                        //           AppTextFormField(
-                                        //             controller: _certificateWrapperList[index]
-                                        //                 .numberController,
-                                        //             width: MediaQuery
-                                        //                 .sizeOf(
-                                        //                 context)
-                                        //                 .width *
-                                        //                 0.43,
-                                        //             label:
-                                        //             _certificateWrapperList[index].name,
-                                        //             hint:
-                                        //             "Enter ${_certificateWrapperList[index].name} number",
-                                        //           ),
-                                        //           AppDatePicker(
-                                        //             controller: _certificateWrapperList[index]
-                                        //                 .expiryController,
-                                        //             width: MediaQuery
-                                        //                 .sizeOf(
-                                        //                 context)
-                                        //                 .width *
-                                        //                 0.43,
-                                        //             label:
-                                        //             "${_certificateWrapperList[index].name} Expiry",
-                                        //             firstDate:
-                                        //             DateTime(
-                                        //                 1900),
-                                        //             lastDate:
-                                        //             DateTime(
-                                        //                 2100),
-                                        //             onDateSelected:
-                                        //                 (date) {
-                                        //               // You can format the date to string here as needed for your entity
-                                        //               _certificateWrapperList[index].expiryController
-                                        //                   .text =
-                                        //               "${date.day}/${date.month}/${date.year}";
-                                        //             },
-                                        //           ),
-                                        //         ],
-                                        //       ),
-                                        //     ),
-                                        //   ),
-                                        // ),
-                                        CourseWrapperWidget(wrapper: _certificateWrapperList[index],),
+                                  const Spacer(),
+                                  Text(
+                                    'Step ${_currentPage + 1} of 3',
+                                    style: const TextStyle(
+                                      fontFamily: 'Plus Jakarta Sans',
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                      color: AppColors.outline,
+                                    ),
                                   ),
                                 ],
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                _stepNames[_currentPage],
+                                style: const TextStyle(
+                                  fontFamily: 'Playfair Display',
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.primaryContainer,
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              SizedBox(
+                                width: double.infinity,
+                                height: 32,
+                                child: StepProgress(
+                                  totalSteps: 3,
+                                  padding: EdgeInsets.zero,
+                                  controller: _stepProgressController,
+                                  onStepChanged: (currentIndex) {
+                                    setState(() {
+                                      currentStep = currentIndex;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        // --- PageView Content ---
+                        Expanded(
+                          child: Opacity(
+                            opacity: state is ProfileLoading ? 0.5 : 1.0,
+                            child: IgnorePointer(
+                              ignoring: state is ProfileLoading,
+                              child: PageView.builder(
+                                controller: _controller,
+                                itemCount: 3,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemBuilder: (context, index) {
+                                  return SingleChildScrollView(
+                                    controller:
+                                        index == 0 ? _scrollController : null,
+                                    physics:
+                                        const AlwaysScrollableScrollPhysics(),
+                                    padding: const EdgeInsets.fromLTRB(
+                                        16, 8, 16, 96),
+                                    child: index == 0
+                                        ? _buildPersonalDetailsStep()
+                                        : index == 1
+                                            ? _buildDocumentsStep()
+                                            : _buildCoursesStep(),
+                                  );
+                                },
                               ),
                             ),
                           ),
                         ),
+                      ],
+                    ),
+
+                    // --- Sticky Bottom Action Bar ---
+                    Positioned(
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      child: Container(
+                        padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
+                        decoration: BoxDecoration(
+                          color: AppColors.surface,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.05),
+                              blurRadius: 10,
+                              offset: const Offset(0, -3),
+                            ),
+                          ],
+                        ),
+                        child: AppButton(
+                          onTap: _onNextTapped,
+                          title: _currentPage == 2 ? "Done" : "Next",
+                        ),
                       ),
                     ),
-                  ),
 
-                  // Positioned Stepper and Buttons
-                  Positioned(
-                    top: 60,
-                    right: 0,
-                    child: SizedBox(
-                      width: MediaQuery.sizeOf(context).width,
-                      height: kToolbarHeight,
-                      child: StepProgress(
-                        totalSteps: 3,
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
-                        controller: _stepProgressController,
-                        onStepChanged: (currentIndex) {
-                          setState(() {
-                            currentStep = currentIndex;
-                          });
-                        },
+                    // --- Loading Indicator Overlay ---
+                    if (state is ProfileLoading)
+                      Container(
+                        color: Colors.black.withValues(alpha: 0.15),
+                        child: const Center(
+                          child: CircularProgressIndicator(
+                            color: AppColors.primaryContainer,
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                  Positioned(
-                      bottom: 40,
-                      left: 16,
-                      right: 16,
-                      child: AppButton(
-                        onTap: () {
-                          log("ON TAP NEXT BUTTON");
-                          log("CURRENT STEP:$currentStep");
-                          log("CURRENT PAGE:$_currentPage");
-                          //page change function
-                          switch (_currentPage) {
-                            case 0:
-                              if (_form1Key.currentState!.validate()) {
-                                context.read<ProfileBloc>().add(
-                                    UpdatePersonalDetailsEvent(
-                                        PersonalDetails(
-                                          firstname: _firstNameTextController.text,
-                                          lastname: _lastNameTextController.text,
-                                          dob: _dobTextController.text,
-                                          nationality:
-                                          _nationalityTextController.text,
-                                          profilePic: '',
-                                          postAppliedFor: _postTextController.text,
-                                          fatherName:
-                                          _fatherNameTextController.text,
-                                        )));
-                                setState(_stepProgressController.nextStep);
-                              }
-                            case 1:
-                              if (_form2Key.currentState!.validate()) {
-                                List<Document> documentsToSave = _docWrappers
-                                    .map((w) => w.toEntity())
-                                    .toList();
-                                log("LOG STATE IS :$state");
-                                // Trigger your BLoC event
-                                context.read<ProfileBloc>().add(
-                                  UpdateDocumentsEvent(documentsToSave),
-                                );
-                                setState(_stepProgressController.nextStep);
-                              }
-                            case 2:
-                              if (_form3Key.currentState!.validate()) {
-                                List<Course> course = _certificateWrapperList
-                                    .map((w) => w.toEntity())
-                                    .toList();
-                                context.read<ProfileBloc>().add(
-                                  UpdateCoursesEvent(course),
-                                );
-                              }
-                          }
-                        },
-                          title: _currentPage == 2 ? "Done" : "Next")),
-
-                  // Loading Indicator Overlay
-                  if (state is ProfileLoading)
-                    const Center(child: CircularProgressIndicator()),
-                ],
-              );
-            }
-            return const Center(child: CircularProgressIndicator());
-          },
+                  ],
+                );
+              }
+              return const Center(child: CircularProgressIndicator());
+            },
+          ),
         ),
       ),
     );
+  }
+
+  Widget _buildPersonalDetailsStep() {
+    return Form(
+      key: _form1Key,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: const Color(0xFFEAE6DF),
+                width: 1,
+              ),
+              boxShadow: const [
+                BoxShadow(
+                  color: Color(0x0A0B1F3A),
+                  blurRadius: 12,
+                  offset: Offset(0, 4),
+                ),
+              ],
+            ),
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 4,
+                      height: 20,
+                      decoration: BoxDecoration(
+                        color: AppColors.secondary,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    const AppTextView(
+                      title: "Personal Information",
+                      textStyle: TextStyle(
+                        fontFamily: 'Playfair Display',
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.primaryContainer,
+                        letterSpacing: 0.3,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 6),
+                const Text(
+                  'Enter your official maritime biographical identity',
+                  style: TextStyle(
+                    fontFamily: 'Plus Jakarta Sans',
+                    fontSize: 12.5,
+                    color: AppColors.outline,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                AppTextFormField(
+                  label: "First Name",
+                  hint: "enter your first name",
+                  textCapitalization: TextCapitalization.sentences,
+                  textInputAction: TextInputAction.next,
+                  controller: _firstNameTextController,
+                  validator: (value) => AppValidators.name(value),
+                ),
+                AppTextFormField(
+                  label: "Last Name",
+                  hint: "enter your last name",
+                  textCapitalization: TextCapitalization.sentences,
+                  textInputAction: TextInputAction.next,
+                  controller: _lastNameTextController,
+                  validator: (value) => AppValidators.name(value),
+                ),
+                AppTextFormField(
+                  label: "Post Applied For",
+                  hint: "enter your post",
+                  textCapitalization: TextCapitalization.sentences,
+                  textInputAction: TextInputAction.next,
+                  controller: _postTextController,
+                  validator: (value) => AppValidators.post(value),
+                ),
+                AppTextFormField(
+                  label: "Father's Name",
+                  hint: "enter your father's name",
+                  textCapitalization: TextCapitalization.sentences,
+                  textInputAction: TextInputAction.next,
+                  controller: _fatherNameTextController,
+                  validator: (value) => AppValidators.name(value),
+                ),
+                AppDatePicker(
+                  controller: _dobTextController,
+                  width: double.infinity,
+                  label: "Date of Birth",
+                  firstDate: DateTime(1900),
+                  lastDate: DateTime(2003),
+                  onDateSelected: (date) {
+                    _dobTextController.text =
+                        "${date.day}/${date.month}/${date.year}";
+                  },
+                  validator: (value) => AppValidators.dob(value),
+                ),
+                AppTextFormField(
+                  label: "Nationality",
+                  hint: "enter you nationality",
+                  textCapitalization: TextCapitalization.sentences,
+                  textInputAction: TextInputAction.done,
+                  controller: _nationalityTextController,
+                  validator: (value) => AppValidators.name(value),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDocumentsStep() {
+    return Form(
+      key: _form2Key,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const AppTextView(
+                title: "Documents",
+                textStyle: TextStyle(
+                  fontFamily: 'Playfair Display',
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.primaryContainer,
+                  letterSpacing: 0.3,
+                ),
+              ),
+              InkWell(
+                onTap: () => _showAddDocumentSheet("Documents"),
+                borderRadius: BorderRadius.circular(8),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 8.0, vertical: 4.0),
+                  child: Row(
+                    children: [
+                      const AppTextView(
+                        title: "Add Documents",
+                        textStyle: TextStyle(
+                          fontFamily: 'Plus Jakarta Sans',
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primaryContainer,
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      SvgPicture.asset(
+                        'assets/icons/add-icon.svg',
+                        width: 20,
+                        height: 20,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          if (_docWrappers.isEmpty)
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(
+                  color: const Color(0xFFEAE6DF),
+                  width: 1,
+                ),
+              ),
+              child: Column(
+                children: [
+                  const Icon(
+                    Icons.description_outlined,
+                    size: 40,
+                    color: AppColors.outline,
+                  ),
+                  const SizedBox(height: 12),
+                  const Text(
+                    'No Documents Added',
+                    style: TextStyle(
+                      fontFamily: 'Plus Jakarta Sans',
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.primaryContainer,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  const Text(
+                    'Tap "+ Add Documents" to register Passport, CDC, or Visas.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: 'Plus Jakarta Sans',
+                      fontSize: 13,
+                      color: AppColors.outline,
+                    ),
+                  ),
+                ],
+              ),
+            )
+          else
+            ..._docWrappers.map(
+              (wrapper) => DocumentWrapperWidget(
+                wrapper: wrapper,
+                onDelete: () {
+                  setState(() {
+                    _docWrappers.remove(wrapper);
+                  });
+                },
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCoursesStep() {
+    return Form(
+      key: _form3Key,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const AppTextView(
+                title: "Courses",
+                textStyle: TextStyle(
+                  fontFamily: 'Playfair Display',
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.primaryContainer,
+                  letterSpacing: 0.3,
+                ),
+              ),
+              InkWell(
+                onTap: () => _showAddDocumentSheet("Courses"),
+                borderRadius: BorderRadius.circular(8),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 8.0, vertical: 4.0),
+                  child: Row(
+                    children: [
+                      const AppTextView(
+                        title: "Add Courses",
+                        textStyle: TextStyle(
+                          fontFamily: 'Plus Jakarta Sans',
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primaryContainer,
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      SvgPicture.asset(
+                        'assets/icons/add-icon.svg',
+                        width: 20,
+                        height: 20,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          if (_certificateWrapperList.isEmpty)
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(
+                  color: const Color(0xFFEAE6DF),
+                  width: 1,
+                ),
+              ),
+              child: const Center(
+                child: Text(
+                  "No Courses Found",
+                  style: TextStyle(
+                    fontFamily: 'Plus Jakarta Sans',
+                    fontSize: 14,
+                    color: AppColors.outline,
+                  ),
+                ),
+              ),
+            )
+          else
+            ..._certificateWrapperList.map(
+              (wrapper) => CourseWrapperWidget(
+                wrapper: wrapper,
+                onDelete: () {
+                  setState(() {
+                    _certificateWrapperList.remove(wrapper);
+                  });
+                },
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  void _onNextTapped() {
+    log("ON TAP NEXT BUTTON - Step: $currentStep, Page: $_currentPage");
+    switch (_currentPage) {
+      case 0:
+        if (_form1Key.currentState!.validate()) {
+          context.read<ProfileBloc>().add(
+                UpdatePersonalDetailsEvent(
+                  PersonalDetails(
+                    firstname: _firstNameTextController.text,
+                    lastname: _lastNameTextController.text,
+                    dob: _dobTextController.text,
+                    nationality: _nationalityTextController.text,
+                    profilePic: '',
+                    postAppliedFor: _postTextController.text,
+                    fatherName: _fatherNameTextController.text,
+                  ),
+                ),
+              );
+          setState(_stepProgressController.nextStep);
+        }
+        break;
+      case 1:
+        if (_form2Key.currentState!.validate()) {
+          final documentsToSave =
+              _docWrappers.map((w) => w.toEntity()).toList();
+          context.read<ProfileBloc>().add(
+                UpdateDocumentsEvent(documentsToSave),
+              );
+          setState(_stepProgressController.nextStep);
+        }
+        break;
+      case 2:
+        if (_form3Key.currentState!.validate()) {
+          final courses =
+              _certificateWrapperList.map((w) => w.toEntity()).toList();
+          context.read<ProfileBloc>().add(
+                UpdateCoursesEvent(courses),
+              );
+        }
+        break;
+    }
   }
 
   void _showAddDocumentSheet(String type) {
@@ -635,259 +686,89 @@ class _ProfileCompletionState extends State<ProfileCompletion> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      builder: (context) => Padding(
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        ),
         padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context)
-              .viewInsets
-              .bottom, // Moves sheet above keyboard
-          left: 20, right: 20, top: 20,
+          bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+          left: 20,
+          right: 20,
+          top: 16,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AppTextView(title: "Add New $type Type",textStyle: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: AppColors.appPrimary,
-                letterSpacing: 0.5
-            ),),
-            const SizedBox(height: 10),
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                margin: const EdgeInsets.only(bottom: 16),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFD9D4CC),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                AppTextView(
+                  title: "Add New $type Type",
+                  textStyle: const TextStyle(
+                    fontFamily: 'Playfair Display',
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primaryContainer,
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.close, color: AppColors.outline),
+                  onPressed: () => Navigator.pop(context),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
             AppTextFormField(
               controller: nameCtrl,
               label: "$type Name",
               hint: "Enter your document name",
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                // if (nameCtrl.text.isNotEmpty) {
-                //   switch (type) {
-                //     case "Documents":
-                //       setState(() {
-                //         _docWrappers.add(
-                //           ProfileControllerWrapper(name: nameCtrl.text),
-                //         );
-                //       });
-                //       break;
-                //     case "Certificate":
-                //       setState(() {
-                //         _certificateWrapperList.add(
-                //           ProfileControllerWrapper(name: nameCtrl.text),
-                //         );
-                //       });
-                //   }
-                //   Navigator.pop(context);
-                // }
-                _addNewDocument(type, nameCtrl.text);
-                Navigator.pop(context);
-              },
-              child: const Text("Add to List"),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primaryContainer,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  elevation: 0,
+                ),
+                onPressed: () {
+                  _addNewDocument(type, nameCtrl.text);
+                  Navigator.pop(context);
+                },
+                child: const Text(
+                  "Add to List",
+                  style: TextStyle(
+                    fontFamily: 'Plus Jakarta Sans',
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                  ),
+                ),
+              ),
             ),
-            const SizedBox(height: 20),
           ],
         ),
       ),
-    );
-  }
-}
-
-class DocumentWrapperWidget extends StatelessWidget {
-  final ProfileControllerWrapper wrapper;
-  const DocumentWrapperWidget({
-    super.key,
-    required this.wrapper,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment:
-          MainAxisAlignment
-              .spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: 8.0),
-          child: AppTextView(title: wrapper.name.capitalize(), textStyle:  const TextStyle(fontSize: 16,color: AppColors.appPrimary, fontWeight: FontWeight.w600),),
-        ),
-        AppTextFormField(
-          controller: wrapper
-              .numberController,
-          width: MediaQuery
-                      .sizeOf(
-                          context)
-                  .width,
-          label:
-              "${wrapper.name.capitalize()} Number",
-          hint:
-              "Enter ${wrapper.name} number",
-          validator: (value) => AppValidators.required(value,'${wrapper.name.capitalize()} number'),
-        ),
-        AppDatePicker(
-          controller: wrapper
-              .expiryController,
-          width: MediaQuery
-                      .sizeOf(
-                          context)
-                  .width,
-          label:
-              "${wrapper.name.capitalize()} Validity",
-          firstDate:
-              DateTime(
-                  1900),
-          lastDate:
-              DateTime(
-                  2100),
-          onDateSelected:
-              (date) {
-            // You can format the date to string here as needed for your entity
-            wrapper.expiryController
-                    .text =
-                "${date.day}/${date.month}/${date.year}";
-
-          },
-          validator: (value) => AppValidators.required(value,'${wrapper.name} validity'),
-        ),
-        AppTextFormField(
-          controller: wrapper
-              .issuePlaceController,
-          width: MediaQuery
-              .sizeOf(
-              context)
-              .width,
-          label:
-          "${wrapper.name.capitalize()} Issued Place",
-          hint:
-          "Enter your ${wrapper.name} issued place",
-          validator: (value) => AppValidators.required(value,'${wrapper.name.capitalize()} issued place'),
-        ),
-        AppDatePicker(
-          controller: wrapper
-              .issueDateController,
-          width: MediaQuery
-              .sizeOf(
-              context)
-              .width,
-          label:
-          "${wrapper.name.capitalize()} Issued Date",
-          firstDate:
-          DateTime(
-              1900),
-          lastDate:
-          DateTime(
-              2100),
-          onDateSelected:
-              (date) {
-            // You can format the date to string here as needed for your entity
-            wrapper.issueDateController
-                .text =
-            "${date.day}/${date.month}/${date.year}";
-          },
-          validator: (value) => AppValidators.required(value,'${wrapper.name.capitalize()} issued date'),
-        ),
-        SizedBox(height: 16,),
-      ],
-    );
-  }
-}
-
-class CourseWrapperWidget extends StatelessWidget {
-  final ProfileCourseControllerWrapper wrapper;
-  const CourseWrapperWidget({
-    super.key,
-    required this.wrapper,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment:
-      MainAxisAlignment
-          .spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: 8.0),
-          child: AppTextView(title: wrapper.name.capitalize(), textStyle:  const TextStyle(fontSize: 16,color: AppColors.appPrimary, fontWeight: FontWeight.w600),),
-        ),
-        AppTextFormField(
-          controller: wrapper
-              .numberController,
-          width: MediaQuery
-              .sizeOf(
-              context)
-              .width,
-          label:
-          "${wrapper.name.capitalize()} Number",
-          hint:
-          "Enter ${wrapper.name} number",
-          textInputType: TextInputType.text,
-          textCapitalization: TextCapitalization.words,
-          validator: (value) => AppValidators.required(value,wrapper.name),
-        ),
-        AppDatePicker(
-          controller: wrapper
-              .expiryController,
-          width: MediaQuery
-              .sizeOf(
-              context)
-              .width,
-          label:
-          "${wrapper.name.capitalize()} Validity",
-          validator: (value) => AppValidators.required(value,'${wrapper.name.capitalize()} validity'),
-          firstDate:
-          DateTime(
-              1900),
-          lastDate:
-          DateTime(
-              2100),
-          onDateSelected:
-              (date) {
-            // You can format the date to string here as needed for your entity
-            wrapper.expiryController
-                .text =
-            "${date.day}/${date.month}/${date.year}";
-          },
-        ),
-        AppTextFormField(
-          controller: wrapper
-              .issuePlaceController,
-          width: MediaQuery
-              .sizeOf(
-              context)
-              .width,
-          label:
-          "${wrapper.name.capitalize()} Issued Place",
-          hint:
-          "Enter your ${wrapper.name} issued place",
-          validator: (value) => AppValidators.required(value,'${wrapper.name} issued Place'),
-        ),
-        AppDatePicker(
-          controller: wrapper
-              .issueDateController,
-          width: MediaQuery
-              .sizeOf(
-              context)
-              .width,
-          label:
-          "${wrapper.name.capitalize()} Issued Date",
-          validator: (value) => AppValidators.required(value,'${wrapper.name.capitalize()} issued date'),
-          firstDate:
-          DateTime(
-              1900),
-          lastDate:
-          DateTime(
-              2100),
-          onDateSelected:
-              (date) {
-            // You can format the date to string here as needed for your entity
-            wrapper.issueDateController
-                .text =
-            "${date.day}/${date.month}/${date.year}";
-          },
-        ),
-        SizedBox(height: 16,),
-      ],
     );
   }
 }
