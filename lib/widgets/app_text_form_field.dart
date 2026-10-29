@@ -14,6 +14,8 @@ class AppTextFormField extends StatelessWidget {
   final TextCapitalization textCapitalization;
   final Widget suffixIconWidget;
   final FocusNode? focusNode;
+  final EdgeInsetsGeometry? padding;
+
   const AppTextFormField({
     super.key,
     required this.label,
@@ -22,18 +24,19 @@ class AppTextFormField extends StatelessWidget {
     this.validator,
     this.onChanged,
     this.width,
-    this.obscureText =  false,
-    this.textInputType =  TextInputType.text,
-    this.textInputAction =  TextInputAction.next,
-    this.textCapitalization =  TextCapitalization.none,
+    this.obscureText = false,
+    this.textInputType = TextInputType.text,
+    this.textInputAction = TextInputAction.next,
+    this.textCapitalization = TextCapitalization.none,
     this.suffixIconWidget = const SizedBox.shrink(),
     this.focusNode,
+    this.padding,
   });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16.0),
+      padding: padding ?? const EdgeInsets.symmetric(vertical: 6.0),
       child: SizedBox(
         width: width ?? double.maxFinite,
         child: TextFormField(
@@ -43,34 +46,47 @@ class AppTextFormField extends StatelessWidget {
           textInputAction: textInputAction,
           textCapitalization: textCapitalization,
           focusNode: focusNode,
+          style: const TextStyle(
+            fontFamily: 'Plus Jakarta Sans',
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            color: AppColors.onSurface,
+          ),
           decoration: InputDecoration(
             alignLabelWithHint: true,
             floatingLabelBehavior: FloatingLabelBehavior.always,
             labelText: label,
-            labelStyle: const TextStyle(color: AppColors.appPrimary, fontWeight: FontWeight.w600),
+            labelStyle: const TextStyle(
+              fontFamily: 'Plus Jakarta Sans',
+              color: AppColors.primary,
+              fontWeight: FontWeight.w600,
+              fontSize: 13,
+            ),
             hintText: hint,
-            // suffixIcon: icon != null ? Icon(icon, color: AppColors.darkGreen) : null,
-            fillColor: AppColors.appSurface,
+            hintStyle: const TextStyle(
+              fontFamily: 'Plus Jakarta Sans',
+              color: AppColors.outline,
+              fontSize: 14,
+            ),
+            fillColor: AppColors.surfaceContainerLow,
             filled: true,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             suffixIcon: suffixIconWidget,
-            // Border when NOT focused
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: AppColors.appBorderColor),
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(color: AppColors.outlineVariant),
             ),
-            // Border when user is typing
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: AppColors.appPrimary, width: 2),
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
             ),
-            // Border when there is a validation error
             errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: AppColors.appErrorColor),
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(color: AppColors.error),
             ),
             focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: AppColors.appErrorColor, width: 2),
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(color: AppColors.error, width: 1.5),
             ),
           ),
           onChanged: onChanged,

@@ -36,10 +36,11 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child:MultiBlocListener(listeners:[
-          BlocListener<AuthBloc, AuthState>(
+      backgroundColor: AppColors.surface,
+      body: SafeArea(
+        child: MultiBlocListener(
+          listeners: [
+            BlocListener<AuthBloc, AuthState>(
               listener: (context, state) {
                 if (state is AuthError) {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -47,109 +48,210 @@ class _LoginPageState extends State<LoginPage> {
                   );
                 } else if (state is Authenticated) {
                   PreferenceService.setLoggedIn(true);
-                  context.read<ProfileBloc>().add(LoadProfile(PreferenceService.userId.toString()));
-                  // Navigate to HomePage or dashboard
-                  // For now, it will just pop if there's any screen below
-
+                  context.read<ProfileBloc>().add(
+                    LoadProfile(PreferenceService.userId.toString()),
+                  );
                 }
-
               },
-          ),
-            BlocListener<ProfileBloc,ProfileState>(
-            listener: (context, state) {
-              if(state is ProfileLoaded){
-                if (PreferenceService.isProfileCompleted||state.profile.isProfileCompleted) {
-                  Navigator.of(context).pushNamedAndRemoveUntil(
-                    AppRoutes.home,
-                        (route) => false, // removes ALL previous routes
-                  );
-                  Navigator.pushReplacementNamed(context, AppRoutes.home);
-                } else {
-                  Navigator.of(context).pushNamedAndRemoveUntil(
-                    AppRoutes.profileCompletion,
-                        (route) => false, // removes ALL previous routes
-                  );
-                }
-              }
-            },
             ),
-        ], child: BlocBuilder<AuthBloc, AuthState>(
-          builder: (context, state) {
-            final isObscure = state is AuthPasswordObscuredState
-                ? state.isPasswordObscured
-                : true; // default
+            BlocListener<ProfileBloc, ProfileState>(
+              listener: (context, state) {
+                if (state is ProfileLoaded) {
+                  if (PreferenceService.isProfileCompleted ||
+                      state.profile.isProfileCompleted) {
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                      AppRoutes.home,
+                      (route) => false,
+                    );
+                    Navigator.pushReplacementNamed(context, AppRoutes.home);
+                  } else {
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                      AppRoutes.profileCompletion,
+                      (route) => false,
+                    );
+                  }
+                }
+              },
+            ),
+          ],
+          child: BlocBuilder<AuthBloc, AuthState>(
+            builder: (context, state) {
+              final isObscure = state is AuthPasswordObscuredState
+                  ? state.isPasswordObscured
+                  : true;
 
-            if (state is AuthLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
-          return SingleChildScrollView(
+              if (state is AuthLoading) {
+                return const Center(child: CircularProgressIndicator());
+              }
 
-              child: Form(
-                key: _formLoginKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const SizedBox(height: 40),
-                    // --- LOGO SECTION ---
-                    Image(image: AssetImage('assets/images/app_logo.png'),fit: BoxFit.cover,height: 240,width: 240,),
-                    const SizedBox(height: 20),
-
-                    // --- HEADER SECTION ---
-                    AppTextView(title: "Welcome Seafarer",
-                      textStyle: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.appPrimary,
+              return Center(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24.0,
+                    vertical: 24.0,
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Maritime Heritage Emblem Frame
+                      Container(
+                        width: 110,
+                        height: 110,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: AppColors.surfaceContainer,
+                          border: Border.all(
+                            color: AppColors.outlineVariant.withValues(alpha: 0.6),
+                            width: 1,
+                          ),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Color(0x0D0B1F3A),
+                              blurRadius: 12,
+                              offset: Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        padding: const EdgeInsets.all(4),
+                        child: ClipOval(
+                          child: Image.asset(
+                            'assets/images/app_logo.png',
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ),
-                    ),
-                    AppTextView(title: "Sign in to your account to continue building your professional maritime profile.",
-                      textAlign: TextAlign.center,
-                      textStyle: TextStyle(
-                        fontSize: 15,
-                        color: AppColors.appPrimary,
-                        height: 1.4,
-                      ),
-                    ),
-                    const SizedBox(height: 32),
-                    AppTextFormField(label: 'Email', controller: _emailController, hint: 'Enter your email',textInputAction: TextInputAction.next,textInputType: TextInputType.emailAddress,validator: (value) {
-                      return AppValidators.email(value);
-                    },),
-                    SizedBox(height: 8,),
-                    AppTextFormField(label: 'Password', controller: _passwordController, hint: 'Enter your password',textInputAction: TextInputAction.done,textInputType: TextInputType.visiblePassword,
-                      obscureText: isObscure,
-                      suffixIconWidget: InkWell(
-                          onTap: (){
-                            context.read<AuthBloc>().add(TogglePasswordVisibility());
-                          },
-                          child: SvgPicture.asset(isObscure?'assets/icons/eye_off.svg':'assets/icons/eye.svg',height: 24,width: 24,fit: BoxFit.scaleDown,)),
-                      validator: (value) {
-                        return AppValidators.password(value);
-                      },),
-                    const SizedBox(height: 20),
-                    AppButton(title: 'Sign In', onTap: () {
-                      if(_formLoginKey.currentState!.validate()){
-                        context.read<AuthBloc>().add(SignInEvent(
-                          email: _emailController.text,
-                          password: _passwordController.text,
-                        ));
-                      }
+                      const SizedBox(height: 20),
 
-                    },),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pushReplacementNamed(
-                          context,
-                          AppRoutes.signup,
-                        );
-                      },
-                      child: const Text("Don't have an account? Sign Up"),
-                    ),
-                  ],
+                      // Editorial Typography Block
+                      AppTextView(
+                        title: "Welcome Seafarer",
+                        textStyle: const TextStyle(
+                          fontFamily: 'Playfair Display',
+                          fontSize: 26,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: -0.3,
+                          color: AppColors.primaryContainer,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      AppTextView(
+                        title:
+                            "Sign in to your account to continue building your professional maritime profile.",
+                        textAlign: TextAlign.center,
+                        textStyle: const TextStyle(
+                          fontFamily: 'Plus Jakarta Sans',
+                          fontSize: 14,
+                          color: AppColors.onSurfaceVariant,
+                          height: 1.45,
+                        ),
+                      ),
+                      const SizedBox(height: 28),
+
+                      // Form Envelope Card
+                      Container(
+                        decoration: BoxDecoration(
+                          color: AppColors.surfaceContainerLowest,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: AppColors.outlineVariant.withValues(alpha: 0.6),
+                            width: 1,
+                          ),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Color(0x0A0B1F3A),
+                              blurRadius: 16,
+                              offset: Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20.0,
+                          vertical: 22.0,
+                        ),
+                        child: Form(
+                          key: _formLoginKey,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              AppTextFormField(
+                                label: 'Email',
+                                controller: _emailController,
+                                hint: 'Enter your email',
+                                textInputAction: TextInputAction.next,
+                                textInputType: TextInputType.emailAddress,
+                                validator: (value) => AppValidators.email(value),
+                              ),
+                              const SizedBox(height: 4),
+                              AppTextFormField(
+                                label: 'Password',
+                                controller: _passwordController,
+                                hint: 'Enter your password',
+                                textInputAction: TextInputAction.done,
+                                textInputType: TextInputType.visiblePassword,
+                                obscureText: isObscure,
+                                suffixIconWidget: InkWell(
+                                  onTap: () {
+                                    context
+                                        .read<AuthBloc>()
+                                        .add(TogglePasswordVisibility());
+                                  },
+                                  child: SvgPicture.asset(
+                                    isObscure
+                                        ? 'assets/icons/eye_off.svg'
+                                        : 'assets/icons/eye.svg',
+                                    height: 22,
+                                    width: 22,
+                                    fit: BoxFit.scaleDown,
+                                  ),
+                                ),
+                                validator: (value) =>
+                                    AppValidators.password(value),
+                              ),
+                              const SizedBox(height: 20),
+                              AppButton(
+                                title: 'Sign In',
+                                onTap: () {
+                                  if (_formLoginKey.currentState!.validate()) {
+                                    context.read<AuthBloc>().add(
+                                      SignInEvent(
+                                        email: _emailController.text,
+                                        password: _passwordController.text,
+                                      ),
+                                    );
+                                  }
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      // Navigation Footer
+                      const SizedBox(height: 20),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pushReplacementNamed(
+                            context,
+                            AppRoutes.signup,
+                          );
+                        },
+                        child: const Text(
+                          "Don't have an account? Sign Up",
+                          style: TextStyle(
+                            fontFamily: 'Plus Jakarta Sans',
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            );
-          },
-        ),),
+              );
+            },
+          ),
+        ),
       ),
     );
   }
