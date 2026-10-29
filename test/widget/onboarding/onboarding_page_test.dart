@@ -4,9 +4,7 @@ import 'package:seafarer_bio_data/core/constants/app_routes.dart';
 import 'package:seafarer_bio_data/core/utils/shared_preferences.dart';
 import 'package:seafarer_bio_data/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:seafarer_bio_data/features/onboarding/onboarding_page.dart';
-import 'package:seafarer_bio_data/features/personal_details/presentation/bloc/personal_info_bloc.dart';
 import 'package:seafarer_bio_data/features/personal_details/presentation/bloc/personal_info_state.dart';
-import 'package:seafarer_bio_data/features/subscription/presentation/bloc/subscription_bloc.dart';
 import 'package:seafarer_bio_data/features/subscription/presentation/bloc/subscription_state.dart';
 import 'package:seafarer_bio_data/widgets/app_button.dart';
 
