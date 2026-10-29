@@ -16,13 +16,21 @@ class SubscriptionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0A192F), // Navy Blue Background
+      backgroundColor: AppColors.surface,
       appBar: AppBar(
-        title:
-            const Text('Upgrade to Pro', style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.transparent,
+        title: const Text(
+          'Upgrade to Pro',
+          style: TextStyle(
+            fontFamily: 'Playfair Display',
+            fontSize: 20,
+            fontWeight: FontWeight.w700,
+            color: AppColors.primaryContainer,
+          ),
+        ),
+        backgroundColor: AppColors.surface,
         elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.white),
+        scrolledUnderElevation: 0,
+        iconTheme: const IconThemeData(color: AppColors.primaryContainer),
       ),
       body: BlocConsumer<SubscriptionBloc, SubscriptionState>(
         listener: (context, state) {
@@ -46,7 +54,7 @@ class SubscriptionPage extends StatelessWidget {
         builder: (context, state) {
           if (state is SubscriptionLoading) {
             return const Center(
-              child: CircularProgressIndicator(color: Colors.white),
+              child: CircularProgressIndicator(color: AppColors.primary),
             );
           }
 
@@ -65,56 +73,89 @@ class SubscriptionPage extends StatelessWidget {
           return SingleChildScrollView(
             child: Padding(
               padding:
-                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const Icon(Icons.anchor, size: 60, color: Colors.white),
-                  const SizedBox(height: 10),
-                  const Text(
-                    'SEAFARER PRO',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 2,
+                  // Maritime Emblem & Badge Header
+                  Center(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.surfaceContainerLow,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: AppColors.secondary.withValues(alpha: 0.4),
+                          width: 1,
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: const [
+                          Icon(Icons.anchor, size: 16, color: AppColors.secondary),
+                          SizedBox(width: 6),
+                          Text(
+                            'SEAFARER PRO',
+                            style: TextStyle(
+                              fontFamily: 'Plus Jakarta Sans',
+                              color: AppColors.secondary,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 1.5,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 5),
+                  const SizedBox(height: 12),
                   const Text(
                     'Unlock advanced DOCX export and premium features.',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: Colors.white70,
+                      fontFamily: 'Plus Jakarta Sans',
+                      color: AppColors.onSurfaceVariant,
                       fontSize: 14,
+                      height: 1.45,
                     ),
                   ),
-                  const SizedBox(height: 25),
+                  const SizedBox(height: 24),
+
+                  // Plans stack
                   ...plans.map((plan) => _buildPlanCard(context, plan)),
-                  const SizedBox(height: 15),
+                  const SizedBox(height: 12),
 
                   // Cancellation instructions and auto-renew disclosure
                   Container(
-                    padding: const EdgeInsets.all(14),
+                    padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.06),
-                      borderRadius: BorderRadius.circular(12),
+                      color: AppColors.surfaceContainerLowest,
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(
+                        color: AppColors.outlineVariant.withValues(alpha: 0.6),
+                      ),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
-                          children: [
-                            const Icon(Icons.info_outline,
-                                color: Colors.amber, size: 18),
-                            const SizedBox(width: 8),
+                          children: const [
+                            Icon(
+                              Icons.info_outline,
+                              color: AppColors.secondary,
+                              size: 18,
+                            ),
+                            SizedBox(width: 8),
                             Expanded(
                               child: Text(
                                 'Subscription Terms & Auto-Renewal',
                                 style: TextStyle(
-                                  color: Colors.white.withValues(alpha: 0.9),
-                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Plus Jakarta Sans',
+                                  color: AppColors.primaryContainer,
+                                  fontWeight: FontWeight.w700,
                                   fontSize: 13,
                                 ),
                               ),
@@ -126,10 +167,11 @@ class SubscriptionPage extends StatelessWidget {
                           'Payment will be charged to your store account upon confirmation of purchase. '
                           'Subscriptions automatically renew unless cancelled at least 24 hours before the end of the current billing cycle. '
                           '$cancellationPlatformText',
-                          style: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.75),
-                            fontSize: 11,
-                            height: 1.4,
+                          style: const TextStyle(
+                            fontFamily: 'Plus Jakarta Sans',
+                            color: AppColors.onSurfaceVariant,
+                            fontSize: 11.5,
+                            height: 1.45,
                           ),
                         ),
                       ],
@@ -145,14 +187,15 @@ class SubscriptionPage extends StatelessWidget {
                     child: const Text(
                       'Restore Purchases',
                       style: TextStyle(
-                        color: Colors.white,
+                        fontFamily: 'Plus Jakarta Sans',
+                        color: AppColors.primaryContainer,
                         fontWeight: FontWeight.w600,
-                        fontSize: 15,
+                        fontSize: 14,
                         decoration: TextDecoration.underline,
                       ),
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 4),
 
                   // Legal Links: Terms of Use (EULA) & Privacy Policy
                   Row(
@@ -168,13 +211,17 @@ class SubscriptionPage extends StatelessWidget {
                         child: const Text(
                           'Terms of Use',
                           style: TextStyle(
-                            color: Colors.white60,
+                            fontFamily: 'Plus Jakarta Sans',
+                            color: AppColors.outline,
                             fontSize: 12,
                             decoration: TextDecoration.underline,
                           ),
                         ),
                       ),
-                      const Text('•', style: TextStyle(color: Colors.white38)),
+                      const Text(
+                        '•',
+                        style: TextStyle(color: AppColors.outlineVariant),
+                      ),
                       TextButton(
                         onPressed: () => _showLegalDialog(
                           context,
@@ -185,7 +232,8 @@ class SubscriptionPage extends StatelessWidget {
                         child: const Text(
                           'Privacy Policy',
                           style: TextStyle(
-                            color: Colors.white60,
+                            fontFamily: 'Plus Jakarta Sans',
+                            color: AppColors.outline,
                             fontSize: 12,
                             decoration: TextDecoration.underline,
                           ),
@@ -193,7 +241,7 @@ class SubscriptionPage extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 24),
                 ],
               ),
             ),
@@ -212,25 +260,51 @@ class SubscriptionPage extends StatelessWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: const Color(0xFF0F223D),
-        title: Text(title, style: const TextStyle(color: Colors.white)),
+        backgroundColor: AppColors.surfaceContainerLowest,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text(
+          title,
+          style: const TextStyle(
+            fontFamily: 'Playfair Display',
+            fontWeight: FontWeight.w700,
+            color: AppColors.primaryContainer,
+          ),
+        ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(description,
-                style: const TextStyle(color: Colors.white70, fontSize: 13)),
+            Text(
+              description,
+              style: const TextStyle(
+                fontFamily: 'Plus Jakarta Sans',
+                color: AppColors.onSurfaceVariant,
+                fontSize: 13,
+                height: 1.4,
+              ),
+            ),
             const SizedBox(height: 12),
             Text(
               'Link: $url',
-              style: const TextStyle(color: Colors.blueAccent, fontSize: 12),
+              style: const TextStyle(
+                fontFamily: 'Plus Jakarta Sans',
+                color: AppColors.secondary,
+                fontSize: 12,
+              ),
             ),
           ],
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Close', style: TextStyle(color: Colors.white)),
+            child: const Text(
+              'Close',
+              style: TextStyle(
+                fontFamily: 'Plus Jakarta Sans',
+                fontWeight: FontWeight.w600,
+                color: AppColors.primaryContainer,
+              ),
+            ),
           ),
         ],
       ),
@@ -254,21 +328,27 @@ class SubscriptionPage extends StatelessWidget {
         context.read<SubscriptionBloc>().add(PurchasePlan(plan));
       },
       child: Container(
-        margin: const EdgeInsets.only(bottom: 20),
+        margin: const EdgeInsets.only(bottom: 18),
         child: Stack(
           clipBehavior: Clip.none,
           children: [
             Container(
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: AppColors.surfaceContainerLowest,
                 borderRadius: BorderRadius.circular(16),
-                border:
-                    isYearly ? Border.all(color: Colors.amber, width: 2) : null,
-                boxShadow: [
+                border: Border.all(
+                  color: isMonthly
+                      ? AppColors.secondary
+                      : isYearly
+                          ? AppColors.primaryContainer
+                          : AppColors.outlineVariant.withValues(alpha: 0.7),
+                  width: (isMonthly || isYearly) ? 2 : 1,
+                ),
+                boxShadow: const [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.2),
-                    blurRadius: 10,
-                    offset: const Offset(0, 5),
+                    color: Color(0x0A0B1F3A),
+                    blurRadius: 12,
+                    offset: Offset(0, 4),
                   ),
                 ],
               ),
@@ -283,20 +363,37 @@ class SubscriptionPage extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              plan.name,
-                              style: const TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF0A192F),
-                              ),
+                            Row(
+                              children: [
+                                Text(
+                                  plan.name,
+                                  style: const TextStyle(
+                                    fontFamily: 'Plus Jakarta Sans',
+                                    fontSize: 19,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.primaryContainer,
+                                  ),
+                                ),
+                                if (isMonthly) ...[
+                                  const SizedBox(width: 8),
+                                  Container(
+                                    width: 7,
+                                    height: 7,
+                                    decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: AppColors.secondary,
+                                    ),
+                                  ),
+                                ],
+                              ],
                             ),
                             const SizedBox(height: 2),
                             const Text(
                               'Auto-renewing subscription',
                               style: TextStyle(
+                                fontFamily: 'Plus Jakarta Sans',
                                 fontSize: 11,
-                                color: Colors.grey,
+                                color: AppColors.outline,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -310,82 +407,115 @@ class SubscriptionPage extends StatelessWidget {
                             plan.priceString ??
                                 '${plan.currency}${plan.price.toInt()}',
                             style: const TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.w900,
-                              color: AppColors.appPrimary,
+                              fontFamily: 'Plus Jakarta Sans',
+                              fontSize: 22,
+                              fontWeight: FontWeight.w800,
+                              color: AppColors.primaryContainer,
                             ),
                           ),
                           if (billingPeriod.isNotEmpty)
                             Text(
                               billingPeriod,
-                              style: TextStyle(
+                              style: const TextStyle(
+                                fontFamily: 'Plus Jakarta Sans',
                                 fontSize: 11,
-                                color: Colors.grey[600],
-                                fontWeight: FontWeight.bold,
+                                color: AppColors.outline,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                         ],
                       ),
                     ],
                   ),
-                  const SizedBox(height: 15),
-                  ...plan.benefits.map((benefit) => Padding(
-                        padding: const EdgeInsets.only(bottom: 8.0),
-                        child: Row(
-                          children: [
-                            const Icon(Icons.check_circle,
-                                color: AppColors.appPrimary, size: 20),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Text(
-                                benefit,
-                                style: TextStyle(
-                                    color: Colors.grey[800], fontSize: 14),
+                  const SizedBox(height: 14),
+                  const Divider(height: 1, color: AppColors.outlineVariant),
+                  const SizedBox(height: 12),
+                  ...plan.benefits.map(
+                    (benefit) => Padding(
+                      padding: const EdgeInsets.only(bottom: 7.0),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.check_circle,
+                            color: AppColors.secondary,
+                            size: 18,
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Text(
+                              benefit,
+                              style: const TextStyle(
+                                fontFamily: 'Plus Jakarta Sans',
+                                color: AppColors.onSurface,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
-                          ],
-                        ),
-                      )),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
             if (isMonthly)
               Positioned(
-                top: -12,
+                top: -10,
                 right: 20,
                 child: Container(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                   decoration: BoxDecoration(
-                    color: Colors.blueAccent,
-                    borderRadius: BorderRadius.circular(12),
+                    color: AppColors.secondary,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Color(0x1F795916),
+                        blurRadius: 4,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
                   ),
                   child: const Text(
                     'MOST POPULAR',
                     style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold),
+                      fontFamily: 'Plus Jakarta Sans',
+                      color: Colors.white,
+                      fontSize: 9.5,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 0.5,
+                    ),
                   ),
                 ),
               ),
             if (isYearly)
               Positioned(
-                top: -12,
+                top: -10,
                 right: 20,
                 child: Container(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                   decoration: BoxDecoration(
-                    color: Colors.amber,
-                    borderRadius: BorderRadius.circular(12),
+                    color: AppColors.primaryContainer,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Color(0x1F0B1F3A),
+                        blurRadius: 4,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
                   ),
                   child: const Text(
                     'BEST VALUE',
                     style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold),
+                      fontFamily: 'Plus Jakarta Sans',
+                      color: Colors.white,
+                      fontSize: 9.5,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 0.5,
+                    ),
                   ),
                 ),
               ),
