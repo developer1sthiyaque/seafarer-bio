@@ -201,7 +201,7 @@ class _ProfileCompletionState extends State<ProfileCompletion> {
                                         fontSize: 10,
                                         fontWeight: FontWeight.bold,
                                         letterSpacing: 1.0,
-                                        color: AppColors.secondary,
+                                        color: AppColors.onSecondaryFixedVariant,
                                       ),
                                     ),
                                   ),
@@ -212,7 +212,7 @@ class _ProfileCompletionState extends State<ProfileCompletion> {
                                       fontFamily: 'Plus Jakarta Sans',
                                       fontSize: 12,
                                       fontWeight: FontWeight.w600,
-                                      color: AppColors.outline,
+                                      color: AppColors.onSurfaceVariant,
                                     ),
                                   ),
                                 ],
@@ -378,7 +378,7 @@ class _ProfileCompletionState extends State<ProfileCompletion> {
                   style: TextStyle(
                     fontFamily: 'Plus Jakarta Sans',
                     fontSize: 12.5,
-                    color: AppColors.outline,
+                    color: AppColors.onSurfaceVariant,
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -508,7 +508,7 @@ class _ProfileCompletionState extends State<ProfileCompletion> {
                   const Icon(
                     Icons.description_outlined,
                     size: 40,
-                    color: AppColors.outline,
+                    color: AppColors.secondary,
                   ),
                   const SizedBox(height: 12),
                   const Text(
@@ -527,7 +527,7 @@ class _ProfileCompletionState extends State<ProfileCompletion> {
                     style: TextStyle(
                       fontFamily: 'Plus Jakarta Sans',
                       fontSize: 13,
-                      color: AppColors.outline,
+                      color: AppColors.onSurfaceVariant,
                     ),
                   ),
                 ],
@@ -616,7 +616,7 @@ class _ProfileCompletionState extends State<ProfileCompletion> {
                   style: TextStyle(
                     fontFamily: 'Plus Jakarta Sans',
                     fontSize: 14,
-                    color: AppColors.outline,
+                    color: AppColors.onSurfaceVariant,
                   ),
                 ),
               ),
@@ -726,7 +726,7 @@ class _ProfileCompletionState extends State<ProfileCompletion> {
                   ),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.close, color: AppColors.outline),
+                  icon: const Icon(Icons.close, color: AppColors.onSurfaceVariant),
                   onPressed: () => Navigator.pop(context),
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(),

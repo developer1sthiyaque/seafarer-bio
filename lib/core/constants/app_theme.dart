@@ -176,8 +176,10 @@ class AppTheme {
 
       // AppBar - Professional Maritime look
       appBarTheme: const AppBarTheme(
-        backgroundColor: AppColors.primary,
-        foregroundColor: AppColors.onPrimary,
+        backgroundColor: AppColors.surface,
+        foregroundColor: AppColors.primary,
+        iconTheme: IconThemeData(color: AppColors.primary),
+        actionsIconTheme: IconThemeData(color: AppColors.primary),
         elevation: 0,
         centerTitle: true,
       ),
@@ -253,6 +255,18 @@ class AppTheme {
             fontWeight: FontWeight.w600,
           ),
         ),
+      ),
+
+      // SnackBar Theme (explicit dark charcoal on light, high contrast)
+      snackBarTheme: const SnackBarThemeData(
+        backgroundColor: AppColors.inverseSurface,
+        contentTextStyle: TextStyle(
+          fontFamily: fontSans,
+          fontSize: 14,
+          color: AppColors.onInverseSurface,
+        ),
+        actionTextColor: AppColors.secondaryFixedDim,
+        behavior: SnackBarBehavior.floating,
       ),
     );
   }

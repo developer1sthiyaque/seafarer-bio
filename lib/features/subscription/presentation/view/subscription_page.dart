@@ -212,7 +212,7 @@ class SubscriptionPage extends StatelessWidget {
                           'Terms of Use',
                           style: TextStyle(
                             fontFamily: 'Plus Jakarta Sans',
-                            color: AppColors.outline,
+                            color: AppColors.onSurfaceVariant,
                             fontSize: 12,
                             decoration: TextDecoration.underline,
                           ),
@@ -220,7 +220,7 @@ class SubscriptionPage extends StatelessWidget {
                       ),
                       const Text(
                         '•',
-                        style: TextStyle(color: AppColors.outlineVariant),
+                        style: TextStyle(color: AppColors.onSurfaceVariant),
                       ),
                       TextButton(
                         onPressed: () => _showLegalDialog(
@@ -233,7 +233,7 @@ class SubscriptionPage extends StatelessWidget {
                           'Privacy Policy',
                           style: TextStyle(
                             fontFamily: 'Plus Jakarta Sans',
-                            color: AppColors.outline,
+                            color: AppColors.onSurfaceVariant,
                             fontSize: 12,
                             decoration: TextDecoration.underline,
                           ),

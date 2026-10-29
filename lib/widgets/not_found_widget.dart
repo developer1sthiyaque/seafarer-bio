@@ -72,7 +72,7 @@ class NotFoundWidget extends StatelessWidget {
                 fontFamily: 'Plus Jakarta Sans',
                 fontSize: 13,
                 fontWeight: FontWeight.w400,
-                color: AppColors.outline,
+                color: AppColors.onSurfaceVariant,
                 height: 1.4,
               ),
             ),

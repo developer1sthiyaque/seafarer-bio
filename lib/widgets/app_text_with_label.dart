@@ -27,7 +27,7 @@ class AppTextWithLabel extends StatelessWidget {
             label,
             style: const TextStyle(
               fontFamily: 'Plus Jakarta Sans',
-              fontSize: 11,
+              fontSize: 12,
               fontWeight: FontWeight.w600,
               color: AppColors.secondary,
               letterSpacing: 0.3,

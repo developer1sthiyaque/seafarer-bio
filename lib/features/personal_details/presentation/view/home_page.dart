@@ -173,7 +173,7 @@ class HomePage extends StatelessWidget {
                         'assets/icons/file_doc.svg',
                         colorFilter: ColorFilter.mode(
                           (subscriptionState is SubscriptionActive)
-                              ? AppColors.appScaffold
+                              ? AppColors.primary
                               : Colors.grey,
                           BlendMode.srcIn,
                         ),
@@ -200,7 +200,7 @@ class HomePage extends StatelessWidget {
                   },
                   child: const Icon(
                     Icons.workspace_premium,
-                    color: Colors.amber,
+                    color: AppColors.secondary,
                   ),
                 ),
               );
@@ -215,7 +215,7 @@ class HomePage extends StatelessWidget {
               child: SvgPicture.asset(
                 'assets/icons/edit.svg',
                 colorFilter: const ColorFilter.mode(
-                  AppColors.appScaffold,
+                  AppColors.primary,
                   BlendMode.srcIn,
                 ),
               ),
@@ -228,7 +228,10 @@ class HomePage extends StatelessWidget {
                 onTap: () {
                   context.read<AuthBloc>().add(SignOutEvent());
                 },
-                child: const Icon(Icons.logout),
+                child: const Icon(
+                  Icons.logout,
+                  color: AppColors.primary,
+                ),
               ),
             ),
             listener: (context, state) {

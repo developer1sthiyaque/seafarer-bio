@@ -378,8 +378,9 @@ class _ProfileSubscriptionCardState extends State<ProfileSubscriptionCard> {
                       _openManageSubscription(details.managementUrl),
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                    foregroundColor: Colors.white70,
-                    side: BorderSide(color: Colors.white.withValues(alpha: 0.2)),
+                    backgroundColor: Colors.transparent,
+                    foregroundColor: Colors.white,
+                    side: BorderSide(color: Colors.white.withValues(alpha: 0.3)),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -388,14 +389,18 @@ class _ProfileSubscriptionCardState extends State<ProfileSubscriptionCard> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.settings, size: 16),
+                      Icon(Icons.settings, size: 16, color: Colors.white),
                       SizedBox(width: 4),
                       Flexible(
                         child: Text(
                           'Manage',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(fontSize: 13),
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ],
@@ -408,8 +413,9 @@ class _ProfileSubscriptionCardState extends State<ProfileSubscriptionCard> {
                   onPressed: _restorePurchases,
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                    foregroundColor: Colors.white70,
-                    side: BorderSide(color: Colors.white.withValues(alpha: 0.2)),
+                    backgroundColor: Colors.transparent,
+                    foregroundColor: Colors.white,
+                    side: BorderSide(color: Colors.white.withValues(alpha: 0.3)),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -418,14 +424,18 @@ class _ProfileSubscriptionCardState extends State<ProfileSubscriptionCard> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.restore, size: 16),
+                      Icon(Icons.restore, size: 16, color: Colors.white),
                       SizedBox(width: 4),
                       Flexible(
                         child: Text(
                           'Restore',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(fontSize: 13),
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ],
@@ -453,8 +463,9 @@ class _ProfileSubscriptionCardState extends State<ProfileSubscriptionCard> {
                   },
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                    backgroundColor: AppColors.appScaffold,
-                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.white,
+                    foregroundColor: AppColors.primary,
+                    elevation: 0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -463,7 +474,7 @@ class _ProfileSubscriptionCardState extends State<ProfileSubscriptionCard> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.star, size: 16),
+                      Icon(Icons.star, size: 16, color: AppColors.primary),
                       SizedBox(width: 4),
                       Flexible(
                         child: Text(
@@ -473,6 +484,7 @@ class _ProfileSubscriptionCardState extends State<ProfileSubscriptionCard> {
                           style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.bold,
+                            color: AppColors.primary,
                           ),
                         ),
                       ),
@@ -486,8 +498,9 @@ class _ProfileSubscriptionCardState extends State<ProfileSubscriptionCard> {
                   onPressed: _restorePurchases,
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                    foregroundColor: Colors.white70,
-                    side: BorderSide(color: Colors.white.withValues(alpha: 0.2)),
+                    backgroundColor: Colors.transparent,
+                    foregroundColor: Colors.white,
+                    side: BorderSide(color: Colors.white.withValues(alpha: 0.3)),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -496,14 +509,18 @@ class _ProfileSubscriptionCardState extends State<ProfileSubscriptionCard> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.restore, size: 16),
+                      Icon(Icons.restore, size: 16, color: Colors.white),
                       SizedBox(width: 4),
                       Flexible(
                         child: Text(
                           'Restore',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(fontSize: 13),
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ],
