@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Profile Completion - Step 2 (Documents)</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Fonts: Playfair Display & Plus Jakarta Sans -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400;1,600&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "error": "#ba1a1a",
+            "surface-bright": "#faf9f6",
+            "secondary-container": "#fdd182",
+            "inverse-on-surface": "#f2f1ee",
+            "tertiary-fixed": "#ffdad8",
+            "surface-container-highest": "#e3e2df",
+            "tertiary-fixed-dim": "#ffb3af",
+            "on-primary-container": "#7587a7",
+            "on-tertiary-container": "#d46462",
+            "primary-fixed-dim": "#b5c7ea",
+            "on-primary-fixed-variant": "#364764",
+            "tertiary": "#170001",
+            "surface-dim": "#dbdad7",
+            "on-secondary": "#ffffff",
+            "on-surface": "#1b1c1a",
+            "on-background": "#1b1c1a",
+            "primary-container": "#0b1f3a",
+            "surface-container": "#efeeeb",
+            "secondary-fixed-dim": "#ebc073",
+            "on-tertiary-fixed": "#410006",
+            "inverse-primary": "#b5c7ea",
+            "outline": "#75777e",
+            "on-tertiary": "#ffffff",
+            "inverse-surface": "#2f312f",
+            "tertiary-container": "#470007",
+            "on-error-container": "#93000a",
+            "surface": "#faf9f6",
+            "primary": "#000615",
+            "on-surface-variant": "#44474d",
+            "on-tertiary-fixed-variant": "#812628",
+            "secondary": "#795916",
+            "surface-container-low": "#f4f3f0",
+            "on-primary-fixed": "#071c36",
+            "primary-fixed": "#d6e3ff",
+            "outline-variant": "#c4c6ce",
+            "surface-variant": "#e3e2df",
+            "on-secondary-fixed": "#271900",
+            "surface-tint": "#4d5f7d",
+            "on-secondary-container": "#775815",
+            "surface-container-lowest": "#ffffff",
+            "secondary-fixed": "#ffdea7",
+            "on-secondary-fixed-variant": "#5e4200",
+            "background": "#faf9f6",
+            "surface-container-high": "#e9e8e5",
+            "on-primary": "#ffffff",
+            "on-error": "#ffffff",
+            "error-container": "#ffdad6"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-lg": "1.5rem",
+            "margin-mobile": "1.5rem",
+            "space-sm": "0.5rem",
+            "margin": "1.5rem",
+            "space-xl": "2rem",
+            "gutter": "1rem",
+            "gutter-mobile": "0.75rem",
+            "space-md": "1rem",
+            "space-xs": "0.25rem"
+          },
+          "fontFamily": {
+            "body-md": ["Plus Jakarta Sans"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "headline-lg": ["Playfair Display"],
+            "headline-md": ["Playfair Display"],
+            "headline-lg-mobile": ["Playfair Display"],
+            "title-md": ["Plus Jakarta Sans"],
+            "caption": ["Plus Jakarta Sans"],
+            "body-sm": ["Plus Jakarta Sans"],
+            "headline-xl": ["Playfair Display"],
+            "headline-sm": ["Playfair Display"],
+            "headline-xl-mobile": ["Playfair Display"],
+            "label-md": ["Plus Jakarta Sans"],
+            "label-sm": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.015em", "fontWeight": "600" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "title-md": ["16px", { "lineHeight": "22px", "letterSpacing": "-0.005em", "fontWeight": "600" }],
+            "caption": ["10px", { "lineHeight": "14px", "letterSpacing": "0.08em", "fontWeight": "500" }],
+            "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+            "headline-sm": ["17px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "headline-xl-mobile": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "600" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.06em", "fontWeight": "600" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .folio-shadow {
+      box-shadow: 0 4px 20px -2px rgba(11, 31, 58, 0.04), 0 2px 6px -1px rgba(11, 31, 58, 0.02);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface antialiased min-h-screen flex justify-center selection:bg-secondary selection:text-surface-lowest">
+<!-- Mobile Viewport Container -->
+<div class="w-full max-w-md bg-background min-h-screen flex flex-col relative pb-32">
+<!-- TopAppBar (from Shared Components JSON: docked full-width top-0, flat hairline border, style_shell_layout) -->
+<header class="sticky top-0 z-40 bg-surface dark:bg-surface border-b border-outline-variant dark:border-outline flex items-center justify-between px-margin-mobile w-full h-14 backdrop-blur-md bg-opacity-95">
+<!-- Leading Icon -->
+<button aria-label="Back" class="w-9 h-9 rounded-full flex items-center justify-center text-primary dark:text-inverse-primary hover:bg-surface-container dark:hover:bg-surface-container-high transition-colors duration-150 active:scale-95 transition-transform duration-150 -ml-1.5 focus:outline-none" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="arrow_back">arrow_back</span>
+</button>
+<!-- Center Title -->
+<h1 class="text-headline-sm font-headline-sm text-primary dark:text-inverse-primary tracking-tight select-none">Profile Completion</h1>
+<!-- Trailing Icon -->
+<button aria-label="Help" class="w-9 h-9 rounded-full flex items-center justify-center text-primary dark:text-inverse-primary hover:bg-surface-container dark:hover:bg-surface-container-high transition-colors duration-150 active:scale-95 transition-transform duration-150 -mr-1.5 focus:outline-none" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="help_outline">help_outline</span>
+</button>
+</header>
+<!-- Main Form Scrollable Content -->
+<main class="flex-1 px-margin-mobile pt-6">
+<!-- Stepper Indicator Module -->
+<nav aria-label="Progress" class="mb-8">
+<ol class="flex items-center justify-between relative">
+<!-- Step 1: Personal Details (Completed) -->
+<li class="flex-1 flex flex-col items-center relative z-10">
+<div class="w-8 h-8 rounded-full bg-secondary-container/40 border border-secondary text-secondary flex items-center justify-center mb-2 shadow-xs transition-colors">
+<span class="material-symbols-outlined text-[16px] font-bold" data-icon="check" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<span class="font-label-sm text-caption text-primary-container font-semibold tracking-wider uppercase text-center">Personal</span>
+</li>
+<!-- Connecting Spine 1-2 -->
+<div class="absolute left-[20%] right-[52%] top-4 -translate-y-1/2 h-[1.5px] bg-secondary/60 z-0"></div>
+<!-- Step 2: Documents (Active) -->
+<li aria-current="step" class="flex-1 flex flex-col items-center relative z-10">
+<div class="w-8 h-8 rounded-full bg-primary-container text-on-primary border-2 border-secondary flex items-center justify-center mb-2 shadow-sm ring-4 ring-secondary/15">
+<span class="font-label-md text-label-md font-bold">2</span>
+</div>
+<span class="font-label-sm text-caption text-primary-container font-bold tracking-wider uppercase text-center">Documents</span>
+</li>
+<!-- Connecting Spine 2-3 -->
+<div class="absolute left-[52%] right-[20%] top-4 -translate-y-1/2 h-[1px] bg-outline-variant z-0"></div>
+<!-- Step 3: Courses (Upcoming/Inactive) -->
+<li class="flex-1 flex flex-col items-center relative z-10">
+<div class="w-8 h-8 rounded-full bg-surface-container-high text-outline border border-outline-variant flex items-center justify-center mb-2">
+<span class="font-label-md text-label-md font-medium">3</span>
+</div>
+<span class="font-label-sm text-caption text-outline font-medium tracking-wider uppercase text-center">Courses</span>
+</li>
+</ol>
+</nav>
+<!-- Section Header -->
+<section class="mb-6">
+<div class="flex items-center gap-1.5 mb-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span class="font-caption text-caption uppercase text-secondary font-bold tracking-widest">Registry Dossier • Step 2</span>
+</div>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-primary-container tracking-tight">Official Documents</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Enter your official maritime credentials and travel identification records.</p>
+</section>
+<!-- Document Cards Stack -->
+<div class="space-y-5">
+<!-- CARD 1: Passport -->
+<article class="bg-surface-container-lowest rounded-xl border border-outline-variant/60 p-5 folio-shadow transition-shadow">
+<!-- Card Header -->
+<div class="flex items-center justify-between pb-4 mb-4 border-b border-surface-container">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-full bg-surface-container-low border border-outline-variant/50 flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-[18px]" data-icon="badge">badge</span>
+</div>
+<div>
+<h3 class="font-title-md text-title-md text-primary-container leading-none">Passport</h3>
+<span class="font-caption text-caption text-secondary uppercase font-semibold">Primary ID</span>
+</div>
+</div>
+<button aria-label="Remove Passport" class="w-8 h-8 rounded-lg flex items-center justify-center text-outline hover:text-error hover:bg-error-container/20 transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="delete">delete</span>
+</button>
+</div>
+<!-- Card Form Inputs -->
+<div class="space-y-3.5">
+<!-- Field 1: Passport Number -->
+<div>
+<label class="block font-label-md text-label-md uppercase tracking-wider text-outline mb-1.5" for="passport-number">Passport Number</label>
+<div class="relative">
+<input class="w-full h-12 bg-surface rounded-xl border border-outline-variant/80 pl-3.5 pr-10 text-primary-container font-title-md text-title-md focus:border-secondary focus:ring-2 focus:ring-secondary/20 transition-all font-mono tracking-wider placeholder:text-outline-variant" id="passport-number" placeholder="Passport No." type="text" value="GG465DGG"/>
+<div class="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-outline">
+<span class="material-symbols-outlined text-[20px]" data-icon="pin">pin</span>
+</div>
+</div>
+</div>
+<!-- Field 2: Passport Validity -->
+<div>
+<label class="block font-label-md text-label-md uppercase tracking-wider text-outline mb-1.5" for="passport-validity">Passport Validity</label>
+<div class="relative">
+<input class="w-full h-12 bg-surface rounded-xl border border-outline-variant/80 pl-3.5 pr-10 text-primary-container font-body-md text-body-md focus:border-secondary focus:ring-2 focus:ring-secondary/20 transition-all" id="passport-validity" placeholder="DD/MM/YYYY" type="text" value="31/10/2030"/>
+<div class="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-outline">
+<span class="material-symbols-outlined text-[20px]" data-icon="calendar_today">calendar_today</span>
+</div>
+</div>
+</div>
+<!-- 2-Column Grid: Issued Place & Issued Date -->
+<div class="grid grid-cols-2 gap-3 pt-0.5">
+<div>
+<label class="block font-label-md text-label-md uppercase tracking-wider text-outline mb-1.5" for="passport-place">Issued Place</label>
+<input class="w-full h-12 bg-surface rounded-xl border border-outline-variant/80 px-3.5 text-primary-container font-body-md text-body-md focus:border-secondary focus:ring-2 focus:ring-secondary/20 transition-all" id="passport-place" placeholder="City of issue" type="text" value="Cochin"/>
+</div>
+<div>
+<label class="block font-label-md text-label-md uppercase tracking-wider text-outline mb-1.5" for="passport-date">Issued Date</label>
+<div class="relative">
+<input class="w-full h-12 bg-surface rounded-xl border border-outline-variant/80 pl-3 pr-8 text-primary-container font-body-md text-body-md focus:border-secondary focus:ring-2 focus:ring-secondary/20 transition-all" id="passport-date" placeholder="DD/MM/YYYY" type="text" value="01/05/2026"/>
+<div class="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-outline">
+<span class="material-symbols-outlined text-[17px]" data-icon="calendar_today">calendar_today</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</article>
+<!-- CARD 2: Seaman Book / CDC -->
+<article class="bg-surface-container-lowest rounded-xl border border-outline-variant/60 p-5 folio-shadow transition-shadow">
+<!-- Card Header -->
+<div class="flex items-center justify-between pb-4 mb-4 border-b border-surface-container">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-full bg-surface-container-low border border-outline-variant/50 flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-[18px]" data-icon="anchor">anchor</span>
+</div>
+<div>
+<h3 class="font-title-md text-title-md text-primary-container leading-none">Seaman Book / CDC</h3>
+<span class="font-caption text-caption text-secondary uppercase font-semibold">Continuous Discharge</span>
+</div>
+</div>
+<button aria-label="Remove CDC" class="w-8 h-8 rounded-lg flex items-center justify-center text-outline hover:text-error hover:bg-error-container/20 transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="delete">delete</span>
+</button>
+</div>
+<!-- Card Form Inputs -->
+<div class="space-y-3.5">
+<!-- Field 1: CDC Number -->
+<div>
+<label class="block font-label-md text-label-md uppercase tracking-wider text-outline mb-1.5" for="cdc-number">CDC Number</label>
+<div class="relative">
+<input class="w-full h-12 bg-surface rounded-xl border border-outline-variant/80 pl-3.5 pr-10 text-primary-container font-title-md text-title-md focus:border-secondary focus:ring-2 focus:ring-secondary/20 transition-all font-mono tracking-wider placeholder:text-outline-variant" id="cdc-number" placeholder="CDC Registration" type="text" value="MUM-148922"/>
+<div class="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-outline">
+<span class="material-symbols-outlined text-[20px]" data-icon="description">description</span>
+</div>
+</div>
+</div>
+<!-- Field 2: CDC Validity -->
+<div>
+<label class="block font-label-md text-label-md uppercase tracking-wider text-outline mb-1.5" for="cdc-validity">CDC Validity</label>
+<div class="relative">
+<input class="w-full h-12 bg-surface rounded-xl border border-outline-variant/80 pl-3.5 pr-10 text-primary-container font-body-md text-body-md focus:border-secondary focus:ring-2 focus:ring-secondary/20 transition-all" id="cdc-validity" placeholder="DD/MM/YYYY" type="text" value="14/08/2029"/>
+<div class="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-outline">
+<span class="material-symbols-outlined text-[20px]" data-icon="calendar_today">calendar_today</span>
+</div>
+</div>
+</div>
+<!-- 2-Column Grid: Issued Place & Issued Date -->
+<div class="grid grid-cols-2 gap-3 pt-0.5">
+<div>
+<label class="block font-label-md text-label-md uppercase tracking-wider text-outline mb-1.5" for="cdc-place">Issued Place</label>
+<input class="w-full h-12 bg-surface rounded-xl border border-outline-variant/80 px-3.5 text-primary-container font-body-md text-body-md focus:border-secondary focus:ring-2 focus:ring-secondary/20 transition-all" id="cdc-place" placeholder="Maritime authority" type="text" value="Mumbai"/>
+</div>
+<div>
+<label class="block font-label-md text-label-md uppercase tracking-wider text-outline mb-1.5" for="cdc-date">Issued Date</label>
+<div class="relative">
+<input class="w-full h-12 bg-surface rounded-xl border border-outline-variant/80 pl-3 pr-8 text-primary-container font-body-md text-body-md focus:border-secondary focus:ring-2 focus:ring-secondary/20 transition-all" id="cdc-date" placeholder="DD/MM/YYYY" type="text" value="15/08/2019"/>
+<div class="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-outline">
+<span class="material-symbols-outlined text-[17px]" data-icon="calendar_today">calendar_today</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</article>
+<!-- CARD 3: Add New Document Card (Dashed) -->
+<button class="w-full group rounded-xl border-2 border-dashed border-secondary/40 hover:border-secondary bg-surface-container-low/60 hover:bg-surface-container-low p-5 text-center transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-secondary" type="button">
+<div class="flex flex-col items-center justify-center">
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest border border-secondary/30 text-secondary group-hover:scale-105 transition-transform flex items-center justify-center mb-2.5 shadow-xs">
+<span class="material-symbols-outlined text-[20px]" data-icon="add">add</span>
+</div>
+<span class="font-title-md text-body-md font-semibold text-primary-container group-hover:text-secondary transition-colors">+ Add Document Type</span>
+<span class="font-body-sm text-caption text-outline mt-0.5">STCW Endorsements, Seafarer Visa, Yellow Fever, etc.</span>
+</div>
+</button>
+</div>
+<!-- Trust Note / Folio Credential Notice -->
+<div class="mt-6 flex items-start gap-2.5 p-3 rounded-lg bg-surface-container/60 border border-outline-variant/40">
+<span class="material-symbols-outlined text-[18px] text-secondary mt-0.5 flex-shrink-0" data-icon="verified_user">verified_user</span>
+<p class="font-body-sm text-caption text-on-surface-variant leading-relaxed">
+          Records are cross-referenced with DG Shipping and IMO databases for maritime verification under STCW standards.
+        </p>
+</div>
+</main>
+<!-- Sticky Docked Bottom Action Bar -->
+<div class="fixed bottom-0 left-0 right-0 z-50 flex justify-center bg-background/95 backdrop-blur-md border-t border-outline-variant/50 px-margin-mobile py-4">
+<div class="w-full max-w-md">
+<button class="w-full h-[52px] bg-primary-container text-on-primary rounded-full font-title-md text-body-md font-semibold flex items-center justify-center gap-2 shadow-md hover:bg-primary transition-colors active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-secondary/50" type="button">
+<span>Next Step: Courses</span>
+<span class="material-symbols-outlined text-[18px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</body></html>

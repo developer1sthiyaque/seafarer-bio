@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Profile Completion - Step 3 (Courses)</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-secondary-fixed": "#271900",
+            "surface-container": "#efeeeb",
+            "on-tertiary-fixed-variant": "#812628",
+            "on-tertiary": "#ffffff",
+            "on-tertiary-fixed": "#410006",
+            "on-error": "#ffffff",
+            "primary-container": "#0b1f3a",
+            "outline": "#75777e",
+            "on-surface": "#1b1c1a",
+            "error": "#ba1a1a",
+            "surface-tint": "#4d5f7d",
+            "surface-container-lowest": "#ffffff",
+            "surface-variant": "#e3e2df",
+            "surface-container-highest": "#e3e2df",
+            "inverse-primary": "#b5c7ea",
+            "primary": "#000615",
+            "surface-container-low": "#f4f3f0",
+            "on-surface-variant": "#44474d",
+            "error-container": "#ffdad6",
+            "inverse-on-surface": "#f2f1ee",
+            "on-error-container": "#93000a",
+            "surface-bright": "#faf9f6",
+            "tertiary-container": "#470007",
+            "secondary-container": "#fdd182",
+            "on-primary-fixed": "#071c36",
+            "on-background": "#1b1c1a",
+            "inverse-surface": "#2f312f",
+            "on-secondary-container": "#775815",
+            "surface": "#faf9f6",
+            "tertiary-fixed-dim": "#ffb3af",
+            "background": "#faf9f6",
+            "secondary": "#795916",
+            "tertiary-fixed": "#ffdad8",
+            "on-primary-fixed-variant": "#364764",
+            "surface-container-high": "#e9e8e5",
+            "on-tertiary-container": "#d46462",
+            "secondary-fixed-dim": "#ebc073",
+            "surface-dim": "#dbdad7",
+            "secondary-fixed": "#ffdea7",
+            "on-primary": "#ffffff",
+            "tertiary": "#170001",
+            "on-secondary-fixed-variant": "#5e4200",
+            "on-secondary": "#ffffff",
+            "primary-fixed-dim": "#b5c7ea",
+            "on-primary-container": "#7587a7",
+            "primary-fixed": "#d6e3ff",
+            "outline-variant": "#c4c6ce"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-xl": "2rem",
+            "margin-mobile": "1.5rem",
+            "gutter-mobile": "0.75rem",
+            "margin": "1.5rem",
+            "gutter": "1rem",
+            "space-sm": "0.5rem",
+            "space-md": "1rem",
+            "space-xs": "0.25rem",
+            "space-lg": "1.5rem"
+          },
+          "fontFamily": {
+            "title-md": ["Plus Jakarta Sans"],
+            "headline-xl-mobile": ["Playfair Display"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "label-md": ["Plus Jakarta Sans"],
+            "label-sm": ["Plus Jakarta Sans"],
+            "headline-sm": ["Playfair Display"],
+            "body-sm": ["Plus Jakarta Sans"],
+            "headline-lg-mobile": ["Playfair Display"],
+            "caption": ["Plus Jakarta Sans"],
+            "headline-lg": ["Playfair Display"],
+            "headline-xl": ["Playfair Display"],
+            "body-md": ["Plus Jakarta Sans"],
+            "headline-md": ["Playfair Display"]
+          },
+          "fontSize": {
+            "title-md": ["16px", { "lineHeight": "22px", "letterSpacing": "-0.005em", "fontWeight": "600" }],
+            "headline-xl-mobile": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "600" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.06em", "fontWeight": "600" }],
+            "headline-sm": ["17px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "caption": ["10px", { "lineHeight": "14px", "letterSpacing": "0.08em", "fontWeight": "500" }],
+            "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.015em", "fontWeight": "600" }],
+            "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .custom-hairline {
+      border: 1px solid #E6E2DA;
+    }
+    .brass-hairline {
+      border: 1px dashed rgba(184, 146, 74, 0.45);
+    }
+    .navy-shadow-ambient {
+      box-shadow: 0 4px 20px -2px rgba(11, 31, 58, 0.04), 0 2px 6px -1px rgba(11, 31, 58, 0.02);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface antialiased min-h-screen flex justify-center selection:bg-secondary-container selection:text-on-secondary-container">
+<!-- Mobile Viewport Container -->
+<div class="w-full max-w-[440px] bg-background min-h-screen flex flex-col relative pb-28">
+<!-- TopAppBar (Shared Component Execution) -->
+<header class="bg-surface text-primary border-b border-outline-variant docked full-width top-0 sticky z-30 flex items-center justify-between px-margin-mobile w-full h-14">
+<button aria-label="Go back" class="p-2 -ml-2 rounded-full hover:bg-surface-container transition-colors duration-150 active:scale-95 transition-transform duration-150 text-primary-container" type="button">
+<span class="material-symbols-outlined text-[22px]">arrow_back</span>
+</button>
+<h1 class="text-headline-sm font-headline-sm text-primary tracking-tight">Profile Completion</h1>
+<button aria-label="Assistance" class="p-2 -mr-2 rounded-full hover:bg-surface-container transition-colors duration-150 active:scale-95 transition-transform duration-150 text-secondary" type="button">
+<span class="material-symbols-outlined text-[22px]">help_outline</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 px-margin-mobile pt-5 flex flex-col gap-6">
+<!-- Step Progress Indicator -->
+<section aria-label="Registration Progress" class="w-full bg-surface-container-lowest rounded-2xl p-4 custom-hairline navy-shadow-ambient">
+<div class="flex items-center justify-between relative px-2">
+<!-- Step 1: Personal (Completed) -->
+<div class="flex flex-col items-center z-10">
+<div class="w-7 h-7 rounded-full bg-secondary text-surface-container-lowest flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-[17px]" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<span class="font-label-sm text-caption text-secondary mt-1.5 uppercase font-semibold tracking-wider">PERSONAL</span>
+</div>
+<!-- Connector 1 -->
+<div class="flex-1 h-[2px] bg-secondary mx-1 mb-4"></div>
+<!-- Step 2: Documents (Completed) -->
+<div class="flex flex-col items-center z-10">
+<div class="w-7 h-7 rounded-full bg-secondary text-surface-container-lowest flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-[17px]" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<span class="font-label-sm text-caption text-secondary mt-1.5 uppercase font-semibold tracking-wider">DOCUMENTS</span>
+</div>
+<!-- Connector 2 -->
+<div class="flex-1 h-[2px] bg-primary-container mx-1 mb-4"></div>
+<!-- Step 3: Courses (Active) -->
+<div class="flex flex-col items-center z-10">
+<div class="w-7 h-7 rounded-full bg-primary-container text-surface-container-lowest flex items-center justify-center ring-4 ring-[#0b1f3a]/10 font-label-md text-label-md">
+<span>3</span>
+</div>
+<span class="font-label-sm text-caption text-primary-container mt-1.5 uppercase font-bold tracking-wider">COURSES</span>
+</div>
+</div>
+</section>
+<!-- Section Header -->
+<header class="flex flex-col gap-1.5">
+<div class="flex items-center gap-1.5 text-secondary font-label-sm text-caption tracking-widest uppercase">
+<span class="inline-block w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span>REGISTRY DOSSIER • STEP 3</span>
+</div>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-primary-container">
+          Courses &amp; Certifications
+        </h2>
+<p class="font-body-sm text-body-sm text-outline">
+          Add your mandatory STCW courses, training certifications, and specialized endorsements.
+        </p>
+</header>
+<!-- Course Card 1 -->
+<article class="bg-surface-container-lowest rounded-2xl p-5 custom-hairline navy-shadow-ambient flex flex-col gap-4">
+<!-- Card Header -->
+<div class="flex items-start justify-between border-b border-surface-variant pb-3.5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-low custom-hairline flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+</div>
+<div>
+<h3 class="font-title-md text-title-md text-primary-container leading-tight">STCW Basic Safety Training</h3>
+<span class="inline-block mt-0.5 px-2 py-0.5 bg-[#B8924A]/10 text-secondary border border-[#B8924A]/30 rounded-full font-label-sm text-[10px] tracking-wider font-semibold">
+                MANDATORY STCW VI/1
+              </span>
+</div>
+</div>
+<button aria-label="Delete course STCW Basic Safety Training" class="text-outline hover:text-error transition-colors p-1.5 rounded-full hover:bg-surface-container" type="button">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+<!-- Card Fields Stack -->
+<div class="flex flex-col gap-3.5">
+<!-- Certificate Number -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-outline uppercase tracking-wider">CERTIFICATE NUMBER</label>
+<div class="relative flex items-center">
+<input class="w-full h-12 bg-surface-bright rounded-xl custom-hairline px-3.5 pr-10 font-body-md text-body-md text-on-surface font-semibold focus:outline-none focus:border-primary-container transition-colors" readonly="" type="text" value="BST-982410-IN"/>
+<span class="material-symbols-outlined absolute right-3 text-secondary text-[20px]">verified</span>
+</div>
+</div>
+<!-- Validity Date -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-outline uppercase tracking-wider">VALIDITY DATE</label>
+<div class="relative flex items-center">
+<input class="w-full h-12 bg-surface-bright rounded-xl custom-hairline px-3.5 pr-10 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary-container transition-colors" readonly="" type="text" value="24/09/2029"/>
+<span class="material-symbols-outlined absolute right-3 text-outline text-[20px]">calendar_today</span>
+</div>
+</div>
+<!-- Two-column row: Place & Date -->
+<div class="grid grid-cols-2 gap-3">
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-outline uppercase tracking-wider">ISSUED PLACE</label>
+<input class="w-full h-12 bg-surface-bright rounded-xl custom-hairline px-3.5 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary-container transition-colors" readonly="" type="text" value="Mumbai"/>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-outline uppercase tracking-wider">ISSUED DATE</label>
+<div class="relative flex items-center">
+<input class="w-full h-12 bg-surface-bright rounded-xl custom-hairline px-3 pr-9 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary-container transition-colors" readonly="" type="text" value="25/09/2024"/>
+<span class="material-symbols-outlined absolute right-2.5 text-outline text-[18px]">event</span>
+</div>
+</div>
+</div>
+</div>
+</article>
+<!-- Course Card 2 -->
+<article class="bg-surface-container-lowest rounded-2xl p-5 custom-hairline navy-shadow-ambient flex flex-col gap-4">
+<!-- Card Header -->
+<div class="flex items-start justify-between border-b border-surface-variant pb-3.5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-low custom-hairline flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">support</span>
+</div>
+<div>
+<h3 class="font-title-md text-title-md text-primary-container leading-tight">Proficiency in Survival Craft (PSCRB)</h3>
+<span class="inline-block mt-0.5 px-2 py-0.5 bg-[#B8924A]/10 text-secondary border border-[#B8924A]/30 rounded-full font-label-sm text-[10px] tracking-wider font-semibold">
+                STCW VI/2 PROFICIENCY
+              </span>
+</div>
+</div>
+<button aria-label="Delete course Proficiency in Survival Craft" class="text-outline hover:text-error transition-colors p-1.5 rounded-full hover:bg-surface-container" type="button">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+<!-- Card Fields Stack -->
+<div class="flex flex-col gap-3.5">
+<!-- Certificate Number -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-outline uppercase tracking-wider">CERTIFICATE NUMBER</label>
+<div class="relative flex items-center">
+<input class="w-full h-12 bg-surface-bright rounded-xl custom-hairline px-3.5 pr-10 font-body-md text-body-md text-on-surface font-semibold focus:outline-none focus:border-primary-container transition-colors" readonly="" type="text" value="PSCRB-441092-B"/>
+<span class="material-symbols-outlined absolute right-3 text-secondary text-[20px]">description</span>
+</div>
+</div>
+<!-- Validity Date -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-outline uppercase tracking-wider">VALIDITY DATE</label>
+<div class="relative flex items-center">
+<input class="w-full h-12 bg-surface-bright rounded-xl custom-hairline px-3.5 pr-10 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary-container transition-colors" readonly="" type="text" value="18/11/2028"/>
+<span class="material-symbols-outlined absolute right-3 text-outline text-[20px]">calendar_today</span>
+</div>
+</div>
+<!-- Two-column row: Place & Date -->
+<div class="grid grid-cols-2 gap-3">
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-outline uppercase tracking-wider">ISSUED PLACE</label>
+<input class="w-full h-12 bg-surface-bright rounded-xl custom-hairline px-3.5 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary-container transition-colors" readonly="" type="text" value="Cochin"/>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-outline uppercase tracking-wider">ISSUED DATE</label>
+<div class="relative flex items-center">
+<input class="w-full h-12 bg-surface-bright rounded-xl custom-hairline px-3 pr-9 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary-container transition-colors" readonly="" type="text" value="19/11/2023"/>
+<span class="material-symbols-outlined absolute right-2.5 text-outline text-[18px]">event</span>
+</div>
+</div>
+</div>
+</div>
+</article>
+<!-- Add Button Card -->
+<button class="w-full rounded-2xl brass-hairline bg-surface-container-low/40 hover:bg-surface-container-low p-5 flex flex-col items-center text-center justify-center transition-all duration-150 group active:scale-[0.99]" type="button">
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest custom-hairline flex items-center justify-center text-secondary group-hover:bg-secondary group-hover:text-surface-container-lowest transition-colors mb-2.5">
+<span class="material-symbols-outlined text-[22px]">add</span>
+</div>
+<span class="font-title-md text-title-md text-primary-container font-semibold group-hover:text-secondary transition-colors">+ Add Course</span>
+<span class="font-caption text-caption text-outline mt-1 max-w-[280px]">Advanced Firefighting, Medical First Aid, Tanker Endorsements, etc.</span>
+</button>
+<!-- Verification / Compliance Note -->
+<aside class="rounded-xl bg-surface-container p-3.5 custom-hairline flex items-start gap-3 mb-2">
+<span class="material-symbols-outlined text-secondary text-[20px] shrink-0 mt-0.5" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<p class="font-caption text-caption text-on-surface-variant leading-relaxed">
+          Certificates are verified against DGS, MCA &amp; IMO maritime safety training databases under STCW 2010 Manila Amendments.
+        </p>
+</aside>
+</main>
+<!-- Sticky Bottom CTA Bar -->
+<footer class="fixed bottom-0 left-0 right-0 z-40 bg-surface-bright/95 backdrop-blur-md border-t border-surface-variant flex justify-center">
+<div class="w-full max-w-[440px] px-margin-mobile py-3.5">
+<button class="w-full h-[52px] bg-primary-container hover:bg-[#071526] active:scale-[0.98] transition-all duration-150 rounded-full flex items-center justify-center text-on-primary font-title-md text-title-md tracking-wide shadow-md" type="button">
+<span>Complete Profile →</span>
+</button>
+</div>
+</footer>
+</div>
+</body></html>

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_tab" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,600&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "primary-fixed": "#d6e3ff", "on-tertiary-fixed-variant": "#812628", "inverse-on-surface": "#f2f1ee", "on-error": "#ffffff", "on-secondary-container": "#775815", "error": "#ba1a1a", "tertiary-container": "#470007", "on-tertiary-fixed": "#410006", "surface-container-low": "#f4f3f0", "outline-variant": "#c4c6ce", "inverse-surface": "#2f312f", "surface-variant": "#e3e2df", "on-tertiary-container": "#d46462", "error-container": "#ffdad6", "tertiary-fixed": "#ffdad8", "secondary-fixed": "#ffdea7", "secondary-container": "#fdd182", "surface-container": "#efeeeb", "surface-dim": "#dbdad7", "tertiary": "#170001", "primary": "#000615", "primary-container": "#0b1f3a", "on-primary-fixed-variant": "#364764", "on-secondary-fixed": "#271900", "on-primary-container": "#7587a7", "on-secondary": "#ffffff", "tertiary-fixed-dim": "#ffb3af", "on-primary-fixed": "#071c36", "on-surface-variant": "#44474d", "on-secondary-fixed-variant": "#5e4200", "secondary-fixed-dim": "#ebc073", "background": "#faf9f6", "surface-container-highest": "#e3e2df", "secondary": "#795916", "surface": "#faf9f6", "on-primary": "#ffffff", "surface-bright": "#faf9f6", "surface-tint": "#4d5f7d", "primary-fixed-dim": "#b5c7ea", "inverse-primary": "#b5c7ea", "on-surface": "#1b1c1a", "on-error-container": "#93000a", "surface-container-lowest": "#ffffff", "on-tertiary": "#ffffff", "outline": "#75777e", "on-background": "#1b1c1a", "surface-container-high": "#e9e8e5" }, borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, spacing: { "gutter-mobile": "0.75rem", "margin": "1.5rem", "space-xl": "2rem", "margin-mobile": "1.5rem", "space-md": "1rem", "gutter": "1rem", "space-sm": "0.5rem", "space-lg": "1.5rem", "space-xs": "0.25rem" }, fontFamily: { "headline-lg-mobile": ["Playfair Display"], "title-md": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"], "headline-sm": ["Playfair Display"], "body-md": ["Plus Jakarta Sans"], "headline-xl-mobile": ["Playfair Display"], "label-md": ["Plus Jakarta Sans"], "headline-md": ["Playfair Display"], "headline-xl": ["Playfair Display"], "caption": ["Plus Jakarta Sans"], "headline-lg": ["Playfair Display"] }, fontSize: { "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "title-md": ["16px", { "lineHeight": "22px", "letterSpacing": "-0.005em", "fontWeight": "600" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.06em", "fontWeight": "600" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }], "headline-sm": ["17px", { "lineHeight": "24px", "fontWeight": "600" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "headline-xl-mobile": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "600" }], "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }], "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "600" }], "caption": ["10px", { "lineHeight": "14px", "letterSpacing": "0.08em", "fontWeight": "500" }], "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.015em", "fontWeight": "600" }] } } } }</script><style>@layer base{html,body{min-height:100%;margin:0;padding:0;}body{overscroll-behavior-y:none;-webkit-tap-highlight-color:transparent;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}}::-webkit-scrollbar{display:none;}</style><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface font-body-md text-on-surface antialiased flex flex-col min-h-screen"><header class="fixed top-0 inset-x-0 z-50 bg-surface/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(11,31,58,0.03)] pt-safe"><div class="h-16 px-margin-mobile flex items-center justify-between"><div class="flex flex-col justify-center min-w-0 pr-space-sm"><span class="font-caption text-caption text-secondary uppercase tracking-[0.08em]">Merchant Registry</span><h1 class="font-headline-sm text-headline-sm text-on-surface truncate tracking-tight">Bio Data</h1></div><div class="flex items-center gap-space-sm flex-shrink-0"><button aria-label="Search registry" class="min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">search</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="flex-1 flex flex-col relative w-full bg-surface pt-16 pb-20"><div class="flex flex-col w-full">
+<div class="px-margin-mobile pt-space-md pb-space-xl flex flex-col gap-space-lg">
+<!-- Profile Subscription Folio Card (Pro Active State) -->
+<section aria-label="Registry Subscription Status" class="relative bg-surface-container-lowest rounded-xl p-space-lg shadow-sm overflow-hidden">
+<div class="absolute -right-8 -top-8 w-32 h-32 rounded-full bg-secondary/5 blur-2xl pointer-events-none"></div>
+<div class="flex items-center justify-between gap-space-sm mb-space-md">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px] text-secondary" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+<span class="font-label-sm text-label-sm uppercase text-on-surface-variant tracking-wider">Subscription</span>
+</div>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#EBF5EE] text-[#1E5638] font-label-sm text-label-sm tracking-wide">
+<span class="w-1.5 h-1.5 rounded-full bg-[#2D6A4F] animate-pulse"></span>
+          Pro Active
+        </span>
+</div>
+<div class="flex flex-col gap-1 mb-space-md">
+<div class="flex items-baseline justify-between gap-space-sm">
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-semibold tracking-tight">Sovereign Dossier Plan</h2>
+<span class="font-label-sm text-label-sm text-secondary font-medium">TIER MASTER</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+          Active STCW Sovereign Dossier Plan · Renews 14 Nov 2027
+        </p>
+</div>
+<!-- Folio Perks & Endorsement Pill Group -->
+<div class="flex flex-wrap gap-1.5 mb-space-lg">
+<div class="flex items-center gap-1 bg-surface-container-low px-2 py-1 rounded-md text-on-surface-variant font-caption text-caption">
+<span class="material-symbols-outlined text-[13px] text-secondary">verified_user</span>
+<span>Cryptographic STCW Validation</span>
+</div>
+<div class="flex items-center gap-1 bg-surface-container-low px-2 py-1 rounded-md text-on-surface-variant font-caption text-caption">
+<span class="material-symbols-outlined text-[13px] text-secondary">history_edu</span>
+<span>Unlimited Ledger Logs</span>
+</div>
+<div class="flex items-center gap-1 bg-surface-container-low px-2 py-1 rounded-md text-on-surface-variant font-caption text-caption">
+<span class="material-symbols-outlined text-[13px] text-secondary">shield</span>
+<span>IMO Global Cross-Check</span>
+</div>
+</div>
+<!-- Action Row & Micro Links -->
+<div class="flex items-center justify-between pt-space-xs">
+<div class="flex items-center gap-space-sm">
+<button class="h-10 px-5 rounded-full bg-primary-container text-on-primary font-label-md text-label-md hover:bg-primary transition-colors flex items-center gap-1.5 shadow-sm active:scale-[0.98]" type="button">
+<span class="material-symbols-outlined text-[15px]">tune</span>
+            Manage
+          </button>
+<button class="h-10 px-4 rounded-full bg-surface-container-low text-on-surface-variant font-label-md text-label-md hover:text-on-surface hover:bg-surface-container transition-colors flex items-center gap-1" type="button">
+<span class="material-symbols-outlined text-[15px]">restore</span>
+            Restore
+          </button>
+</div>
+<a class="font-label-sm text-label-sm text-secondary hover:text-on-secondary-container transition-colors inline-flex items-center gap-0.5 group" href="#purchase-history">
+<span>Purchase History</span>
+<span class="material-symbols-outlined text-[14px] transition-transform group-hover:translate-x-0.5">chevron_right</span>
+</a>
+</div>
+</section>
+<!-- Officer Profile & Credential Ledger Summary -->
+<section aria-label="Officer Identification Folio" class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md">
+<div class="flex items-start justify-between gap-space-md">
+<div class="flex items-center gap-space-md">
+<div class="relative w-16 h-16 rounded-full overflow-hidden bg-surface-container flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="Distinguished chief officer portrait in pristine naval uniform with gold rank epaulets against warm ambient studio maritime lighting, high resolution and understated luxury" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAc3Cq7QY28CYnc1hjiA7PPkPtkJWFQAPZzUX-5Vw90gweCOedARBY4cI8GzPluLITHPhlN0k6-OYMytkhLWIFGmMc3EK2mkpVHh_NHiYRKZR4Ec73ZiShgMLA_TSQzdIKeUPcvDmG_SDshdK6SWDAgJFu8STDLt83MYB0x3IZ75LMqhdkAQjM9RJeLbB09UPY2-BMLp1UA9ala5MEqNnWVC-tqKRXgISHEYVDtyqQ"/>
+<div class="absolute bottom-0 right-0 w-4 h-4 rounded-full bg-secondary-container flex items-center justify-center shadow">
+<span class="material-symbols-outlined text-[10px] text-on-secondary-container" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-1.5">
+<h3 class="font-headline-sm text-headline-sm text-on-surface truncate">Isthiaque Kb</h3>
+<span class="material-symbols-outlined text-secondary text-[16px]" title="Registry Verified">verified</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">Master Mariner · Unlimited (FG)</p>
+<span class="font-caption text-caption text-secondary tracking-widest uppercase mt-0.5">IMO REG #9482103 · BDA</span>
+</div>
+</div>
+<button aria-label="Share Officer Dossier" class="w-8 h-8 rounded-full bg-surface-container-low flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">share</span>
+</button>
+</div>
+<!-- Quick Metrics Grid -->
+<div class="grid grid-cols-3 gap-2 pt-space-xs">
+<div class="bg-surface-container-low rounded-lg p-2.5 flex flex-col">
+<span class="font-caption text-caption uppercase text-on-surface-variant">Sea Days</span>
+<span class="font-title-md text-title-md text-on-surface font-semibold mt-0.5">2,410</span>
+<span class="font-caption text-caption text-[#2D6A4F] mt-0.5">Verified 100%</span>
+</div>
+<div class="bg-surface-container-low rounded-lg p-2.5 flex flex-col">
+<span class="font-caption text-caption uppercase text-on-surface-variant">Vessels</span>
+<span class="font-title-md text-title-md text-on-surface font-semibold mt-0.5">14</span>
+<span class="font-caption text-caption text-on-surface-variant mt-0.5">LNG / Capesize</span>
+</div>
+<div class="bg-surface-container-low rounded-lg p-2.5 flex flex-col">
+<span class="font-caption text-caption uppercase text-on-surface-variant">STCW Status</span>
+<span class="font-title-md text-title-md text-on-surface font-semibold mt-0.5">Valid</span>
+<span class="font-caption text-caption text-secondary mt-0.5">Full Endorsed</span>
+</div>
+</div>
+</section>
+<!-- STCW Certificates & Sovereign Endorsements -->
+<section aria-label="STCW Certificates" class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div>
+<span class="font-caption text-caption uppercase tracking-wider text-secondary">Registry Records</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">STCW Endorsements</h3>
+</div>
+<span class="font-label-sm text-label-sm px-2 py-0.5 rounded bg-surface-container text-on-surface-variant">4 Active</span>
+</div>
+<div class="flex flex-col gap-space-sm">
+<!-- Certificate 1 -->
+<div class="p-space-md rounded-lg bg-surface-container-low flex flex-col gap-1.5 transition-colors">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-secondary">menu_book</span>
+<h4 class="font-title-md text-title-md text-on-surface font-medium">Certificate of Competency (Master Unlimited)</h4>
+</div>
+<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-[#EBF5EE] text-[#1E5638] font-caption text-caption">Endorsed</span>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant font-body-sm text-body-sm pl-6">
+<span>Maritime &amp; Coastguard Agency (UK) · Ref: MCA-88291</span>
+<span class="font-label-sm text-label-sm text-on-surface">Exp. 2029</span>
+</div>
+</div>
+<!-- Certificate 2 -->
+<div class="p-space-md rounded-lg bg-surface-container-low flex flex-col gap-1.5 transition-colors">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-secondary">local_gas_station</span>
+<h4 class="font-title-md text-title-md text-on-surface font-medium">Advanced Gas Tanker Operations (CHEM/LPG)</h4>
+</div>
+<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-[#EBF5EE] text-[#1E5638] font-caption text-caption">Endorsed</span>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant font-body-sm text-body-sm pl-6">
+<span>STCW Regulation V/1-2 · Panama Flag State</span>
+<span class="font-label-sm text-label-sm text-on-surface">Exp. 2028</span>
+</div>
+</div>
+<!-- Certificate 3 -->
+<div class="p-space-md rounded-lg bg-surface-container-low flex flex-col gap-1.5 transition-colors">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-secondary">health_and_safety</span>
+<h4 class="font-title-md text-title-md text-on-surface font-medium">Proficiency in Medical Care onboard Ship</h4>
+</div>
+<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-[#EBF5EE] text-[#1E5638] font-caption text-caption">Endorsed</span>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant font-body-sm text-body-sm pl-6">
+<span>STCW VI/4-2 · Warsash Maritime Academy</span>
+<span class="font-label-sm text-label-sm text-on-surface">Exp. 2027</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Sea Service Ledger Entries (Discharge Ledger) -->
+<section aria-label="Sea Service Ledger" class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div>
+<span class="font-caption text-caption uppercase tracking-wider text-secondary">Official Logbook</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Sea Service Ledger</h3>
+</div>
+<button class="font-label-sm text-label-sm text-secondary hover:text-on-secondary-container transition-colors flex items-center gap-0.5" type="button">
+<span>Full Folio</span>
+<span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</button>
+</div>
+<!-- Ledger Timeline List -->
+<div class="flex flex-col gap-space-md relative pl-5">
+<!-- Connecting Line -->
+<div class="absolute left-1.5 top-3 bottom-3 w-0.5 bg-surface-variant"></div>
+<!-- Entry 1 -->
+<div class="relative flex flex-col gap-1">
+<div class="absolute -left-5 top-1.5 w-3 h-3 rounded-full bg-secondary ring-4 ring-surface-container-lowest"></div>
+<div class="flex items-baseline justify-between gap-space-xs">
+<h4 class="font-title-md text-title-md text-on-surface font-semibold italic">M/V Nordic Sovereign</h4>
+<span class="font-label-sm text-label-sm text-on-surface bg-surface-container px-2 py-0.5 rounded font-mono">184 Days</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">LNG Carrier · 174,000 m³ · Chief Officer</p>
+<div class="flex items-center justify-between font-caption text-caption text-outline">
+<span>Rotterdam (NLD) → Ras Laffan (QAT)</span>
+<span>Mar 2024 – Sep 2024</span>
+</div>
+</div>
+<!-- Entry 2 -->
+<div class="relative flex flex-col gap-1">
+<div class="absolute -left-5 top-1.5 w-3 h-3 rounded-full bg-primary ring-4 ring-surface-container-lowest"></div>
+<div class="flex items-baseline justify-between gap-space-xs">
+<h4 class="font-title-md text-title-md text-on-surface font-semibold italic">M/T Aurelia Horizon</h4>
+<span class="font-label-sm text-label-sm text-on-surface bg-surface-container px-2 py-0.5 rounded font-mono">212 Days</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Suezmax Crude · 158,000 DWT · First Officer</p>
+<div class="flex items-center justify-between font-caption text-caption text-outline">
+<span>Singapore (SGP) → Houston (USA)</span>
+<span>Jun 2023 – Jan 2024</span>
+</div>
+</div>
+<!-- Entry 3 -->
+<div class="relative flex flex-col gap-1">
+<div class="absolute -left-5 top-1.5 w-3 h-3 rounded-full bg-outline-variant ring-4 ring-surface-container-lowest"></div>
+<div class="flex items-baseline justify-between gap-space-xs">
+<h4 class="font-title-md text-title-md text-on-surface font-semibold italic">M/V Pacific Mariner</h4>
+<span class="font-label-sm text-label-sm text-on-surface bg-surface-container px-2 py-0.5 rounded font-mono">160 Days</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Capesize Bulk · 180,000 DWT · Second Officer</p>
+<div class="flex items-center justify-between font-caption text-caption text-outline">
+<span>Port Hedland (AUS) → Qingdao (CHN)</span>
+<span>Aug 2022 – Jan 2023</span>
+</div>
+</div>
+</div>
+<!-- Verification Seal Banner -->
+<div class="mt-space-sm p-space-md rounded-lg bg-surface-container-low flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-7 h-7 rounded-full bg-secondary-container flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-[15px] text-on-secondary-container">policy</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">Maritime Administration Certified</span>
+<span class="font-caption text-caption text-on-surface-variant">Digital Discharge Book synchronized with Flag State ledger</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-secondary text-[18px]">verified</span>
+</div>
+</section>
+<!-- Folio Stamp & Archival Signature Footer -->
+<div class="py-space-md flex flex-col items-center justify-center text-center gap-1">
+<div class="w-8 h-8 rounded-full bg-surface-container-low flex items-center justify-center text-secondary mb-1">
+<span class="material-symbols-outlined text-[18px]">sailing</span>
+</div>
+<p class="font-headline-sm text-headline-sm text-on-surface italic">Merchant Officer Dossier</p>
+<p class="font-caption text-caption text-outline uppercase tracking-widest">Registrar General of Shipping and Seamen · Verified 2024</p>
+</div>
+</div>
+</div></main><nav class="fixed bottom-0 inset-x-0 z-50 pb-safe bg-surface/85 backdrop-blur-xl shadow-[0_-2px_12px_rgba(11,31,58,0.04)]" data-active-classes="text-secondary"><div class="flex justify-around items-center h-20 px-space-xs"><a aria-current="page" class="flex flex-col items-center justify-center min-w-[44px] min-h-[44px] flex-1 transition-colors gap-0.5 text-secondary" data-path="bio-data" href="#"><span class="material-symbols-outlined text-[22px]">badge</span><span class="font-label-sm text-label-sm">Bio-Data</span></a><a class="flex flex-col items-center justify-center min-w-[44px] min-h-[44px] flex-1 text-on-surface-variant hover:text-on-surface transition-colors gap-0.5" data-path="documents" href="#"><span class="material-symbols-outlined text-[22px]">folder_special</span><span class="font-label-sm text-label-sm">Documents</span></a><a class="flex flex-col items-center justify-center min-w-[44px] min-h-[44px] flex-1 text-on-surface-variant hover:text-on-surface transition-colors gap-0.5" data-path="sea-time" href="#"><span class="material-symbols-outlined text-[22px]">sailing</span><span class="font-label-sm text-label-sm">Sea Time</span></a><a class="flex flex-col items-center justify-center min-w-[44px] min-h-[44px] flex-1 text-on-surface-variant hover:text-on-surface transition-colors gap-0.5" data-path="settings" href="#"><span class="material-symbols-outlined text-[22px]">tune</span><span class="font-label-sm text-label-sm">Settings</span></a></div></nav></body></html>

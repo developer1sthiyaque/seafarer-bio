@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_stack" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{width:100%;margin:0;padding:0;min-height:100%;}body{overscroll-behavior-y:none;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: 'class', theme: { extend: { colors: { 'surface-container-lowest': '#ffffff', 'error': '#ba1a1a', 'tertiary-container': '#470007', 'on-error-container': '#93000a', 'secondary': '#795916', 'inverse-primary': '#b5c7ea', 'on-secondary-container': '#775815', 'inverse-surface': '#2f312f', 'on-tertiary': '#ffffff', 'primary-fixed-dim': '#b5c7ea', 'primary-container': '#0b1f3a', 'primary-fixed': '#d6e3ff', 'surface-container-high': '#e9e8e5', 'on-error': '#ffffff', 'surface-container-highest': '#e3e2df', 'surface-tint': '#4d5f7d', 'surface-container-low': '#f4f3f0', 'on-secondary-fixed': '#271900', 'surface': '#faf9f6', 'error-container': '#ffdad6', 'on-surface': '#1b1c1a', 'outline-variant': '#c4c6ce', 'on-primary-fixed': '#071c36', 'secondary-fixed': '#ffdea7', 'on-secondary': '#ffffff', 'on-background': '#1b1c1a', 'surface-container': '#efeeeb', 'outline': '#75777e', 'on-tertiary-fixed': '#410006', 'on-primary': '#ffffff', 'primary': '#000615', 'on-surface-variant': '#44474d', 'secondary-container': '#fdd182', 'on-tertiary-fixed-variant': '#812628', 'background': '#faf9f6', 'on-tertiary-container': '#d46462', 'inverse-on-surface': '#f2f1ee', 'on-primary-fixed-variant': '#364764', 'surface-bright': '#faf9f6', 'tertiary-fixed-dim': '#ffb3af', 'surface-variant': '#e3e2df', 'surface-dim': '#dbdad7', 'secondary-fixed-dim': '#ebc073', 'on-primary-container': '#7587a7', 'tertiary-fixed': '#ffdad8', 'tertiary': '#170001', 'on-secondary-fixed-variant': '#5e4200' }, borderRadius: { 'DEFAULT': '0.25rem', 'lg': '0.5rem', 'xl': '0.75rem', 'full': '9999px' }, spacing: { 'space-md': '1rem', 'space-sm': '0.5rem', 'space-xs': '0.25rem', 'gutter-mobile': '0.75rem', 'space-lg': '1.5rem', 'margin': '1.5rem', 'gutter': '1rem', 'margin-mobile': '1.5rem', 'space-xl': '2rem' }, fontFamily: { 'headline-xl-mobile': ['Playfair Display'], 'body-lg': ['Plus Jakarta Sans'], 'headline-lg-mobile': ['Playfair Display'], 'title-md': ['Plus Jakarta Sans'], 'label-md': ['Plus Jakarta Sans'], 'headline-xl': ['Playfair Display'], 'body-md': ['Plus Jakarta Sans'], 'label-sm': ['Plus Jakarta Sans'], 'headline-sm': ['Playfair Display'], 'headline-md': ['Playfair Display'], 'body-sm': ['Plus Jakarta Sans'], 'caption': ['Plus Jakarta Sans'], 'headline-lg': ['Playfair Display'] }, fontSize: { 'headline-xl-mobile': ['30px', { lineHeight: '38px', letterSpacing: '-0.01em', fontWeight: '600' }], 'body-lg': ['16px', { lineHeight: '24px', fontWeight: '400' }], 'headline-lg-mobile': ['24px', { lineHeight: '32px', letterSpacing: '-0.01em', fontWeight: '600' }], 'title-md': ['16px', { lineHeight: '22px', letterSpacing: '-0.005em', fontWeight: '600' }], 'label-md': ['12px', { lineHeight: '16px', letterSpacing: '0.04em', fontWeight: '600' }], 'headline-xl': ['40px', { lineHeight: '48px', letterSpacing: '-0.02em', fontWeight: '600' }], 'body-md': ['14px', { lineHeight: '20px', fontWeight: '400' }], 'label-sm': ['11px', { lineHeight: '14px', letterSpacing: '0.06em', fontWeight: '600' }], 'headline-sm': ['17px', { lineHeight: '24px', fontWeight: '600' }], 'headline-md': ['20px', { lineHeight: '28px', fontWeight: '600' }], 'body-sm': ['13px', { lineHeight: '18px', fontWeight: '400' }], 'caption': ['10px', { lineHeight: '14px', letterSpacing: '0.08em', fontWeight: '500' }], 'headline-lg': ['32px', { lineHeight: '40px', letterSpacing: '-0.015em', fontWeight: '600' }] } } } };</script></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased flex flex-col min-h-screen"><header class="fixed top-0 w-full z-50 bg-surface/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(11,31,58,0.03)] pt-safe"><div class="flex justify-between items-center px-margin-mobile pt-space-xs text-on-surface-variant font-label-sm text-label-sm select-none"><span>09:41</span><div class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[15px]">signal_cellular_alt</span><span class="material-symbols-outlined text-[15px]">wifi</span><span class="material-symbols-outlined text-[15px]">battery_full</span></div></div><div class="h-16 px-margin-mobile flex items-center justify-between gap-space-sm"><div class="flex items-center gap-space-sm min-w-0"><button aria-label="Go Back" class="w-11 h-11 -ml-2 rounded-full flex items-center justify-center text-primary-container hover:bg-surface-container transition-colors shrink-0" onclick="history.back()"><span class="material-symbols-outlined text-[22px]">arrow_back</span></button><img alt="Seafarer Maritime Emblem" class="h-8 w-auto object-contain shrink-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjE8Nq-_VX4rrZDLqn1uD0zD21Kycccb5c9_e411obQfc2Uf6sxVVmUe3qBe-TWjwCjGB_DIiAYX9e5oikkX7tKx41bGYkSQHMGqiG1N8qr5X6l7wCbzXRORmqQk3u4g8cXzj0o10UOtFzpesqVhFWqcwlaY2AUqncGE21SWb9vLHOSt__ALOdljta3785OsUiRY5JTvPXw3QgUUcoGD_qN4vki-KoyF1ijD-V7aw"/><div class="flex flex-col min-w-0"><span class="font-caption text-caption tracking-widest uppercase text-secondary font-semibold">Merchant Registry</span><h1 class="font-headline-sm text-headline-sm text-primary-container truncate leading-tight">Edit Bio Data</h1></div></div><div class="flex items-center gap-space-xs shrink-0"><img alt="Profile" class="w-8 h-8 rounded-full object-cover ring-1 ring-secondary/30" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAwasCmoMIy2Phv_4AOvR0iRxmDo1ObY6NX0U0OpgQACSzFfiEC2ibFmX9qU-nALv1CQGLR3O-poguGjKwuUyMpdmcwV8yxD9Vd7TrpAWhLeoKeMnn94LI-5EB3xWZpKOjYOH9MnkdKw9T3lc7CKfS-sTyCdOK_qk868hTdg79LFt9vS7WRyNAfzqDuVHfV52HNUCzCm6Pwvn0CaLgfR1E7NY5ZQDJ3E7T5w8CK7xc"/></div></div></header><main class="flex flex-col relative w-full pt-16 bg-surface min-h-screen"><div class="flex flex-col w-full pb-32">
+<!-- Foliage / Status Micro-Banner -->
+<div class="px-margin-mobile pt-space-md pb-space-sm flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="inline-flex w-2 h-2 rounded-full bg-secondary"></span>
+<span class="font-label-sm text-label-sm text-secondary tracking-widest uppercase font-semibold">STCW Dossier • Active Revision</span>
+</div>
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm shadow-sm">
+<span class="material-symbols-outlined text-[13px] text-secondary">verified_user</span>
+<span>Registry Synced</span>
+</div>
+</div>
+<!-- Editorial Page Title Context -->
+<div class="px-margin-mobile pt-space-xs pb-space-md">
+<div class="flex items-baseline justify-between">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-primary-container">Edit Bio-Data</h2>
+<span class="font-label-md text-label-md text-on-surface-variant">Folio 482-B</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Official merchant service records &amp; credential verification matrix.</p>
+</div>
+<!-- Segmented Navigation Chips -->
+<div class="px-margin-mobile mb-space-lg overflow-x-auto no-scrollbar">
+<div class="flex items-center gap-2 min-w-max pb-1" id="section-nav">
+<a class="px-4 py-2 rounded-full bg-primary-container text-on-primary font-label-md text-label-md shadow-sm transition-all flex items-center gap-1.5" href="#section-personal">
+<span class="material-symbols-outlined text-[15px]">badge</span>
+<span>Personal</span>
+</a>
+<a class="px-4 py-2 rounded-full bg-surface-container-lowest text-on-surface-variant font-label-md text-label-md shadow-sm transition-all hover:bg-surface-container flex items-center gap-1.5" href="#section-documents">
+<span class="material-symbols-outlined text-[15px]">description</span>
+<span>Documents</span>
+</a>
+<a class="px-4 py-2 rounded-full bg-surface-container-lowest text-on-surface-variant font-label-md text-label-md shadow-sm transition-all hover:bg-surface-container flex items-center gap-1.5" href="#section-courses">
+<span class="material-symbols-outlined text-[15px]">school</span>
+<span>Certificates</span>
+</a>
+<a class="px-4 py-2 rounded-full bg-surface-container-lowest text-on-surface-variant font-label-md text-label-md shadow-sm transition-all hover:bg-surface-container flex items-center gap-1.5" href="#section-sea-experience">
+<span class="material-symbols-outlined text-[15px]">sailing</span>
+<span>Sea Ledger</span>
+</a>
+</div>
+</div>
+<!-- Form Stack -->
+<div class="px-margin-mobile flex flex-col gap-space-lg">
+<!-- 1. PERSONAL INFORMATION FOLIO -->
+<section class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md" id="section-personal">
+<div class="flex items-center justify-between pb-space-xs">
+<div>
+<span class="font-caption text-caption tracking-widest uppercase text-secondary font-semibold">Section I</span>
+<h3 class="font-headline-sm text-headline-sm text-primary-container">Personal Attributes</h3>
+</div>
+<span class="material-symbols-outlined text-secondary text-[20px]">person_pin</span>
+</div>
+<!-- Officer Portrait & Rank Crest -->
+<div class="flex items-center gap-space-md p-space-md rounded-xl bg-surface-container-low shadow-sm">
+<div class="relative shrink-0">
+<img alt="Officer Portrait" class="w-20 h-20 rounded-full object-cover shadow-sm bg-surface-container" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjbhMGVYd9gGtSSjFNmjo6dMPA17NjOZ0F0JNVaUkdzanxuZKKEFGvF6GqNcEuohj9Y1yzOF3KLWh5eBmH06vd0salE7wmVbEVIpl0J2hfcDvstByInNQKVhkkOYb0OZqJd81FKt6FXSEvdSkgwk21p4_VA_TPuhm7TBuv-ixSOD1Z-5WSIaaKQrE-WEVDbsds6IILP8w8qUWcb8NljEYfYBaF4I4gARyKuGEPdfw"/>
+<button aria-label="Update officer portrait" class="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-secondary text-surface-container-lowest flex items-center justify-center shadow-md active:scale-95 transition-transform" type="button">
+<span class="material-symbols-outlined text-[15px]">photo_camera</span>
+</button>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary font-bold">Officer Profile</span>
+<span class="font-title-md text-title-md text-primary-container truncate font-bold">Isthiaque Kb</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">ID: IND-MM-948102</span>
+<span class="font-caption text-caption text-secondary mt-1 inline-flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">verified</span> Formal Registry Photo Valid
+          </span>
+</div>
+</div>
+<!-- Field: Post Applied For -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant font-semibold" for="post-applied">
+          Post / Rank Applied For
+        </label>
+<div class="relative flex items-center">
+<input class="w-full h-12 px-space-md pr-10 rounded-lg bg-surface-container-low text-primary-container font-title-md text-title-md focus:bg-surface-container-lowest focus:outline-none focus:shadow-md transition-all" id="post-applied" type="text" value="Motorman"/>
+<span class="material-symbols-outlined absolute right-3 text-secondary text-[20px] pointer-events-none">engineering</span>
+</div>
+</div>
+<!-- Field: Name Duo -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md">
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant font-semibold" for="first-name">
+            First Name
+          </label>
+<input class="w-full h-12 px-space-md rounded-lg bg-surface-container-low text-primary-container font-title-md text-title-md focus:bg-surface-container-lowest focus:outline-none focus:shadow-md transition-all" id="first-name" type="text" value="Isthiaque"/>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant font-semibold" for="last-name">
+            Last Name / Surname
+          </label>
+<input class="w-full h-12 px-space-md rounded-lg bg-surface-container-low text-primary-container font-title-md text-title-md focus:bg-surface-container-lowest focus:outline-none focus:shadow-md transition-all" id="last-name" type="text" value="Kb"/>
+</div>
+</div>
+<!-- Field: Father's Name -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant font-semibold" for="father-name">
+          Father's Full Legal Name
+        </label>
+<input class="w-full h-12 px-space-md rounded-lg bg-surface-container-low text-primary-container font-title-md text-title-md focus:bg-surface-container-lowest focus:outline-none focus:shadow-md transition-all" id="father-name" type="text" value="Ismail"/>
+</div>
+<!-- Field: DOB & Nationality -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md">
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant font-semibold" for="dob">
+            Date of Birth
+          </label>
+<div class="relative flex items-center">
+<input class="w-full h-12 px-space-md pr-10 rounded-lg bg-surface-container-low text-primary-container font-title-md text-title-md focus:bg-surface-container-lowest focus:outline-none focus:shadow-md transition-all" id="dob" type="text" value="17/07/1987"/>
+<span class="material-symbols-outlined absolute right-3 text-secondary text-[20px] pointer-events-none">calendar_today</span>
+</div>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant font-semibold" for="nationality">
+            Nationality
+          </label>
+<div class="relative flex items-center">
+<input class="w-full h-12 px-space-md pr-10 rounded-lg bg-surface-container-low text-primary-container font-title-md text-title-md focus:bg-surface-container-lowest focus:outline-none focus:shadow-md transition-all" id="nationality" type="text" value="Indian"/>
+<span class="material-symbols-outlined absolute right-3 text-secondary text-[20px] pointer-events-none">flag</span>
+</div>
+</div>
+</div>
+</section>
+<!-- 2. MARITIME DOCUMENTS & ENDORSEMENTS -->
+<section class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md" id="section-documents">
+<div class="flex items-center justify-between">
+<div>
+<span class="font-caption text-caption tracking-widest uppercase text-secondary font-semibold">Section II</span>
+<h3 class="font-headline-sm text-headline-sm text-primary-container">Registry Documents</h3>
+</div>
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm font-bold shadow-sm active:scale-95 transition-transform" type="button">
+<span class="material-symbols-outlined text-[16px]">add</span>
+<span>Add Document</span>
+</button>
+</div>
+<!-- Passport Card Item -->
+<div class="rounded-xl p-space-md bg-surface-container-low flex flex-col gap-space-sm shadow-sm relative">
+<div class="flex items-center justify-between pb-1">
+<div class="flex items-center gap-2">
+<span class="w-8 h-8 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">menu_book</span>
+</span>
+<div>
+<span class="font-title-md text-title-md text-primary-container font-bold">Official Seaman Passport</span>
+<div class="flex items-center gap-1.5">
+<span class="font-caption text-caption px-2 py-0.5 rounded-full bg-surface-container text-secondary font-semibold">STCW Certified</span>
+<span class="font-caption text-caption px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-medium">Original Verified</span>
+</div>
+</div>
+</div>
+<button aria-label="Remove document" class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-error hover:bg-error-container hover:text-on-error-container transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-space-sm pt-2">
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant font-semibold">Passport Number</label>
+<input class="w-full h-11 px-3 rounded-lg bg-surface-container-lowest text-primary-container font-title-md text-title-md font-semibold focus:outline-none focus:shadow-sm" type="text" value="GG465DGG"/>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant font-semibold">Passport Validity</label>
+<div class="relative flex items-center">
+<input class="w-full h-11 px-3 pr-9 rounded-lg bg-surface-container-lowest text-primary-container font-title-md text-title-md font-semibold focus:outline-none focus:shadow-sm" type="text" value="31/10/2030"/>
+<span class="material-symbols-outlined absolute right-2.5 text-secondary text-[18px] pointer-events-none">event_available</span>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant font-semibold">Issued Place</label>
+<input class="w-full h-11 px-3 rounded-lg bg-surface-container-lowest text-primary-container font-body-md text-body-md focus:outline-none focus:shadow-sm" type="text" value="Cochin"/>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant font-semibold">Issue Date</label>
+<div class="relative flex items-center">
+<input class="w-full h-11 px-3 pr-9 rounded-lg bg-surface-container-lowest text-primary-container font-body-md text-body-md focus:outline-none focus:shadow-sm" type="text" value="01/05/2026"/>
+<span class="material-symbols-outlined absolute right-2.5 text-on-surface-variant text-[18px] pointer-events-none">calendar_month</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 3. MARITIME COURSES & QUALIFICATIONS -->
+<section class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md" id="section-courses">
+<div class="flex items-center justify-between">
+<div>
+<span class="font-caption text-caption tracking-widest uppercase text-secondary font-semibold">Section III</span>
+<h3 class="font-headline-sm text-headline-sm text-primary-container">Courses &amp; Endorsements</h3>
+</div>
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm font-bold shadow-sm active:scale-95 transition-transform" type="button">
+<span class="material-symbols-outlined text-[16px]">add</span>
+<span>Add Course</span>
+</button>
+</div>
+<!-- Course Ledger Tile -->
+<div class="rounded-xl p-space-md bg-surface-container-low flex flex-col gap-space-sm shadow-sm">
+<div class="flex items-center justify-between pb-1">
+<div class="flex items-center gap-2">
+<span class="w-8 h-8 rounded-full bg-surface-container-highest text-secondary flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+</span>
+<div>
+<span class="font-title-md text-title-md text-primary-container font-bold">Standard Marine Safety Certificate</span>
+<div class="flex items-center gap-2">
+<span class="font-caption text-caption text-secondary font-bold">Valid �� Ref #ubyby</span>
+</div>
+</div>
+</div>
+<button aria-label="Remove course entry" class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-error hover:bg-error-container hover:text-on-error-container transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-space-sm pt-2">
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant font-semibold">Certificate Number</label>
+<input class="w-full h-11 px-3 rounded-lg bg-surface-container-lowest text-primary-container font-body-md text-body-md font-semibold focus:outline-none focus:shadow-sm" type="text" value="ubyby"/>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant font-semibold">Validity Date</label>
+<div class="relative flex items-center">
+<input class="w-full h-11 px-3 pr-9 rounded-lg bg-surface-container-lowest text-primary-container font-body-md text-body-md font-semibold focus:outline-none focus:shadow-sm" type="text" value="31/10/2026"/>
+<span class="material-symbols-outlined absolute right-2.5 text-secondary text-[18px] pointer-events-none">calendar_today</span>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant font-semibold">Issued Place / Authority</label>
+<input class="w-full h-11 px-3 rounded-lg bg-surface-container-lowest text-primary-container font-body-md text-body-md focus:outline-none focus:shadow-sm" type="text" value="ggghb"/>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant font-semibold">Issued Date</label>
+<div class="relative flex items-center">
+<input class="w-full h-11 px-3 pr-9 rounded-lg bg-surface-container-lowest text-primary-container font-body-md text-body-md focus:outline-none focus:shadow-sm" type="text" value="29/10/2026"/>
+<span class="material-symbols-outlined absolute right-2.5 text-on-surface-variant text-[18px] pointer-events-none">event</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 4. SEA SERVICE & DISCHARGE LOGBOOK -->
+<section class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md" id="section-sea-experience">
+<div class="flex items-center justify-between">
+<div>
+<span class="font-caption text-caption tracking-widest uppercase text-secondary font-semibold">Section IV</span>
+<h3 class="font-headline-sm text-headline-sm text-primary-container">Sea Service Ledger</h3>
+</div>
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm font-bold shadow-sm active:scale-95 transition-transform" type="button">
+<span class="material-symbols-outlined text-[16px]">add</span>
+<span>Add Vessel</span>
+</button>
+</div>
+<!-- Experience Card: MV Coral -->
+<div class="rounded-xl p-space-md bg-surface-container-low flex flex-col gap-space-sm shadow-sm">
+<div class="flex items-center justify-between pb-2">
+<div class="flex items-center gap-2">
+<span class="w-9 h-9 rounded-full bg-primary-container text-on-primary flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-[18px]">directions_boat</span>
+</span>
+<div>
+<span class="font-headline-sm text-headline-sm text-primary-container italic">MV Coral</span>
+<p class="font-caption text-caption text-on-surface-variant uppercase tracking-wider">Passenger Liner • GRT 42,000</p>
+</div>
+</div>
+<div class="flex items-center gap-1">
+<button aria-label="Edit vessel details" class="w-8 h-8 rounded-full bg-surface-container text-on-surface-variant hover:text-primary-container flex items-center justify-center transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">edit_note</span>
+</button>
+<button aria-label="Delete sea experience log" class="w-8 h-8 rounded-full bg-surface-container text-error hover:bg-error-container hover:text-on-error-container flex items-center justify-center transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-space-sm pt-2 bg-surface-container-lowest p-space-sm rounded-lg">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Vessel Type</span>
+<p class="font-title-md text-title-md text-primary-container font-semibold mt-0.5">Passenger</p>
+</div>
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary">Logged Rank</span>
+<p class="font-title-md text-title-md text-primary-container font-semibold mt-0.5">Motor man</p>
+</div>
+<div class="pt-2">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Embarkation (From)</span>
+<p class="font-body-md text-body-md text-primary-container font-medium mt-0.5">01/05/2026</p>
+</div>
+<div class="pt-2">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Discharge (To)</span>
+<p class="font-body-md text-body-md text-primary-container font-medium mt-0.5">30/04/2027</p>
+</div>
+</div>
+<!-- Ledger Days Calculated Badge -->
+<div class="flex items-center justify-between pt-1">
+<span class="font-caption text-caption text-secondary font-semibold uppercase tracking-wider">Discharge Endorsement</span>
+<span class="px-2.5 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-bold">
+            365 Sea Days Logged
+          </span>
+</div>
+</div>
+</section>
+</div>
+<!-- Bottom Floating Sticky Action Deck -->
+<div class="fixed bottom-0 left-0 right-0 z-40 bg-surface/90 backdrop-blur-xl px-margin-mobile py-space-md shadow-[0_-4px_24px_rgba(11,31,58,0.08)] pb-safe">
+<div class="max-w-md mx-auto flex flex-col gap-2">
+<button class="w-full h-13 py-3.5 px-6 rounded-full bg-primary-container text-on-primary font-title-md text-title-md font-bold tracking-wide flex items-center justify-center gap-2 shadow-lg active:scale-[0.98] transition-transform" id="save-btn" type="button">
+<span class="material-symbols-outlined text-[20px] text-secondary-fixed">bookmark_added</span>
+<span>Save Changes</span>
+</button>
+<div class="flex items-center justify-center">
+<button class="py-1 text-on-surface-variant font-label-md text-label-md hover:text-primary-container transition-colors tracking-wide" onclick="history.back()" type="button">
+          Discard / Return to Registry
+        </button>
+</div>
+</div>
+</div>
+</div>
+<script>
+  // Simple micro-interaction for section navigation & smooth scrolls
+  document.querySelectorAll('#section-nav a').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+      const targetId = this.getAttribute('href');
+      const targetElement = document.querySelector(targetId);
+      if (targetElement) {
+        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        document.querySelectorAll('#section-nav a').forEach(a => {
+          a.classList.remove('bg-primary-container', 'text-on-primary');
+          a.classList.add('bg-surface-container-lowest', 'text-on-surface-variant');
+        });
+        this.classList.remove('bg-surface-container-lowest', 'text-on-surface-variant');
+        this.classList.add('bg-primary-container', 'text-on-primary');
+      }
+    });
+  });
+
+  const saveBtn = document.getElementById('save-btn');
+  if (saveBtn) {
+    saveBtn.addEventListener('click', () => {
+      saveBtn.innerHTML = `
+        <span class="material-symbols-outlined text-[20px] animate-spin text-secondary-fixed">progress_activity</span>
+        <span>Registering Updates...</span>
+      `;
+      setTimeout(() => {
+        saveBtn.innerHTML = `
+          <span class="material-symbols-outlined text-[20px] text-secondary-fixed">check_circle</span>
+          <span>Dossier Synchronized</span>
+        `;
+        setTimeout(() => {
+          saveBtn.innerHTML = `
+            <span class="material-symbols-outlined text-[20px] text-secondary-fixed">bookmark_added</span>
+            <span>Save Changes</span>
+          `;
+        }, 2200);
+      }, 1000);
+    });
+  }
+</script></main></body></html>

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_stack" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,600&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "primary-fixed": "#d6e3ff", "on-tertiary-fixed-variant": "#812628", "inverse-on-surface": "#f2f1ee", "on-error": "#ffffff", "on-secondary-container": "#775815", "error": "#ba1a1a", "tertiary-container": "#470007", "on-tertiary-fixed": "#410006", "surface-container-low": "#f4f3f0", "outline-variant": "#c4c6ce", "inverse-surface": "#2f312f", "surface-variant": "#e3e2df", "on-tertiary-container": "#d46462", "error-container": "#ffdad6", "tertiary-fixed": "#ffdad8", "secondary-fixed": "#ffdea7", "secondary-container": "#fdd182", "surface-container": "#efeeeb", "surface-dim": "#dbdad7", "tertiary": "#170001", "primary": "#000615", "primary-container": "#0b1f3a", "on-primary-fixed-variant": "#364764", "on-secondary-fixed": "#271900", "on-primary-container": "#7587a7", "on-secondary": "#ffffff", "tertiary-fixed-dim": "#ffb3af", "on-primary-fixed": "#071c36", "on-surface-variant": "#44474d", "on-secondary-fixed-variant": "#5e4200", "secondary-fixed-dim": "#ebc073", "background": "#faf9f6", "surface-container-highest": "#e3e2df", "secondary": "#795916", "surface": "#faf9f6", "on-primary": "#ffffff", "surface-bright": "#faf9f6", "surface-tint": "#4d5f7d", "primary-fixed-dim": "#b5c7ea", "inverse-primary": "#b5c7ea", "on-surface": "#1b1c1a", "on-error-container": "#93000a", "surface-container-lowest": "#ffffff", "on-tertiary": "#ffffff", "outline": "#75777e", "on-background": "#1b1c1a", "surface-container-high": "#e9e8e5" }, borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, spacing: { "gutter-mobile": "0.75rem", "margin": "1.5rem", "space-xl": "2rem", "margin-mobile": "1.5rem", "space-md": "1rem", "gutter": "1rem", "space-sm": "0.5rem", "space-lg": "1.5rem", "space-xs": "0.25rem" }, fontFamily: { "headline-lg-mobile": ["Playfair Display"], "title-md": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"], "headline-sm": ["Playfair Display"], "body-md": ["Plus Jakarta Sans"], "headline-xl-mobile": ["Playfair Display"], "label-md": ["Plus Jakarta Sans"], "headline-md": ["Playfair Display"], "headline-xl": ["Playfair Display"], "caption": ["Plus Jakarta Sans"], "headline-lg": ["Playfair Display"] }, fontSize: { "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "title-md": ["16px", { "lineHeight": "22px", "letterSpacing": "-0.005em", "fontWeight": "600" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.06em", "fontWeight": "600" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }], "headline-sm": ["17px", { "lineHeight": "24px", "fontWeight": "600" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "headline-xl-mobile": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "600" }], "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }], "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "600" }], "caption": ["10px", { "lineHeight": "14px", "letterSpacing": "0.08em", "fontWeight": "500" }], "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.015em", "fontWeight": "600" }] } } } }</script><style>@layer base{html,body{min-height:100%;margin:0;padding:0;}body{overscroll-behavior-y:none;-webkit-tap-highlight-color:transparent;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}}::-webkit-scrollbar{display:none;}</style><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface font-body-md text-on-surface antialiased flex flex-col min-h-screen"><header class="fixed top-0 inset-x-0 z-50 bg-surface/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(11,31,58,0.03)] pt-safe"><div class="h-16 px-margin-mobile flex items-center justify-between"><button aria-label="Return to previous folio" class="min-w-[44px] min-h-[44px] -ml-2 rounded-full flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors" onclick="history.back()" type="button"><span class="material-symbols-outlined text-[22px]">arrow_back</span></button><div class="flex-1 px-space-xs text-center"><h1 class="font-headline-sm text-headline-sm text-on-surface tracking-tight truncate">Profile Completion Wizard</h1></div><div class="min-w-[44px] min-h-[44px] flex items-center justify-end"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="flex-1 flex flex-col relative w-full bg-surface pt-16 pb-safe"><div class="flex flex-col w-full px-margin-mobile pb-space-xl">
+<!-- Folio Header & Subtitle -->
+<div class="pt-space-md pb-space-md text-left">
+<span class="font-label-md text-label-md uppercase tracking-wider text-secondary flex items-center gap-1.5 mb-1">
+<span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">shield_person</span>
+      Officer Seafarer Registry
+    </span>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Officer Dossier Enrollment</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Complete mandatory credentials to endorse your discharge record.</p>
+</div>
+<!-- Stepper Indicator -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm mb-space-lg">
+<div class="flex items-center justify-between relative">
+<!-- Track line background -->
+<div class="absolute left-6 right-6 top-4 h-[2px] bg-surface-container"></div>
+<!-- Progress active line -->
+<div class="absolute left-6 w-[28%] top-4 h-[2px] bg-secondary transition-all duration-300"></div>
+<!-- Step 1: Active -->
+<div class="relative z-10 flex flex-col items-center gap-1.5">
+<div class="w-8 h-8 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-label-md text-label-md shadow-sm">
+          1
+        </div>
+<span class="font-label-md text-label-md text-primary font-bold">Personal Details</span>
+</div>
+<!-- Step 2: Next -->
+<div class="relative z-10 flex flex-col items-center gap-1.5">
+<div class="w-8 h-8 rounded-full bg-surface-container text-on-surface-variant flex items-center justify-center font-label-md text-label-md">
+          2
+        </div>
+<span class="font-label-md text-label-md text-on-surface-variant">Documents</span>
+</div>
+<!-- Step 3: Upcoming -->
+<div class="relative z-10 flex flex-col items-center gap-1.5">
+<div class="w-8 h-8 rounded-full bg-surface-container text-on-surface-variant flex items-center justify-center font-label-md text-label-md">
+          3
+        </div>
+<span class="font-label-md text-label-md text-on-surface-variant">Courses</span>
+</div>
+</div>
+</div>
+<!-- Step 1 Container: Active Form Content -->
+<div class="flex flex-col gap-space-md mb-space-lg">
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col gap-space-md">
+<div class="flex items-center justify-between pb-space-xs">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Officer Identity Details</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Enter verified biometric and civil data.</p>
+</div>
+<span class="px-2.5 py-1 rounded-full bg-surface-container text-secondary font-label-sm text-label-sm uppercase tracking-wider font-semibold">
+          Section 01
+        </span>
+</div>
+<!-- Passport-style Photo Upload Area -->
+<div class="flex flex-col items-center justify-center py-space-sm">
+<div class="relative group cursor-pointer" onclick="openPhotoSheet()">
+<div class="w-28 h-36 rounded-xl bg-surface-container-low shadow-inner flex flex-col items-center justify-center p-2 text-center overflow-hidden">
+<img alt="Officer Portrait" class="w-full h-full object-cover rounded-lg hidden" data-alt="Official merchant marine officer portrait in naval uniform, white collared formal shirt with maritime shoulder epaulets, looking directly into the lens with neutral expression against a sterile warm parchment studio backdrop" id="avatar-preview" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDANqEp1kJ_h3fKmd-WK63Uavw3QhCV137xy4IXwATYtEglkxyFjPsBB0gkJX6MQ88hMQ1JSUwSpYxlFb5nj8121iy_U5QgfVk6B-mA0eFVIXyxeySXRyGGgFpzWPXNanDQBc_3sX5kcZ6wnGRPSAINEDmtP0XUfzfnBmihKX5tnI6-RZtIveWnAvC89FewTFL-uJuyZk_wMvDkHkXjjCW7xR7n3jj4z6GeDop3Tkg"/>
+<div class="flex flex-col items-center justify-center text-on-surface-variant" id="avatar-placeholder">
+<span class="material-symbols-outlined text-[32px] text-secondary mb-1">person_outline</span>
+<span class="font-label-sm text-label-sm leading-tight text-on-surface-variant font-medium">Upload Formal Officer Photo</span>
+</div>
+</div>
+<!-- Camera badge button -->
+<button aria-label="Open camera options" class="absolute -bottom-2 -right-2 w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-md active:scale-95 transition-transform" type="button">
+<span class="material-symbols-outlined text-[19px]">photo_camera</span>
+</button>
+</div>
+<span class="font-caption text-caption text-outline mt-2 tracking-wide uppercase">Passport Spec • 35mm x 45mm ISO/IEC 19794</span>
+</div>
+<!-- Form Inputs Stack -->
+<div class="flex flex-col gap-space-sm">
+<!-- Post Applied For -->
+<div>
+<label class="block font-label-md text-label-md uppercase text-outline mb-1.5">Post Applied For</label>
+<div class="relative">
+<div class="w-full h-12 bg-surface-container-low rounded-xl px-space-md flex items-center justify-between text-on-surface font-body-md text-body-md shadow-sm">
+<span class="font-semibold text-primary">Motorman</span>
+<span class="material-symbols-outlined text-outline">unfold_more</span>
+</div>
+</div>
+</div>
+<!-- First Name -->
+<div>
+<label class="block font-label-md text-label-md uppercase text-outline mb-1.5">First name</label>
+<div class="w-full h-12 bg-surface-container-low rounded-xl px-space-md flex items-center shadow-sm">
+<input class="w-full bg-transparent font-body-md text-body-md text-on-surface focus:outline-none" placeholder="Enter first name" type="text" value="Alexander"/>
+</div>
+</div>
+<!-- Last Name -->
+<div>
+<label class="block font-label-md text-label-md uppercase text-outline mb-1.5">Last name</label>
+<div class="w-full h-12 bg-surface-container-low rounded-xl px-space-md flex items-center shadow-sm">
+<input class="w-full bg-transparent font-body-md text-body-md text-on-surface focus:outline-none" placeholder="Enter last name" type="text" value="Vane-Tempest"/>
+</div>
+</div>
+<!-- Father's Name -->
+<div>
+<label class="block font-label-md text-label-md uppercase text-outline mb-1.5">Father's Name</label>
+<div class="w-full h-12 bg-surface-container-low rounded-xl px-space-md flex items-center shadow-sm">
+<input class="w-full bg-transparent font-body-md text-body-md text-on-surface focus:outline-none" placeholder="Enter father's name" type="text" value="Arthur Philip Vane"/>
+</div>
+</div>
+<!-- Date of Birth (Calendar Selector) -->
+<div>
+<label class="block font-label-md text-label-md uppercase text-outline mb-1.5">Date of Birth</label>
+<div class="w-full h-12 bg-surface-container-low rounded-xl px-space-md flex items-center justify-between shadow-sm cursor-pointer">
+<span class="font-body-md text-body-md text-on-surface">14 November 1988</span>
+<span class="material-symbols-outlined text-secondary text-[20px]">calendar_today</span>
+</div>
+</div>
+<!-- Nationality -->
+<div>
+<label class="block font-label-md text-label-md uppercase text-outline mb-1.5">Nationality</label>
+<div class="w-full h-12 bg-surface-container-low rounded-xl px-space-md flex items-center justify-between shadow-sm">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-outline text-[18px]">public</span>
+<span class="font-body-md text-body-md text-on-surface">British (United Kingdom)</span>
+</div>
+<span class="material-symbols-outlined text-outline text-[20px]">expand_more</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Step 2: Collapsible Entry Preview (Documents) -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm mb-space-sm flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-full bg-surface-container text-on-surface-variant flex items-center justify-center font-label-sm text-label-sm">2</span>
+<h4 class="font-headline-sm text-headline-sm text-on-surface">Documents</h4>
+</div>
+<button class="inline-flex items-center gap-1 font-label-sm text-label-sm text-secondary bg-surface-container px-3 py-1.5 rounded-full hover:bg-surface-container-high transition-colors" type="button">
+<span class="material-symbols-outlined text-[14px]">add</span>
+        + Add Document
+      </button>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container-low flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]">badge</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-sm text-body-sm font-semibold text-on-surface">Seafarer Identification (SID)</span>
+<span class="font-caption text-caption text-outline">UK-882910 • Exp. 2029</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline text-[18px]">check_circle</span>
+</div>
+</div>
+<!-- Step 3: Collapsible Entry Preview (Courses) -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm mb-space-xl flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-full bg-surface-container text-on-surface-variant flex items-center justify-center font-label-sm text-label-sm">3</span>
+<h4 class="font-headline-sm text-headline-sm text-on-surface">Courses</h4>
+</div>
+<button class="inline-flex items-center gap-1 font-label-sm text-label-sm text-secondary bg-surface-container px-3 py-1.5 rounded-full hover:bg-surface-container-high transition-colors" type="button">
+<span class="material-symbols-outlined text-[14px]">add</span>
+        + Add Course
+      </button>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container-low flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]">school</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-sm text-body-sm font-semibold text-on-surface">STCW Basic Safety Training</span>
+<span class="font-caption text-caption text-outline">MCA Approved • Complete</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline text-[18px]">check_circle</span>
+</div>
+</div>
+<!-- Sticky Bottom Flow Button -->
+<div class="sticky bottom-4 z-30 pt-space-xs">
+<button class="w-full h-[52px] bg-primary-container text-on-primary rounded-full font-title-md text-title-md flex items-center justify-center gap-2 shadow-lg active:scale-[0.98] transition-transform" type="button">
+<span>Next Step: Endorse Documents</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+<!-- PHOTO UPLOAD BOTTOM SHEET MODAL -->
+<div class="fixed inset-0 z-50 flex flex-col justify-end bg-primary/40 backdrop-blur-sm transition-opacity duration-300" id="photo-bottom-sheet">
+<!-- Clickable Scrim Area to Dismiss -->
+<div class="flex-1 w-full" onclick="closePhotoSheet()"></div>
+<!-- Bottom Sheet Card -->
+<div class="w-full bg-surface-container-lowest rounded-t-2xl p-space-lg shadow-2xl transition-transform duration-300 transform translate-y-0 flex flex-col">
+<!-- Sheet Pull Handle -->
+<div class="w-12 h-1 bg-surface-container-highest rounded-full mx-auto mb-space-md cursor-pointer" onclick="closePhotoSheet()"></div>
+<div class="text-left mb-space-md">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary font-semibold">Document Photography</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mt-0.5">Upload Formal Officer Photo</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Ensure shoulders are square, background is clear, and headwear is removed.</p>
+</div>
+<!-- Action Rows with thin 1.5px icons -->
+<div class="flex flex-col gap-space-xs mb-space-md">
+<!-- Row 1: Camera -->
+<button class="w-full h-14 bg-surface-container-low hover:bg-surface-container rounded-xl px-space-md flex items-center justify-between text-left active:scale-[0.99] transition-all" onclick="selectPhotoOption('Camera')" type="button">
+<div class="flex items-center gap-3.5">
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest shadow-sm flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'wght' 200, 'FILL' 0;">photo_camera</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-md text-body-md font-semibold text-on-surface">Take photo from camera</span>
+<span class="font-caption text-caption text-on-surface-variant">Use frontal viewfinder guidelines</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline text-[18px]">chevron_right</span>
+</button>
+<!-- Row 2: Gallery -->
+<button class="w-full h-14 bg-surface-container-low hover:bg-surface-container rounded-xl px-space-md flex items-center justify-between text-left active:scale-[0.99] transition-all" onclick="selectPhotoOption('Gallery')" type="button">
+<div class="flex items-center gap-3.5">
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest shadow-sm flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'wght' 200, 'FILL' 0;">photo_library</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-md text-body-md font-semibold text-on-surface">Choose from gallery</span>
+<span class="font-caption text-caption text-on-surface-variant">Import from local storage or cloud</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline text-[18px]">chevron_right</span>
+</button>
+</div>
+<!-- Dismiss Button -->
+<button class="w-full h-12 bg-surface-container text-on-surface rounded-full font-label-md text-label-md uppercase tracking-wider font-semibold active:bg-surface-container-high transition-colors" onclick="closePhotoSheet()" type="button">
+        Cancel
+      </button>
+</div>
+</div>
+</div>
+<script>
+  function openPhotoSheet() {
+    const sheet = document.getElementById('photo-bottom-sheet');
+    if (sheet) {
+      sheet.classList.remove('hidden');
+      sheet.classList.remove('opacity-0', 'pointer-events-none');
+    }
+  }
+
+  function closePhotoSheet() {
+    const sheet = document.getElementById('photo-bottom-sheet');
+    if (sheet) {
+      sheet.classList.add('opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        sheet.classList.add('hidden');
+      }, 250);
+    }
+  }
+
+  function selectPhotoOption(mode) {
+    const preview = document.getElementById('avatar-preview');
+    const placeholder = document.getElementById('avatar-placeholder');
+    if (preview && placeholder) {
+      preview.classList.remove('hidden');
+      placeholder.classList.add('hidden');
+    }
+    closePhotoSheet();
+  }
+</script></main></body></html>

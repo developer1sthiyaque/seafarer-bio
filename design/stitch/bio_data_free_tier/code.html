@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_tab" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,600&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "primary-fixed": "#d6e3ff", "on-tertiary-fixed-variant": "#812628", "inverse-on-surface": "#f2f1ee", "on-error": "#ffffff", "on-secondary-container": "#775815", "error": "#ba1a1a", "tertiary-container": "#470007", "on-tertiary-fixed": "#410006", "surface-container-low": "#f4f3f0", "outline-variant": "#c4c6ce", "inverse-surface": "#2f312f", "surface-variant": "#e3e2df", "on-tertiary-container": "#d46462", "error-container": "#ffdad6", "tertiary-fixed": "#ffdad8", "secondary-fixed": "#ffdea7", "secondary-container": "#fdd182", "surface-container": "#efeeeb", "surface-dim": "#dbdad7", "tertiary": "#170001", "primary": "#000615", "primary-container": "#0b1f3a", "on-primary-fixed-variant": "#364764", "on-secondary-fixed": "#271900", "on-primary-container": "#7587a7", "on-secondary": "#ffffff", "tertiary-fixed-dim": "#ffb3af", "on-primary-fixed": "#071c36", "on-surface-variant": "#44474d", "on-secondary-fixed-variant": "#5e4200", "secondary-fixed-dim": "#ebc073", "background": "#faf9f6", "surface-container-highest": "#e3e2df", "secondary": "#795916", "surface": "#faf9f6", "on-primary": "#ffffff", "surface-bright": "#faf9f6", "surface-tint": "#4d5f7d", "primary-fixed-dim": "#b5c7ea", "inverse-primary": "#b5c7ea", "on-surface": "#1b1c1a", "on-error-container": "#93000a", "surface-container-lowest": "#ffffff", "on-tertiary": "#ffffff", "outline": "#75777e", "on-background": "#1b1c1a", "surface-container-high": "#e9e8e5" }, borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, spacing: { "gutter-mobile": "0.75rem", "margin": "1.5rem", "space-xl": "2rem", "margin-mobile": "1.5rem", "space-md": "1rem", "gutter": "1rem", "space-sm": "0.5rem", "space-lg": "1.5rem", "space-xs": "0.25rem" }, fontFamily: { "headline-lg-mobile": ["Playfair Display"], "title-md": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"], "headline-sm": ["Playfair Display"], "body-md": ["Plus Jakarta Sans"], "headline-xl-mobile": ["Playfair Display"], "label-md": ["Plus Jakarta Sans"], "headline-md": ["Playfair Display"], "headline-xl": ["Playfair Display"], "caption": ["Plus Jakarta Sans"], "headline-lg": ["Playfair Display"] }, fontSize: { "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "title-md": ["16px", { "lineHeight": "22px", "letterSpacing": "-0.005em", "fontWeight": "600" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.06em", "fontWeight": "600" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }], "headline-sm": ["17px", { "lineHeight": "24px", "fontWeight": "600" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "headline-xl-mobile": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "600" }], "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }], "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "600" }], "caption": ["10px", { "lineHeight": "14px", "letterSpacing": "0.08em", "fontWeight": "500" }], "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.015em", "fontWeight": "600" }] } } } }</script><style>@layer base{html,body{min-height:100%;margin:0;padding:0;}body{overscroll-behavior-y:none;-webkit-tap-highlight-color:transparent;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}}::-webkit-scrollbar{display:none;}</style><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface font-body-md text-on-surface antialiased flex flex-col min-h-screen"><header class="fixed top-0 inset-x-0 z-50 bg-surface/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(11,31,58,0.03)] pt-safe"><div class="h-16 px-margin-mobile flex items-center justify-between"><div class="flex flex-col justify-center min-w-0 pr-space-sm"><span class="font-caption text-caption text-secondary uppercase tracking-[0.08em]">Merchant Registry</span><h1 class="font-headline-sm text-headline-sm text-on-surface truncate tracking-tight">Bio Data</h1></div><div class="flex items-center gap-space-sm flex-shrink-0"><button aria-label="Search registry" class="min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">search</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="flex-1 flex flex-col relative w-full bg-surface pt-16 pb-20"><div class="flex flex-col w-full px-margin-mobile pb-space-xl space-y-space-lg">
+<!-- Refined Profile Subscription Card (Free Tier) -->
+<section class="w-full bg-surface-container-lowest rounded-xl p-space-md shadow-[0_4px_20px_-2px_rgba(11,31,58,0.04)] relative overflow-hidden">
+<div class="absolute -right-10 -bottom-10 w-36 h-36 rounded-full bg-secondary-fixed/20 pointer-events-none blur-2xl"></div>
+<div class="flex items-center justify-between mb-space-sm">
+<div class="flex items-center space-x-space-xs">
+<span class="material-symbols-outlined text-secondary text-[18px]">verified_user</span>
+<span class="font-label-md text-label-md uppercase tracking-[0.04em] text-on-surface-variant">Subscription</span>
+</div>
+<span class="font-label-sm text-label-sm px-2.5 py-1 rounded-full bg-surface-container-high text-primary-container font-semibold tracking-wide">
+        Free Tier
+      </span>
+</div>
+<div class="space-y-space-xs mb-space-md">
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Standard Registry Folio</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+        Access unlimited voyage logs, digital IMO attestation &amp; PDF exports.
+      </p>
+</div>
+<div class="flex items-center justify-between pt-space-xs">
+<div class="flex items-center space-x-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-secondary">workspace_premium</span>
+<span class="font-caption text-caption text-secondary uppercase font-semibold">Pro Grade Registry</span>
+</div>
+<button class="inline-flex items-center justify-center min-h-[44px] px-5 rounded-full bg-secondary text-surface-container-lowest font-title-md text-title-md shadow-sm active:scale-95 transition-all" type="button">
+        Upgrade to Pro
+      </button>
+</div>
+</section>
+<!-- Officer Bio-Data Portfolio Card -->
+<section class="w-full bg-surface-container-lowest rounded-xl p-space-lg shadow-[0_4px_20px_-2px_rgba(11,31,58,0.04)]">
+<div class="flex items-start justify-between pb-space-md">
+<div class="flex items-center space-x-space-md">
+<!-- Officer Identity Crest -->
+<div class="relative w-16 h-16 rounded-full p-1 bg-surface-container-low flex items-center justify-center shadow-inner">
+<div class="w-full h-full rounded-full overflow-hidden bg-primary-container flex items-center justify-center">
+<img class="w-full h-full object-cover" data-alt="Refined close-up editorial portrait of an Indian merchant navy motorman officer in crisp maritime uniform, dignified calm posture, natural daylight, nautical ambiance with soft navy and parchment tones" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkXBqAzzr8qn9SYPChvLcIjzEwJmw1GkFIJZf57SckgBaIHdvWuGrJWRpbgA13dJyop-yUSPEEyrSot9mg8OOpwKIlQg_iJaIkbnV-1QR5Huun8mperkgEmaPgn3W9TfKdwjEVgDzzERiC-P_ok98zx46aHIzQNlAhlkqy_xIjA7EvYMH8UXNYKYF5ANdMKUIAcR19xceMIkYOj23W1ADPgpqsNH3upY2yz3fgqNU"/>
+</div>
+<div class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-secondary flex items-center justify-center text-surface-container-lowest shadow-sm">
+<span class="material-symbols-outlined text-[13px]">sailing</span>
+</div>
+</div>
+<div class="min-w-0">
+<div class="flex items-center space-x-2">
+<h3 class="font-headline-md text-headline-md text-on-surface truncate">Isthiaque Kb</h3>
+</div>
+<p class="font-body-sm text-body-sm text-secondary font-medium">Motorman • Engine Dept</p>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">IND-MUM-892104-X</span>
+</div>
+</div>
+<button aria-label="Edit Profile" class="min-w-[40px] min-h-[40px] rounded-full bg-surface-container-low flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+</div>
+<!-- Metadata Grid -->
+<div class="grid grid-cols-2 gap-space-sm pt-space-sm">
+<div class="p-space-sm bg-surface-container-low rounded-lg">
+<span class="font-label-md text-label-md uppercase tracking-[0.04em] text-on-surface-variant block mb-1">Nationality</span>
+<div class="flex items-center space-x-1.5">
+<span class="material-symbols-outlined text-secondary text-[16px]">flag</span>
+<span class="font-title-md text-title-md text-on-surface">Indian</span>
+</div>
+</div>
+<div class="p-space-sm bg-surface-container-low rounded-lg">
+<span class="font-label-md text-label-md uppercase tracking-[0.04em] text-on-surface-variant block mb-1">Discharge Book (CDC)</span>
+<div class="flex items-center space-x-1.5">
+<span class="material-symbols-outlined text-secondary text-[16px]">menu_book</span>
+<span class="font-title-md text-title-md text-on-surface truncate">MUM-148922</span>
+</div>
+</div>
+<div class="p-space-sm bg-surface-container-low rounded-lg">
+<span class="font-label-md text-label-md uppercase tracking-[0.04em] text-on-surface-variant block mb-1">Date of Birth</span>
+<span class="font-title-md text-title-md text-on-surface">14 Mar 1996</span>
+</div>
+<div class="p-space-sm bg-surface-container-low rounded-lg">
+<span class="font-label-md text-label-md uppercase tracking-[0.04em] text-on-surface-variant block mb-1">Total Recorded Days</span>
+<div class="flex items-baseline space-x-1">
+<span class="font-title-md text-title-md text-on-surface font-semibold">0</span>
+<span class="font-caption text-caption text-on-surface-variant uppercase">Days</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Sea Experience Section (Empty State) -->
+<section class="w-full space-y-space-sm">
+<div class="flex items-center justify-between px-space-xs">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Sea Experience</h3>
+<p class="font-caption text-caption uppercase tracking-wider text-on-surface-variant">Sea Service Record • Official Ledger</p>
+</div>
+<button class="flex items-center space-x-1 font-label-md text-label-md text-secondary hover:text-on-surface transition-colors py-1 px-2" id="quickAddBtn" type="button">
+<span class="material-symbols-outlined text-[16px]">add_circle</span>
+<span>New Entry</span>
+</button>
+</div>
+<!-- Empty State Container Card -->
+<div class="w-full bg-surface-container-lowest rounded-xl p-space-xl flex flex-col items-center justify-center text-center shadow-[0_4px_20px_-2px_rgba(11,31,58,0.04)] relative">
+<!-- Minimalist Nautical Compass & Sextant SVG Art -->
+<div class="w-24 h-24 mb-space-md rounded-full bg-surface-container-low flex items-center justify-center text-secondary relative">
+<svg class="w-14 h-14 text-secondary/75" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" viewbox="0 0 64 64">
+<!-- Outer Dial -->
+<circle cx="32" cy="32" opacity="0.6" r="28" stroke-dasharray="3 3"></circle>
+<circle cx="32" cy="32" opacity="0.4" r="23"></circle>
+<!-- Marine Compass Rose points -->
+<path d="M32 14L35.5 28.5L50 32L35.5 35.5L32 50L28.5 35.5L14 32L28.5 28.5Z" fill="currentColor" fill-opacity="0.12"></path>
+<path d="M32 14V50M14 32H50" opacity="0.5"></path>
+<!-- Horizon & Wave motif -->
+<path d="M22 42C25 40 28 44 32 42C36 40 39 44 42 42" stroke-width="1.25"></path>
+<circle cx="32" cy="32" fill="currentColor" r="2.5"></circle>
+</svg>
+<span class="absolute top-1 right-1 w-3 h-3 rounded-full bg-secondary animate-ping opacity-75"></span>
+<span class="absolute top-1 right-1 w-3 h-3 rounded-full bg-secondary"></span>
+</div>
+<!-- Exact Title -->
+<h4 class="font-headline-sm text-headline-sm text-on-surface mb-space-xs">Not Found</h4>
+<!-- Exact Text -->
+<p class="font-body-sm text-body-sm text-on-surface-variant max-w-[270px] mb-space-lg leading-relaxed">
+        No Sea Experience, please add your experience by clicking add button
+      </p>
+<!-- Primary Action CTA -->
+<button class="inline-flex items-center justify-center min-h-[48px] px-space-lg rounded-full bg-primary-container text-on-primary font-title-md text-title-md active:scale-95 transition-transform shadow-md" type="button">
+<span class="material-symbols-outlined text-[18px] mr-1.5">add</span>
+        + Add Experience
+      </button>
+</div>
+</section>
+<!-- Documents & STCW Endorsements Verified Overview -->
+<section class="w-full space-y-space-sm">
+<div class="flex items-center justify-between px-space-xs">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Documents &amp; Certificates</h3>
+<p class="font-caption text-caption uppercase tracking-wider text-on-surface-variant">Statutory Compliance Status</p>
+</div>
+<a class="font-label-md text-label-md text-secondary uppercase font-semibold" href="#">View All (4)</a>
+</div>
+<!-- Document Card 1: CoP Engine Watchkeeping -->
+<div class="w-full bg-surface-container-lowest rounded-xl p-space-md shadow-[0_4px_20px_-2px_rgba(11,31,58,0.04)] flex items-center justify-between">
+<div class="flex items-center space-x-space-sm min-w-0">
+<div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center text-primary-container flex-shrink-0">
+<span class="material-symbols-outlined text-[20px]">assignment_turned_in</span>
+</div>
+<div class="min-w-0">
+<p class="font-title-md text-title-md text-on-surface truncate">STCW III/4 Rating Watch</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Exp: 28 Nov 2028 • Govt of India</p>
+</div>
+</div>
+<span class="font-label-sm text-label-sm px-2.5 py-1 rounded-full bg-secondary-container/30 text-on-secondary-container font-semibold tracking-wide flex-shrink-0">
+        Verified
+      </span>
+</div>
+<!-- Document Card 2: Medical Fitness (DG Shipping) -->
+<div class="w-full bg-surface-container-lowest rounded-xl p-space-md shadow-[0_4px_20px_-2px_rgba(11,31,58,0.04)] flex items-center justify-between">
+<div class="flex items-center space-x-space-sm min-w-0">
+<div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center text-primary-container flex-shrink-0">
+<span class="material-symbols-outlined text-[20px]">health_and_safety</span>
+</div>
+<div class="min-w-0">
+<p class="font-title-md text-title-md text-on-surface truncate">ENG 1 / DG Medical Fitness</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Exp: 15 Sep 2025 • Dr. K. Rao (Approved)</p>
+</div>
+</div>
+<span class="font-label-sm text-label-sm px-2.5 py-1 rounded-full bg-secondary-container/30 text-on-secondary-container font-semibold tracking-wide flex-shrink-0">
+        Verified
+      </span>
+</div>
+<!-- Document Card 3: Seafarer Identity Document (BSID) -->
+<div class="w-full bg-surface-container-lowest rounded-xl p-space-md shadow-[0_4px_20px_-2px_rgba(11,31,58,0.04)] flex items-center justify-between">
+<div class="flex items-center space-x-space-sm min-w-0">
+<div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center text-primary-container flex-shrink-0">
+<span class="material-symbols-outlined text-[20px]">fingerprint</span>
+</div>
+<div class="min-w-0">
+<p class="font-title-md text-title-md text-on-surface truncate">Biometric Seafarer ID (BSID)</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">ILO C185 • Valid permanent</p>
+</div>
+</div>
+<span class="font-label-sm text-label-sm px-2.5 py-1 rounded-full bg-secondary-container/30 text-on-secondary-container font-semibold tracking-wide flex-shrink-0">
+        Endorsed
+      </span>
+</div>
+</section>
+</div>
+<script>
+  // Ensure the bottom tab bar reflects active state for Bio-Data
+  (function initActiveNavigation() {
+    const navLinks = document.querySelectorAll('nav a');
+    navLinks.forEach(link => {
+      if (link.getAttribute('data-path') === 'bio-data') {
+        link.classList.remove('text-on-surface-variant');
+        link.classList.add('text-secondary', 'font-semibold');
+      } else {
+        link.classList.remove('text-secondary', 'font-semibold');
+        link.classList.add('text-on-surface-variant');
+      }
+    });
+
+    const addBtn = document.getElementById('quickAddBtn');
+    if (addBtn) {
+      addBtn.addEventListener('click', () => {
+        addBtn.classList.add('scale-95');
+        setTimeout(() => addBtn.classList.remove('scale-95'), 150);
+      });
+    }
+  })();
+</script></main><nav class="fixed bottom-0 inset-x-0 z-50 pb-safe bg-surface/85 backdrop-blur-xl shadow-[0_-2px_12px_rgba(11,31,58,0.04)]" data-active-classes="text-secondary"><div class="flex justify-around items-center h-20 px-space-xs"><a aria-current="page" class="flex flex-col items-center justify-center min-w-[44px] min-h-[44px] flex-1 transition-colors gap-0.5 text-secondary" data-path="bio-data" href="#"><span class="material-symbols-outlined text-[22px]">badge</span><span class="font-label-sm text-label-sm">Bio-Data</span></a><a class="flex flex-col items-center justify-center min-w-[44px] min-h-[44px] flex-1 text-on-surface-variant hover:text-on-surface transition-colors gap-0.5" data-path="documents" href="#"><span class="material-symbols-outlined text-[22px]">folder_special</span><span class="font-label-sm text-label-sm">Documents</span></a><a class="flex flex-col items-center justify-center min-w-[44px] min-h-[44px] flex-1 text-on-surface-variant hover:text-on-surface transition-colors gap-0.5" data-path="sea-time" href="#"><span class="material-symbols-outlined text-[22px]">sailing</span><span class="font-label-sm text-label-sm">Sea Time</span></a><a class="flex flex-col items-center justify-center min-w-[44px] min-h-[44px] flex-1 text-on-surface-variant hover:text-on-surface transition-colors gap-0.5" data-path="settings" href="#"><span class="material-symbols-outlined text-[22px]">tune</span><span class="font-label-sm text-label-sm">Settings</span></a></div></nav></body></html>
