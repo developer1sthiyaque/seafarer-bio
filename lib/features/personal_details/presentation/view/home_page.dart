@@ -173,7 +173,8 @@ class HomePage extends StatelessWidget {
                         'assets/icons/file_doc.svg',
                         colorFilter: ColorFilter.mode(
                           (subscriptionState is SubscriptionActive ||
-                                  profileState.profile.isPremiumPaid)
+                                  (profileState is ProfileLoaded &&
+                                      profileState.profile.isPremiumPaid))
                               ? AppColors.primary
                               : Colors.grey,
                           BlendMode.srcIn,
