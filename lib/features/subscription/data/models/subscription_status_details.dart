@@ -32,9 +32,20 @@ class SubscriptionStatusDetails extends Equatable {
     final proEntitlement =
         activeEntitlements[PaymentConstants.kProEntitlementId] ??
         activeEntitlements['seafarer_pro'] ??
-        activeEntitlements['pro'];
+        activeEntitlements['pro'] ??
+        (activeEntitlements.isNotEmpty ? activeEntitlements.values.first : null);
 
-    final isActive = proEntitlement?.isActive == true;
+    const knownProductIds = [
+      PaymentConstants.kProductWeekly,
+      PaymentConstants.kProductMonthly,
+      PaymentConstants.kProductYearly,
+    ];
+    final hasActiveSub = customerInfo.activeSubscriptions.any((id) =>
+        knownProductIds.contains(id) || id.contains('seafarer_pro'));
+    final hasPurchasedProduct = customerInfo.allPurchasedProductIdentifiers.any((id) =>
+        knownProductIds.contains(id) || id.contains('seafarer_pro'));
+
+    final isActive = (proEntitlement?.isActive == true) || hasActiveSub || hasPurchasedProduct;
 
     String? formattedExpirationDate;
     if (proEntitlement?.expirationDate != null) {

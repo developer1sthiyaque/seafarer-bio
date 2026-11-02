@@ -114,6 +114,13 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
         );
         final isPro = _revenueCatService.isProSubscriber(customerInfo);
 
+        debugPrint('🔍 [SubscriptionBloc] Purchase returned:');
+        debugPrint('   Active Entitlements: ${customerInfo?.entitlements.active.keys.toList()}');
+        debugPrint('   All Entitlements: ${customerInfo?.entitlements.all.keys.toList()}');
+        debugPrint('   Active Subscriptions: ${customerInfo?.activeSubscriptions}');
+        debugPrint('   All Purchased Products: ${customerInfo?.allPurchasedProductIdentifiers}');
+        debugPrint('   isPro: $isPro');
+
         if (isPro) {
           emit(SubscriptionActive(event.package));
         } else {

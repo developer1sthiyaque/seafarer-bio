@@ -64,6 +64,9 @@ class RevenueCatService {
   Future<CustomerInfo?> logOut() async {
     if (!_isConfigured) return null;
     try {
+      if (await Purchases.isAnonymous) {
+        return null;
+      }
       final customerInfo = await Purchases.logOut();
       if (!_customerInfoController.isClosed) {
         _customerInfoController.add(customerInfo);
@@ -111,10 +114,36 @@ class RevenueCatService {
   bool isProSubscriber(CustomerInfo? customerInfo) {
     if (customerInfo == null) return false;
     final active = customerInfo.entitlements.active;
+
+    // 1. Direct match on configured entitlement identifiers
     final activeEntitlement = active[PaymentConstants.kProEntitlementId] ??
         active['seafarer_pro'] ??
         active['pro'];
-    return activeEntitlement?.isActive == true;
+    if (activeEntitlement?.isActive == true) return true;
+
+    // 2. Any active entitlement in RevenueCat (case-insensitive / custom naming)
+    for (final entitlement in active.values) {
+      if (entitlement.isActive) return true;
+    }
+
+    // 3. Fallback: Check active subscriptions directly from store receipt
+    const knownProductIds = [
+      PaymentConstants.kProductWeekly,
+      PaymentConstants.kProductMonthly,
+      PaymentConstants.kProductYearly,
+    ];
+    if (customerInfo.activeSubscriptions.any((id) =>
+        knownProductIds.contains(id) || id.contains('seafarer_pro'))) {
+      return true;
+    }
+
+    // 4. Fallback: Check all purchased product identifiers
+    if (customerInfo.allPurchasedProductIdentifiers.any((id) =>
+        knownProductIds.contains(id) || id.contains('seafarer_pro'))) {
+      return true;
+    }
+
+    return false;
   }
 
 

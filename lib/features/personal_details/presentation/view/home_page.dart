@@ -78,26 +78,28 @@ class HomePage extends StatelessWidget {
                       onTap: () async {
                         if (profileState is ProfileLoaded) {
                           bool isPremium =
-                              subscriptionState is SubscriptionActive;
+                              subscriptionState is SubscriptionActive ||
+                              profileState.profile.isPremiumPaid;
 
-                          // Directly check active entitlements via RevenueCat SDK
+                          // Directly check active entitleRments via RevenueCat SDK
                           if (!isPremium &&
                               sl.isRegistered<RevenueCatService>()) {
                             try {
                               final rcService = sl<RevenueCatService>();
-                              final customerInfo =
-                                  await rcService.getCustomerInfo();
+                              final customerInfo = await rcService
+                                  .getCustomerInfo();
                               if (rcService.isProSubscriber(customerInfo)) {
                                 isPremium = true;
                                 if (context.mounted && customerInfo != null) {
                                   context.read<SubscriptionBloc>().add(
-                                        CustomerInfoUpdated(customerInfo),
-                                      );
+                                    CustomerInfoUpdated(customerInfo),
+                                  );
                                 }
                               }
                             } catch (e) {
                               debugPrint(
-                                  'Error checking RevenueCat entitlements directly: $e');
+                                'Error checking RevenueCat entitlements directly: $e',
+                              );
                             }
                           }
 
@@ -112,9 +114,9 @@ class HomePage extends StatelessWidget {
                             try {
                               final bytes =
                                   await DocxExportService.generateSeafarerDocx(
-                                profileState.profile,
-                                isSubscribed: isPremium,
-                              );
+                                    profileState.profile,
+                                    isSubscribed: isPremium,
+                                  );
                               final fileName =
                                   'Seafarer_Biodata_${profileState.profile.personalDetails.lastname}.docx';
 
@@ -143,9 +145,7 @@ class HomePage extends StatelessWidget {
                             } catch (e) {
                               if (!context.mounted) return;
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('Export failed: $e'),
-                                ),
+                                SnackBar(content: Text('Export failed: $e')),
                               );
                             }
                           } else {
@@ -172,7 +172,8 @@ class HomePage extends StatelessWidget {
                       child: SvgPicture.asset(
                         'assets/icons/file_doc.svg',
                         colorFilter: ColorFilter.mode(
-                          (subscriptionState is SubscriptionActive)
+                          (subscriptionState is SubscriptionActive ||
+                                  profileState.profile.isPremiumPaid)
                               ? AppColors.primary
                               : Colors.grey,
                           BlendMode.srcIn,
@@ -186,23 +187,30 @@ class HomePage extends StatelessWidget {
           ),
           BlocBuilder<SubscriptionBloc, SubscriptionState>(
             builder: (context, subscriptionState) {
-              final isPremium = subscriptionState is SubscriptionActive;
-              if (!isPremium) return const SizedBox.shrink();
+              return BlocBuilder<ProfileBloc, ProfileState>(
+                builder: (context, profileState) {
+                  final isPremium =
+                      subscriptionState is SubscriptionActive ||
+                      (profileState is ProfileLoaded &&
+                          profileState.profile.isPremiumPaid);
+                  if (!isPremium) return const SizedBox.shrink();
 
-              return Padding(
-                padding: const EdgeInsets.only(right: 16.0),
-                child: InkWell(
-                  onTap: () async {
-                    await RevenueCatUI.presentCustomerCenter();
-                    if (context.mounted) {
-                      context.read<SubscriptionBloc>().add(FetchPlans());
-                    }
-                  },
-                  child: const Icon(
-                    Icons.workspace_premium,
-                    color: AppColors.secondary,
-                  ),
-                ),
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 16.0),
+                    child: InkWell(
+                      onTap: () async {
+                        await RevenueCatUI.presentCustomerCenter();
+                        if (context.mounted) {
+                          context.read<SubscriptionBloc>().add(FetchPlans());
+                        }
+                      },
+                      child: const Icon(
+                        Icons.workspace_premium,
+                        color: AppColors.secondary,
+                      ),
+                    ),
+                  );
+                },
               );
             },
           ),
@@ -228,18 +236,14 @@ class HomePage extends StatelessWidget {
                 onTap: () {
                   context.read<AuthBloc>().add(SignOutEvent());
                 },
-                child: const Icon(
-                  Icons.logout,
-                  color: AppColors.primary,
-                ),
+                child: const Icon(Icons.logout, color: AppColors.primary),
               ),
             ),
             listener: (context, state) {
               if (state is Unauthenticated) {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                  AppRoutes.login,
-                  (route) => false,
-                );
+                Navigator.of(
+                  context,
+                ).pushNamedAndRemoveUntil(AppRoutes.login, (route) => false);
               }
             },
           ),
@@ -273,8 +277,9 @@ class HomePage extends StatelessWidget {
 
               if (state is ProfileLoaded) {
                 final profile = state.profile;
-                final decodeImage =
-                    base64Decode(profile.personalDetails.profilePic);
+                final decodeImage = base64Decode(
+                  profile.personalDetails.profilePic,
+                );
 
                 return SingleChildScrollView(
                   padding: const EdgeInsets.symmetric(
@@ -290,7 +295,9 @@ class HomePage extends StatelessWidget {
                           color: AppColors.surfaceContainerLowest,
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
-                            color: AppColors.outlineVariant.withValues(alpha: 0.6),
+                            color: AppColors.outlineVariant.withValues(
+                              alpha: 0.6,
+                            ),
                             width: 1,
                           ),
                           boxShadow: const [
@@ -317,17 +324,17 @@ class HomePage extends StatelessWidget {
                                       AppTextWithLabel(
                                         label: "Post Applied For",
                                         title: profile
-                                            .personalDetails.postAppliedFor,
+                                            .personalDetails
+                                            .postAppliedFor,
                                       ),
                                       AppTextWithLabel(
                                         label: "First Name",
-                                        title: profile
-                                            .personalDetails.firstname,
+                                        title:
+                                            profile.personalDetails.firstname,
                                       ),
                                       AppTextWithLabel(
                                         label: "Last Name",
-                                        title:
-                                            profile.personalDetails.lastname,
+                                        title: profile.personalDetails.lastname,
                                       ),
                                       AppTextWithLabel(
                                         label: "Father's Name",
@@ -348,8 +355,9 @@ class HomePage extends StatelessWidget {
                                         width: 100,
                                         height: 120,
                                         decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
                                           border: Border.all(
                                             color: AppColors.outlineVariant,
                                           ),
@@ -363,8 +371,9 @@ class HomePage extends StatelessWidget {
                                         width: 100,
                                         height: 120,
                                         decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
                                           border: Border.all(
                                             color: AppColors.outlineVariant,
                                           ),
@@ -425,7 +434,9 @@ class HomePage extends StatelessWidget {
                           color: AppColors.surfaceContainerLowest,
                           borderRadius: BorderRadius.circular(14),
                           border: Border.all(
-                            color: AppColors.outlineVariant.withValues(alpha: 0.6),
+                            color: AppColors.outlineVariant.withValues(
+                              alpha: 0.6,
+                            ),
                           ),
                         ),
                         clipBehavior: Clip.antiAlias,
@@ -433,10 +444,11 @@ class HomePage extends StatelessWidget {
                           scrollDirection: Axis.horizontal,
                           child: Table(
                             border: TableBorder.all(
-                              color: AppColors.outlineVariant.withValues(alpha: 0.4),
+                              color: AppColors.outlineVariant.withValues(
+                                alpha: 0.4,
+                              ),
                             ),
-                            defaultColumnWidth:
-                                const IntrinsicColumnWidth(),
+                            defaultColumnWidth: const IntrinsicColumnWidth(),
                             children: [
                               _buildTableHeader([
                                 'Document',
@@ -492,7 +504,9 @@ class HomePage extends StatelessWidget {
                           color: AppColors.surfaceContainerLowest,
                           borderRadius: BorderRadius.circular(14),
                           border: Border.all(
-                            color: AppColors.outlineVariant.withValues(alpha: 0.6),
+                            color: AppColors.outlineVariant.withValues(
+                              alpha: 0.6,
+                            ),
                           ),
                         ),
                         clipBehavior: Clip.antiAlias,
@@ -500,10 +514,11 @@ class HomePage extends StatelessWidget {
                           scrollDirection: Axis.horizontal,
                           child: Table(
                             border: TableBorder.all(
-                              color: AppColors.outlineVariant.withValues(alpha: 0.4),
+                              color: AppColors.outlineVariant.withValues(
+                                alpha: 0.4,
+                              ),
                             ),
-                            defaultColumnWidth:
-                                const IntrinsicColumnWidth(),
+                            defaultColumnWidth: const IntrinsicColumnWidth(),
                             children: [
                               _buildTableHeader([
                                 'Course',
@@ -559,7 +574,9 @@ class HomePage extends StatelessWidget {
                           color: AppColors.surfaceContainerLowest,
                           borderRadius: BorderRadius.circular(14),
                           border: Border.all(
-                            color: AppColors.outlineVariant.withValues(alpha: 0.6),
+                            color: AppColors.outlineVariant.withValues(
+                              alpha: 0.6,
+                            ),
                           ),
                         ),
                         clipBehavior: Clip.antiAlias,
@@ -567,10 +584,11 @@ class HomePage extends StatelessWidget {
                           scrollDirection: Axis.horizontal,
                           child: Table(
                             border: TableBorder.all(
-                              color: AppColors.outlineVariant.withValues(alpha: 0.4),
+                              color: AppColors.outlineVariant.withValues(
+                                alpha: 0.4,
+                              ),
                             ),
-                            defaultColumnWidth:
-                                const IntrinsicColumnWidth(),
+                            defaultColumnWidth: const IntrinsicColumnWidth(),
                             children: [
                               _buildTableHeader([
                                 'Name of vessel',
@@ -624,21 +642,23 @@ class HomePage extends StatelessWidget {
     return TableRow(
       decoration: const BoxDecoration(color: AppColors.surfaceContainerLow),
       children: labels
-          .map((label) => Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12.0,
-                  vertical: 10.0,
+          .map(
+            (label) => Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 12.0,
+                vertical: 10.0,
+              ),
+              child: Text(
+                label,
+                style: const TextStyle(
+                  fontFamily: 'Plus Jakarta Sans',
+                  fontWeight: FontWeight.w700,
+                  fontSize: 12,
+                  color: AppColors.primaryContainer,
                 ),
-                child: Text(
-                  label,
-                  style: const TextStyle(
-                    fontFamily: 'Plus Jakarta Sans',
-                    fontWeight: FontWeight.w700,
-                    fontSize: 12,
-                    color: AppColors.primaryContainer,
-                  ),
-                ),
-              ))
+              ),
+            ),
+          )
           .toList(),
     );
   }
@@ -647,20 +667,22 @@ class HomePage extends StatelessWidget {
   TableRow _buildTableRow(List<String> values) {
     return TableRow(
       children: values
-          .map((val) => Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12.0,
-                  vertical: 10.0,
+          .map(
+            (val) => Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 12.0,
+                vertical: 10.0,
+              ),
+              child: Text(
+                val,
+                style: const TextStyle(
+                  fontFamily: 'Plus Jakarta Sans',
+                  fontSize: 13,
+                  color: AppColors.onSurface,
                 ),
-                child: Text(
-                  val,
-                  style: const TextStyle(
-                    fontFamily: 'Plus Jakarta Sans',
-                    fontSize: 13,
-                    color: AppColors.onSurface,
-                  ),
-                ),
-              ))
+              ),
+            ),
+          )
           .toList(),
     );
   }
