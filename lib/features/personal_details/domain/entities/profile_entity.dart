@@ -247,6 +247,8 @@ class Profile extends Equatable {
   final List<SeaExperience> seaExperiences;
   final bool isProfileCompleted;
   final bool isPremiumPaid;
+  final DateTime? premiumExpiresAt;
+  final bool premiumWillRenew;
 
   const Profile({
     required this.userId,
@@ -256,6 +258,8 @@ class Profile extends Equatable {
     this.seaExperiences = const [],
     this.isProfileCompleted = false,
     this.isPremiumPaid = false,
+    this.premiumExpiresAt,
+    this.premiumWillRenew = false,
   });
 
   factory Profile.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot,
@@ -282,6 +286,8 @@ class Profile extends Equatable {
           const [],
       isProfileCompleted: data?['isProfileCompleted'] ?? false,
       isPremiumPaid: data?['isPremium'] ?? false,
+      premiumExpiresAt: (data?['premiumExpiresAt'] as Timestamp?)?.toDate(),
+      premiumWillRenew: data?['premiumWillRenew'] ?? false,
     );
   }
 
@@ -310,6 +316,8 @@ class Profile extends Equatable {
     List<SeaExperience>? seaExperiences,
     bool? isCompleted,
     bool? isPremium,
+    DateTime? premiumExpiresAt,
+    bool? premiumWillRenew,
   }) {
     return Profile(
       userId: userId,
@@ -319,7 +327,8 @@ class Profile extends Equatable {
       seaExperiences: seaExperiences ?? this.seaExperiences,
       isProfileCompleted: isCompleted ?? isProfileCompleted,
       isPremiumPaid: isPremium ?? isPremiumPaid,
-
+      premiumExpiresAt: premiumExpiresAt ?? this.premiumExpiresAt,
+      premiumWillRenew: premiumWillRenew ?? this.premiumWillRenew,
     );
   }
 
@@ -332,5 +341,7 @@ class Profile extends Equatable {
         seaExperiences,
         isProfileCompleted,
         isPremiumPaid,
+        premiumExpiresAt,
+        premiumWillRenew,
       ];
 }

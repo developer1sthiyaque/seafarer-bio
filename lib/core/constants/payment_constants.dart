@@ -1,7 +1,11 @@
+import 'package:seafarer_bio_data/core/config/environment.dart';
+
 class PaymentConstants {
   // RevenueCat Entitlement & Offering configuration
-  static const String kProEntitlementId = 'premium';
-  static const String kOfferingId = 'seafarer_pro';
+  // PROTECTED: DO NOT MODIFY. Dev and prod RevenueCat IDs intentionally
+  // differ. See project rules (AGENTS.md).
+  static final String kProEntitlementId =Environment.instance.isDev?'premium':'pro';
+  static final String kOfferingId = Environment.instance.isDev?'seafarer_pro':'seafarer';
 
   // RevenueCat Product IDs
   static const String kProductWeekly = 'seafarer_pro_weekly';

@@ -34,11 +34,16 @@ class PlansLoaded extends SubscriptionState {
 class SubscriptionActive extends SubscriptionState {
   final SubscriptionPackage plan;
   final SubscriptionStatusDetails? details;
+  final DateTime? expirationDate;
 
-  const SubscriptionActive(this.plan, {this.details});
+  const SubscriptionActive(
+    this.plan, {
+    this.details,
+    this.expirationDate,
+  });
 
   @override
-  List<Object?> get props => [plan, details];
+  List<Object?> get props => [plan, details, expirationDate];
 }
 
 
