@@ -3,11 +3,9 @@ import 'package:seafarer_bio_data/features/personal_details/domain/entities/prof
 import 'package:seafarer_bio_data/features/personal_details/presentation/bloc/personal_info_event.dart';
 import 'package:seafarer_bio_data/features/personal_details/presentation/bloc/personal_info_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../domain/usecases/get_profile.dart';
 import '../../domain/usecases/save_profile.dart';
 import '../../domain/usecases/update_profile.dart';
-
 
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   final GetProfileUseCase getProfile;
@@ -31,7 +29,6 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<UpdateFullProfileEvent>(_onUpdateFullProfile);
     on<SyncSubscriptionStatusEvent>(_onSyncSubscriptionStatus);
   }
-
 
   void _onLoadProfile(LoadProfile event, Emitter<ProfileState> emit) async {
     emit(ProfileLoading());
@@ -73,12 +70,17 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   // }
 
   Future<void> _onSaveProfile(
-      SaveProfileEvent event, Emitter<ProfileState> emit) async {
+    SaveProfileEvent event,
+    Emitter<ProfileState> emit,
+  ) async {
     await saveProfile(event.profile);
   }
 
   Future<void> _updateProfile(
-      Profile updatedProfile, Emitter<ProfileState> emit,ProfileState successState,) async {
+    Profile updatedProfile,
+    Emitter<ProfileState> emit,
+    ProfileState successState,
+  ) async {
     try {
       await updateProfile(updatedProfile);
       emit(successState);
@@ -89,7 +91,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   }
 
   void _onUpdatePersonalDetails(
-      UpdatePersonalDetailsEvent event, Emitter<ProfileState> emit) async {
+    UpdatePersonalDetailsEvent event,
+    Emitter<ProfileState> emit,
+  ) async {
     // 2. Check and capture the profile BEFORE emitting Loading
     if (state is! ProfileLoaded) return;
     final currentProfile = (state as ProfileLoaded).profile;
@@ -99,21 +103,24 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
     // 4. Await the update so the emitter stays alive
     try {
-      final updatedProfile = currentProfile.copyWith(personalDetails: event.personalDetails);
+      final updatedProfile = currentProfile.copyWith(
+        personalDetails: event.personalDetails,
+      );
       // 2. Add 'await' here! This keeps the handler alive.
       await _updateProfile(
         currentProfile.copyWith(personalDetails: event.personalDetails),
-        emit,PersonalDetailsUpdateSuccess(updatedProfile)
+        emit,
+        PersonalDetailsUpdateSuccess(updatedProfile),
       );
-      
     } catch (e) {
       emit(ProfileError(e.toString()));
     }
   }
 
   Future<void> _onUpdateDocuments(
-      UpdateDocumentsEvent event, Emitter<ProfileState> emit) async {
-
+    UpdateDocumentsEvent event,
+    Emitter<ProfileState> emit,
+  ) async {
     // if (state is! ProfileLoaded) return;
     // final currentProfile = (state as ProfileLoaded).profile;
     if (state is! PersonalDetailsUpdateSuccess) return;
@@ -123,25 +130,26 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     try {
       // 1. Await the update to Firebase
       await _updateProfile(
-        current.copyWith(documents: event.documents,),
+        current.copyWith(documents: event.documents),
         emit,
         DocumentsUpdateSuccess(updatedProfile), // Trigger for Page 1 -> 2
       );
-
     } catch (e) {
       emit(ProfileError(e.toString()));
     }
   }
 
   Future<void> _onUpdateCourses(
-      UpdateCoursesEvent event, Emitter<ProfileState> emit) async {
+    UpdateCoursesEvent event,
+    Emitter<ProfileState> emit,
+  ) async {
     if (state is! DocumentsUpdateSuccess) return;
     final current = (state as DocumentsUpdateSuccess).profile;
     final updatedProfile = current.copyWith(courses: event.courses);
     emit(ProfileLoading());
     try {
       await _updateProfile(
-        current.copyWith(courses: event.courses,isCompleted: true),
+        current.copyWith(courses: event.courses, isCompleted: true),
         emit,
         CertificateUpdateSuccess(updatedProfile), // Trigger for Page 1 -> 2
       );
@@ -151,26 +159,30 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   }
 
   void _onUpdateSeaExperience(
-      UpdateSeaExperienceEvent event, Emitter<ProfileState> emit) {
+    UpdateSeaExperienceEvent event,
+    Emitter<ProfileState> emit,
+  ) {
     if (state is! ProfileLoaded) return;
     final current = (state as ProfileLoaded).profile;
 
     // 3. Now it's safe to emit loading
     emit(ProfileLoading());
 
-    try{
+    try {
       _updateProfile(
         current.copyWith(seaExperiences: event.seaExperiences),
         emit,
         CertificateUpdateSuccess(current), // Trigger for Page 1 -> 2
       );
-    }catch(e){
+    } catch (e) {
       emit(ProfileError(e.toString()));
     }
   }
 
   Future<void> _onUpdateFullProfile(
-      UpdateFullProfileEvent event, Emitter<ProfileState> emit) async {
+    UpdateFullProfileEvent event,
+    Emitter<ProfileState> emit,
+  ) async {
     if (state is! ProfileLoaded) return;
 
     final currentProfile = (state as ProfileLoaded).profile;
@@ -200,22 +212,10 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     if (state is ProfileLoaded) {
       final currentProfile = (state as ProfileLoaded).profile;
       if (currentProfile.isPremiumPaid != event.isPremium) {
-        emit(ProfileLoaded(
-          currentProfile.copyWith(isPremium: event.isPremium),
-        ));
+        emit(
+          ProfileLoaded(currentProfile.copyWith(isPremium: event.isPremium)),
+        );
       }
-    }
-
-    try {
-      if (event.userId.isNotEmpty) {
-        await FirebaseFirestore.instance
-            .collection('profiles')
-            .doc(event.userId)
-            .set({'isPremium': event.isPremium}, SetOptions(merge: true));
-      }
-    } catch (e) {
-      // In production, isPremium writes from clients are blocked by firestore.rules
-      // and managed via RevenueCat webhooks. Catch gracefully so local state remains correct.
     }
   }
 
@@ -225,4 +225,3 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     return super.close();
   }
 }
-

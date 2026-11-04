@@ -11,10 +11,10 @@ abstract class SubscriptionEvent extends Equatable {
 
 class FetchPlans extends SubscriptionEvent {}
 
-class PurchasePlan extends SubscriptionEvent {
+class PurchasePlanRequested extends SubscriptionEvent {
   final SubscriptionPackage package;
 
-  const PurchasePlan(this.package);
+  const PurchasePlanRequested(this.package);
 
   @override
   List<Object?> get props => [package];

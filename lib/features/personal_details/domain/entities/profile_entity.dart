@@ -286,13 +286,21 @@ class Profile extends Equatable {
   }
 
   Map<String, dynamic> toFirestore() {
-    return {
+    final map = <String, dynamic>{
       'personalDetails': personalDetails.toFirestore(),
       'documents': documents.map((doc) => doc.toFirestore()).toList(),
       'courses': courses.map((course) => course.toFirestore()).toList(),
       'seaExperiences': seaExperiences.map((exp) => exp.toFirestore()).toList(),
       'isProfileCompleted': isProfileCompleted,
     };
+    // Strip protected entitlement fields - these can ONLY be written by the Cloud Function Admin SDK
+    map.remove('isPremium');
+    map.remove('premiumExpiresAt');
+    map.remove('premiumProductId');
+    map.remove('premiumUpdatedAt');
+    map.remove('premiumWillRenew');
+    map.remove('premiumEnvironment');
+    return map;
   }
 
   Profile copyWith({

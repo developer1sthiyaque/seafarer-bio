@@ -13,6 +13,15 @@ class SubscriptionInitial extends SubscriptionState {}
 
 class SubscriptionLoading extends SubscriptionState {}
 
+class SubscriptionVerifying extends SubscriptionState {
+  final String message;
+
+  const SubscriptionVerifying([this.message = 'Verifying purchase with store...']);
+
+  @override
+  List<Object?> get props => [message];
+}
+
 class PlansLoaded extends SubscriptionState {
   final List<SubscriptionPackage> plans;
 

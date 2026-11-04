@@ -16,7 +16,6 @@ import 'package:seafarer_bio_data/features/personal_details/domain/usecases/upda
 import 'package:seafarer_bio_data/features/personal_details/presentation/bloc/personal_info_bloc.dart';
 import 'package:seafarer_bio_data/features/personal_details/presentation/bloc/personal_info_event.dart';
 import 'package:seafarer_bio_data/features/personal_details/presentation/bloc/personal_info_state.dart';
-import 'package:seafarer_bio_data/features/subscription/data/models/subscription_package.dart';
 import 'package:seafarer_bio_data/features/subscription/presentation/bloc/subscription_bloc.dart';
 import 'package:seafarer_bio_data/features/subscription/presentation/bloc/subscription_event.dart';
 import 'package:seafarer_bio_data/features/subscription/presentation/bloc/subscription_state.dart';
@@ -97,7 +96,7 @@ void registerTestFallbackValues() {
   // Subscription events
   registerFallbackValue(FetchPlans());
   registerFallbackValue(RestorePurchase());
-  registerFallbackValue(PurchasePlan(SubscriptionPackage.staticPlans.first));
+  // registerFallbackValue(PurchasePlan(SubscriptionPackage.staticPlans.first));
 
   // Entities
   registerFallbackValue(_fallbackProfile);

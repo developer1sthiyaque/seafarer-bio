@@ -1,7 +1,7 @@
 import 'dart:io';
-import 'dart:typed_data';
-import 'package:path_provider/path_provider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:open_filex/open_filex.dart';
+import 'package:path_provider/path_provider.dart';
 
 class FileSaveService {
   static Future<File?> saveAndOpen({
@@ -10,28 +10,23 @@ class FileSaveService {
   }) async {
     try {
       Directory dir;
-
       if (Platform.isAndroid) {
-        // Using the secondary storage Downloads folder for Android
-        dir = Directory('/storage/emulated/0/Download');
-        if (!await dir.exists()) {
-          dir = await getApplicationDocumentsDirectory();
-        }
+        // App-specific external dir: /storage/emulated/0/Android/data/<pkg>/files
+        dir = (await getExternalStorageDirectory()) ??
+            await getApplicationDocumentsDirectory();
       } else {
         dir = await getApplicationDocumentsDirectory();
       }
 
-      final filePath = '${dir.path}/$fileName';
-      final file = File(filePath);
+      final file = File('${dir.path}/$fileName');
+      await file.writeAsBytes(bytes, flush: true);
 
-      await file.writeAsBytes(bytes);
-
-      // Open file after saving
-      await OpenFilex.open(file.path);
-
+      final result = await OpenFilex.open(file.path);
+      debugPrint('OpenFilex result: ${result.type} ${result.message}');
       return file;
-    } catch (e) {
-      return null;
+    } catch (e, st) {
+      debugPrint('saveAndOpen failed: $e\n$st');
+      rethrow; // let the UI show "Export failed"
     }
   }
 }

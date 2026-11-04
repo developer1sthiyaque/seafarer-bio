@@ -95,6 +95,30 @@ describe("RevenueCat Webhook Handler", () => {
       expect(mockBatch.commit).not.toHaveBeenCalled();
     });
 
+    test("accepts Bearer Authorization header", async () => {
+      const payload: RevenueCatWebhookPayload = {
+        api_version: "1.0",
+        event: {
+          id: "evt_bearer_1",
+          type: "INITIAL_PURCHASE",
+          app_user_id: "firebase_user_bearer",
+          product_id: "seafarer_pro_monthly",
+          event_timestamp_ms: 1700000000000,
+        },
+      };
+
+      const req = {
+        method: "POST",
+        headers: { authorization: `Bearer ${secretKey}` },
+        body: payload,
+      };
+
+      await processWebhook(req, mockRes, mockDb, secretKey);
+
+      expect(mockRes.status).toHaveBeenCalledWith(200);
+      expect(mockBatch.commit).toHaveBeenCalled();
+    });
+
     test("returns 405 for non-POST methods", async () => {
       const req = {
         method: "GET",
@@ -132,6 +156,31 @@ describe("RevenueCat Webhook Handler", () => {
 
       expect(mockRes.status).toHaveBeenCalledWith(200);
       expect(mockBatch.commit).not.toHaveBeenCalled();
+    });
+
+    test("resolves real UID from aliases if app_user_id is anonymous", async () => {
+      const payload: RevenueCatWebhookPayload = {
+        api_version: "1.0",
+        event: {
+          id: "evt_aliased_1",
+          type: "INITIAL_PURCHASE",
+          app_user_id: "$RCAnonymousID:1234567890abcdef",
+          aliases: ["$RCAnonymousID:1234567890abcdef", "resolved_firebase_uid"],
+          product_id: "seafarer_pro_monthly",
+          event_timestamp_ms: 1700000000000,
+        },
+      };
+
+      const req = {
+        method: "POST",
+        headers: { authorization: secretKey },
+        body: payload,
+      };
+
+      await processWebhook(req, mockRes, mockDb, secretKey);
+
+      expect(mockRes.status).toHaveBeenCalledWith(200);
+      expect(mockBatch.commit).toHaveBeenCalled();
     });
   });
 

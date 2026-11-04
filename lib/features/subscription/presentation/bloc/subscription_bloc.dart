@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
-import 'package:flutter/foundation.dart';
+import 'package:seafarer_bio_data/core/constants/payment_constants.dart';
 import 'package:seafarer_bio_data/core/services/revenuecat_service.dart';
 import '../../data/models/subscription_package.dart';
 import 'subscription_event.dart';
@@ -16,7 +18,7 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
       : _revenueCatService = revenueCatService,
         super(SubscriptionInitial()) {
     on<FetchPlans>(_onFetchPlans);
-    on<PurchasePlan>(_onPurchasePlan);
+    on<PurchasePlanRequested>(_onPurchasePlanRequested);
     on<RestorePurchase>(_onRestorePurchase);
     on<ResetSubscriptionState>(_onResetSubscriptionState);
     on<CustomerInfoUpdated>(_onCustomerInfoUpdated);
@@ -40,20 +42,35 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     emit(SubscriptionInitial());
   }
 
-  Future<void> _onCustomerInfoUpdated(
-    CustomerInfoUpdated event,
-    Emitter<SubscriptionState> emit,
-  ) async {
-    final isPro = _revenueCatService.isProSubscriber(event.customerInfo);
+  void _applyCustomerInfo(
+    CustomerInfo? customerInfo,
+    Emitter<SubscriptionState> emit, {
+    SubscriptionPackage? purchasedPackage,
+  }) {
+    final active = customerInfo?.entitlements.active;
+    final isPro = (active != null &&
+            active.containsKey(PaymentConstants.kProEntitlementId) &&
+            (active[PaymentConstants.kProEntitlementId]?.isActive ?? false)) ||
+        _revenueCatService.isProSubscriber(customerInfo);
+
     if (isPro) {
+      final planToEmit =
+          purchasedPackage ?? SubscriptionPackage.staticPlans.first;
       if (state is! SubscriptionActive) {
-        emit(SubscriptionActive(SubscriptionPackage.staticPlans.first));
+        emit(SubscriptionActive(planToEmit));
       }
     } else {
       if (state is SubscriptionActive) {
         add(FetchPlans());
       }
     }
+  }
+
+  Future<void> _onCustomerInfoUpdated(
+    CustomerInfoUpdated event,
+    Emitter<SubscriptionState> emit,
+  ) async {
+    _applyCustomerInfo(event.customerInfo, emit);
   }
 
   Future<void> _onFetchPlans(
@@ -63,7 +80,13 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     emit(SubscriptionLoading());
     try {
       final customerInfo = await _revenueCatService.getCustomerInfo();
-      if (_revenueCatService.isProSubscriber(customerInfo)) {
+      final active = customerInfo?.entitlements.active;
+      final isPro = (active != null &&
+              active.containsKey(PaymentConstants.kProEntitlementId) &&
+              (active[PaymentConstants.kProEntitlementId]?.isActive ?? false)) ||
+          _revenueCatService.isProSubscriber(customerInfo);
+
+      if (isPro) {
         emit(SubscriptionActive(SubscriptionPackage.staticPlans.first));
         return;
       }
@@ -102,43 +125,70 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     }
   }
 
-  Future<void> _onPurchasePlan(
-    PurchasePlan event,
+  Future<void> _onPurchasePlanRequested(
+    PurchasePlanRequested event,
     Emitter<SubscriptionState> emit,
   ) async {
     emit(SubscriptionLoading());
     try {
-      if (event.package.rcPackage != null) {
-        final customerInfo = await _revenueCatService.purchasePackage(
-          event.package.rcPackage!,
-        );
-        final isPro = _revenueCatService.isProSubscriber(customerInfo);
-
-        debugPrint('🔍 [SubscriptionBloc] Purchase returned:');
-        debugPrint('   Active Entitlements: ${customerInfo?.entitlements.active.keys.toList()}');
-        debugPrint('   All Entitlements: ${customerInfo?.entitlements.all.keys.toList()}');
-        debugPrint('   Active Subscriptions: ${customerInfo?.activeSubscriptions}');
-        debugPrint('   All Purchased Products: ${customerInfo?.allPurchasedProductIdentifiers}');
-        debugPrint('   isPro: $isPro');
-
-        if (isPro) {
-          emit(SubscriptionActive(event.package));
-        } else {
-          emit(
-            const SubscriptionError('Purchase did not unlock Pro features.'),
-          );
-          add(FetchPlans());
-        }
-      } else {
+      if (event.package.rcPackage == null) {
         emit(
           const SubscriptionError('RevenueCat package not found for this plan.'),
+        );
+        add(FetchPlans());
+        return;
+      }
+
+      // Ensure user ID is bound before purchase
+      final currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser != null && currentUser.uid.isNotEmpty) {
+        debugPrint(
+            '🔑 [SubscriptionBloc] Ensuring identified user before purchase: ${currentUser.uid}');
+        await _revenueCatService.logIn(currentUser.uid);
+      }
+
+      await _revenueCatService.purchasePackage(
+        event.package.rcPackage!,
+      );
+
+      // Transition to verifying state to avoid optimistic offline entitlement flicker
+      emit(const SubscriptionVerifying('Verifying purchase with store...'));
+
+      bool verified = false;
+      CustomerInfo? verifiedInfo;
+
+      for (int attempt = 1; attempt <= 3; attempt++) {
+        await Future.delayed(Duration(milliseconds: 1000 * attempt));
+        try {
+          await Purchases.syncPurchases();
+        } catch (_) {}
+        verifiedInfo = await _revenueCatService.getCustomerInfo();
+        final active = verifiedInfo?.entitlements.active;
+        if (active != null &&
+            active.containsKey(PaymentConstants.kProEntitlementId) &&
+            (active[PaymentConstants.kProEntitlementId]?.isActive ?? false)) {
+          verified = true;
+          break;
+        }
+      }
+
+      if (verified && verifiedInfo != null) {
+        _applyCustomerInfo(
+          verifiedInfo,
+          emit,
+          purchasedPackage: event.package,
+        );
+      } else {
+        emit(
+          const SubscriptionError(
+            'Purchase could not be verified by the store. Please tap "Restore Purchases" if charged.',
+          ),
         );
         add(FetchPlans());
       }
     } on PlatformException catch (e) {
       final errorCode = PurchasesErrorHelper.getErrorCode(e);
       if (errorCode == PurchasesErrorCode.purchaseCancelledError) {
-        // User intentionally cancelled the purchase flow - dismiss quietly without an error SnackBar
         add(FetchPlans());
         return;
       }
@@ -157,10 +207,13 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     emit(SubscriptionLoading());
     try {
       final customerInfo = await _revenueCatService.restorePurchases();
-      final isPro = _revenueCatService.isProSubscriber(customerInfo);
+      final active = customerInfo?.entitlements.active;
+      final isPro = active != null &&
+          active.containsKey(PaymentConstants.kProEntitlementId) &&
+          (active[PaymentConstants.kProEntitlementId]?.isActive ?? false);
 
-      if (isPro) {
-        emit(SubscriptionActive(SubscriptionPackage.staticPlans.last));
+      if (isPro && customerInfo != null) {
+        _applyCustomerInfo(customerInfo, emit);
       } else {
         emit(
           const SubscriptionError('No active subscriptions found to restore.'),

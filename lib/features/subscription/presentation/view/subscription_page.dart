@@ -3,15 +3,26 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:seafarer_bio_data/core/constants/app_routes.dart';
 import 'package:seafarer_bio_data/core/constants/payment_constants.dart';
+import 'package:seafarer_bio_data/features/personal_details/presentation/bloc/personal_info_bloc.dart';
+import 'package:seafarer_bio_data/features/personal_details/presentation/bloc/personal_info_event.dart';
+import 'package:seafarer_bio_data/features/personal_details/presentation/bloc/personal_info_state.dart';
 import 'package:seafarer_bio_data/features/subscription/data/models/subscription_package.dart';
 import 'package:seafarer_bio_data/features/subscription/presentation/bloc/subscription_state.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../bloc/subscription_bloc.dart';
 import '../bloc/subscription_event.dart';
 
-class SubscriptionPage extends StatelessWidget {
+class SubscriptionPage extends StatefulWidget {
   const SubscriptionPage({super.key});
+
+  @override
+  State<SubscriptionPage> createState() => _SubscriptionPageState();
+}
+
+class _SubscriptionPageState extends State<SubscriptionPage> {
+  bool _hasNavigatedOnSuccess = false;
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +44,11 @@ class SubscriptionPage extends StatelessWidget {
         iconTheme: const IconThemeData(color: AppColors.primaryContainer),
       ),
       body: BlocConsumer<SubscriptionBloc, SubscriptionState>(
+        listenWhen: (previous, current) {
+          // Fire listener only on error or when transitioning to SubscriptionActive
+          if (current is SubscriptionError) return true;
+          return previous is! SubscriptionActive && current is SubscriptionActive;
+        },
         listener: (context, state) {
           if (state is SubscriptionError) {
             log("SUBSCRIPTION ERROR:${state.message}");
@@ -40,7 +56,19 @@ class SubscriptionPage extends StatelessWidget {
               SnackBar(content: Text(state.message)),
             );
           } else if (state is SubscriptionActive) {
+            if (_hasNavigatedOnSuccess) return;
+            _hasNavigatedOnSuccess = true;
+
             log("SUBSCRIPTION ACTIVE:${state.plan.name}");
+            final profileState = context.read<ProfileBloc>().state;
+            if (profileState is ProfileLoaded) {
+              context.read<ProfileBloc>().add(
+                    SyncSubscriptionStatusEvent(
+                      isPremium: true,
+                      userId: profileState.profile.userId,
+                    ),
+                  );
+            }
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(
@@ -48,13 +76,40 @@ class SubscriptionPage extends StatelessWidget {
                 ),
               ),
             );
-            Navigator.pop(context);
+
+            if (mounted) {
+              final navigator = Navigator.of(context);
+              if (navigator.canPop()) {
+                navigator.pop(true);
+              } else {
+                navigator.pushNamedAndRemoveUntil(
+                  AppRoutes.home,
+                  (route) => false,
+                );
+              }
+            }
           }
         },
         builder: (context, state) {
-          if (state is SubscriptionLoading) {
-            return const Center(
-              child: CircularProgressIndicator(color: AppColors.primary),
+          if (state is SubscriptionLoading || state is SubscriptionVerifying) {
+            return Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const CircularProgressIndicator(color: AppColors.primary),
+                  if (state is SubscriptionVerifying) ...[
+                    const SizedBox(height: 16),
+                    Text(
+                      state.message,
+                      style: const TextStyle(
+                        fontFamily: 'Plus Jakarta Sans',
+                        color: AppColors.onSurfaceVariant,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
             );
           }
 
@@ -325,7 +380,7 @@ class SubscriptionPage extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        context.read<SubscriptionBloc>().add(PurchasePlan(plan));
+        context.read<SubscriptionBloc>().add(PurchasePlanRequested(plan));
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 18),

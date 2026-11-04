@@ -36,7 +36,7 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
     await firestore
         .collection('profiles')
         .doc(profile.userId)
-        .set(profile.toFirestore());
+        .set(profile.toFirestore(), SetOptions(merge: true));
   }
 
   @override
@@ -44,7 +44,7 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
     await firestore
         .collection('profiles')
         .doc(profile.userId)
-        .update(profile.toFirestore());
+        .set(profile.toFirestore(), SetOptions(merge: true));
   }
 
   @override
@@ -52,7 +52,7 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
     await firestore
         .collection('profiles')
         .doc(profile.userId)
-        .set(profile.toFirestore());
+        .set(profile.toFirestore(), SetOptions(merge: true));
   }
 }
 

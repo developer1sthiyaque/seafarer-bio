@@ -7,13 +7,13 @@ import 'package:seafarer_bio_data/core/constants/app_routes.dart';
 import 'package:seafarer_bio_data/core/pdf/profile_pdf_builder.dart';
 import 'package:seafarer_bio_data/core/services/docx_export_service.dart';
 import 'package:seafarer_bio_data/core/services/file_save_service.dart';
+import 'package:seafarer_bio_data/core/utils/premium_gate.dart';
 import 'package:seafarer_bio_data/core/utils/shared_preferences.dart';
+import 'package:seafarer_bio_data/features/personal_details/domain/entities/profile_entity.dart';
 import 'package:seafarer_bio_data/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:seafarer_bio_data/features/personal_details/presentation/bloc/personal_info_bloc.dart';
 import 'package:seafarer_bio_data/features/personal_details/presentation/bloc/personal_info_event.dart';
 import 'package:seafarer_bio_data/features/personal_details/presentation/bloc/personal_info_state.dart';
-import 'package:seafarer_bio_data/core/di/injection_container.dart';
-import 'package:seafarer_bio_data/core/services/revenuecat_service.dart';
 import 'package:seafarer_bio_data/features/subscription/presentation/bloc/subscription_bloc.dart';
 import 'package:seafarer_bio_data/features/subscription/presentation/bloc/subscription_event.dart';
 import 'package:seafarer_bio_data/features/subscription/presentation/bloc/subscription_state.dart';
@@ -24,8 +24,36 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:seafarer_bio_data/features/personal_details/presentation/widgets/profile_subscription_card.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  Profile? _cachedProfile;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final profileState = context.read<ProfileBloc>().state;
+      if (profileState is ProfileLoaded) {
+        setState(() {
+          _cachedProfile = profileState.profile;
+        });
+      } else if (profileState is ProfileInitial) {
+        final authState = context.read<AuthBloc>().state;
+        final userId = authState is Authenticated
+            ? authState.user.uid
+            : PreferenceService.userId;
+        if (userId!=null && userId.isNotEmpty) {
+          context.read<ProfileBloc>().add(LoadProfile(userId));
+        }
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,111 +100,64 @@ class HomePage extends StatelessWidget {
             builder: (context, subscriptionState) {
               return BlocBuilder<ProfileBloc, ProfileState>(
                 builder: (context, profileState) {
+                  final isPremium = PremiumGate.isPremium(
+                    subscriptionState: subscriptionState,
+                    profileState: profileState,
+                  );
+
                   return Padding(
                     padding: const EdgeInsets.only(right: 16.0),
                     child: InkWell(
                       onTap: () async {
-                        if (profileState is ProfileLoaded) {
-                          bool isPremium =
-                              subscriptionState is SubscriptionActive ||
-                              profileState.profile.isPremiumPaid;
+                        if (profileState is! ProfileLoaded) return;
 
-                          // Directly check active entitleRments via RevenueCat SDK
-                          if (!isPremium &&
-                              sl.isRegistered<RevenueCatService>()) {
-                            try {
-                              final rcService = sl<RevenueCatService>();
-                              final customerInfo = await rcService
-                                  .getCustomerInfo();
-                              if (rcService.isProSubscriber(customerInfo)) {
-                                isPremium = true;
-                                if (context.mounted && customerInfo != null) {
-                                  context.read<SubscriptionBloc>().add(
-                                    CustomerInfoUpdated(customerInfo),
-                                  );
-                                }
-                              }
-                            } catch (e) {
-                              debugPrint(
-                                'Error checking RevenueCat entitlements directly: $e',
-                              );
-                            }
-                          }
+                        if (isPremium) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Generating DOCX...')),
+                          );
 
-                          if (isPremium) {
+                          try {
+                            final bytes =
+                                await DocxExportService.generateSeafarerDocx(
+                                  profileState.profile,
+                                  isSubscribed: true,
+                                );
+                            final fileName =
+                                'Seafarer_Biodata_${profileState.profile.personalDetails.lastname}.docx';
+
+                            await FileSaveService.saveAndOpen(
+                              bytes: bytes,
+                              fileName: fileName,
+                            );
+                          } catch (e) {
                             if (!context.mounted) return;
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Generating DOCX...'),
-                              ),
-                            );
-
-                            try {
-                              final bytes =
-                                  await DocxExportService.generateSeafarerDocx(
-                                    profileState.profile,
-                                    isSubscribed: isPremium,
-                                  );
-                              final fileName =
-                                  'Seafarer_Biodata_${profileState.profile.personalDetails.lastname}.docx';
-
-                              await FileSaveService.saveAndOpen(
-                                bytes: bytes,
-                                fileName: fileName,
-                              );
-                            } on PremiumRequiredException {
-                              if (!context.mounted) return;
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: const Text(
-                                    'DOCX Export is a Pro feature. Please subscribe to unlock.',
-                                  ),
-                                  action: SnackBarAction(
-                                    label: 'Upgrade',
-                                    onPressed: () {
-                                      Navigator.pushNamed(
-                                        context,
-                                        AppRoutes.subscription,
-                                      );
-                                    },
-                                  ),
-                                ),
-                              );
-                            } catch (e) {
-                              if (!context.mounted) return;
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Export failed: $e')),
-                              );
-                            }
-                          } else {
-                            if (!context.mounted) return;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: const Text(
-                                  'DOCX Export is a Pro feature. Please subscribe to unlock.',
-                                ),
-                                action: SnackBarAction(
-                                  label: 'Upgrade',
-                                  onPressed: () {
-                                    Navigator.pushNamed(
-                                      context,
-                                      AppRoutes.subscription,
-                                    );
-                                  },
-                                ),
-                              ),
+                              SnackBar(content: Text('Export failed: $e')),
                             );
                           }
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: const Text(
+                                'DOCX Export is a Pro feature. Please subscribe to unlock.',
+                              ),
+                              action: SnackBarAction(
+                                label: 'Upgrade',
+                                onPressed: () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    AppRoutes.subscription,
+                                  );
+                                },
+                              ),
+                            ),
+                          );
                         }
                       },
                       child: SvgPicture.asset(
                         'assets/icons/file_doc.svg',
                         colorFilter: ColorFilter.mode(
-                          (subscriptionState is SubscriptionActive ||
-                                  (profileState is ProfileLoaded &&
-                                      profileState.profile.isPremiumPaid))
-                              ? AppColors.primary
-                              : Colors.grey,
+                          isPremium ? AppColors.primary : Colors.grey,
                           BlendMode.srcIn,
                         ),
                       ),
@@ -190,10 +171,10 @@ class HomePage extends StatelessWidget {
             builder: (context, subscriptionState) {
               return BlocBuilder<ProfileBloc, ProfileState>(
                 builder: (context, profileState) {
-                  final isPremium =
-                      subscriptionState is SubscriptionActive ||
-                      (profileState is ProfileLoaded &&
-                          profileState.profile.isPremiumPaid);
+                  final isPremium = PremiumGate.isPremium(
+                    subscriptionState: subscriptionState,
+                    profileState: profileState,
+                  );
                   if (!isPremium) return const SizedBox.shrink();
 
                   return Padding(
@@ -268,16 +249,14 @@ class HomePage extends StatelessWidget {
           },
           child: BlocBuilder<ProfileBloc, ProfileState>(
             builder: (context, state) {
-              if (state is ProfileLoading) {
-                return const Center(child: CircularProgressIndicator());
-              }
-
-              if (state is ProfileError) {
-                return Center(child: Text(state.message));
-              }
-
               if (state is ProfileLoaded) {
-                final profile = state.profile;
+                _cachedProfile = state.profile;
+              }
+
+              final profile =
+                  (state is ProfileLoaded) ? state.profile : _cachedProfile;
+
+              if (profile != null) {
                 final decodeImage = base64Decode(
                   profile.personalDetails.profilePic,
                 );
@@ -290,6 +269,12 @@ class HomePage extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      if (state is ProfileLoading)
+                        const Padding(
+                          padding: EdgeInsets.only(bottom: 8.0),
+                          child:
+                              LinearProgressIndicator(color: AppColors.primary),
+                        ),
                       // --- PERSONAL INFORMATION SECTION (Hero Folio Card) ---
                       Container(
                         decoration: BoxDecoration(
@@ -630,7 +615,28 @@ class HomePage extends StatelessWidget {
                   ),
                 );
               }
-              return const SizedBox();
+
+              if (state is ProfileLoading) {
+                return const Center(
+                  child: CircularProgressIndicator(color: AppColors.primary),
+                );
+              }
+
+              if (state is ProfileError) {
+                return Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Text(
+                      state.message,
+                      style: const TextStyle(color: Colors.red),
+                    ),
+                  ),
+                );
+              }
+
+              return const Center(
+                child: CircularProgressIndicator(color: AppColors.primary),
+              );
             },
           ),
         ),

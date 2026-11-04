@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:seafarer_bio_data/core/config/environment.dart';
@@ -26,6 +27,10 @@ void main() async {
   await PreferenceService.init();
   await setupLocator();
   await sl<RevenueCatService>().init();
+  final currentFirebaseUser = FirebaseAuth.instance.currentUser;
+  if (currentFirebaseUser != null && currentFirebaseUser.uid.isNotEmpty) {
+    await sl<RevenueCatService>().logIn(currentFirebaseUser.uid);
+  }
   runApp(const MyApp());
 }
 

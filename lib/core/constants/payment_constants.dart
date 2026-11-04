@@ -1,6 +1,6 @@
 class PaymentConstants {
   // RevenueCat Entitlement & Offering configuration
-  static const String kProEntitlementId = 'pro';
+  static const String kProEntitlementId = 'premium';
   static const String kOfferingId = 'seafarer_pro';
 
   // RevenueCat Product IDs
