@@ -173,6 +173,7 @@ void main() {
       final event =
           verify(() => subscriptionBloc.add(captureAny<SubscriptionEvent>()))
               .captured
+              .whereType<PurchasePlanRequested>()
               .single;
       expect(event.package.id, 'monthly_plan');
     });
@@ -186,6 +187,7 @@ void main() {
       final event =
           verify(() => subscriptionBloc.add(captureAny<SubscriptionEvent>()))
               .captured
+              .whereType<PurchasePlanRequested>()
               .single;
       expect(event.package.id, 'yearly_plan');
     });
@@ -228,7 +230,10 @@ void main() {
       whenListen(
         subscriptionBloc,
         Stream.fromIterable([
-          const SubscriptionError('Purchase did not unlock Pro features.'),
+          SubscriptionError(
+            'Purchase did not unlock Pro features.',
+            offerings: SubscriptionPackage.staticPlans,
+          ),
         ]),
         initialState: PlansLoaded(SubscriptionPackage.staticPlans),
       );
@@ -257,6 +262,76 @@ void main() {
       // verifyNever(() => subscriptionBloc.add(
       //       any<SubscriptionEvent>(that: isA<PurchasePlan>()),
       //     ));
+    });
+  });
+
+  group('§2.4 entitlement and error handling', () {
+    testWidgets('expired user sees plans', (tester) async {
+      final pastDate = DateTime.now().subtract(const Duration(days: 10));
+      final expiredProfile = fullProfile().copyWith(
+        isPremium: false,
+        premiumExpiresAt: pastDate,
+        premiumWillRenew: false,
+      );
+      when(() => profileBloc.state).thenReturn(ProfileLoaded(expiredProfile));
+      when(() => subscriptionBloc.state).thenReturn(
+        SubscriptionActive(
+          SubscriptionPackage.staticPlans.first,
+          expirationDate: pastDate,
+          offerings: SubscriptionPackage.staticPlans,
+        ),
+      );
+
+      await pumpPaywall(tester);
+
+      expect(find.text('Weekly'), findsOneWidget);
+      expect(find.text('Monthly'), findsOneWidget);
+      expect(find.text('Yearly'), findsOneWidget);
+      expect(find.text('Restore Purchases'), findsOneWidget);
+    });
+
+    testWidgets('offerings failure shows retry', (tester) async {
+      when(() => subscriptionBloc.state).thenReturn(
+        const SubscriptionError('Unable to load subscription plans from store.'),
+      );
+
+      await pumpPaywall(tester);
+
+      expect(
+        find.text('Unable to load subscription plans from store.'),
+        findsOneWidget,
+      );
+      expect(find.text('Retry'), findsOneWidget);
+
+      await tester.tap(find.text('Retry'));
+      await tester.pump();
+
+      verify(() => subscriptionBloc.add(any(that: isA<FetchPlans>()))).called(greaterThanOrEqualTo(1));
+    });
+
+    testWidgets('active user does not see purchase buttons', (tester) async {
+      final futureDate = DateTime.now().add(const Duration(days: 30));
+      final activeProfile = fullProfile().copyWith(
+        isPremium: true,
+        premiumExpiresAt: futureDate,
+        premiumWillRenew: true,
+      );
+      when(() => profileBloc.state).thenReturn(ProfileLoaded(activeProfile));
+      when(() => subscriptionBloc.state).thenReturn(
+        SubscriptionActive(
+          SubscriptionPackage.staticPlans[1],
+          expirationDate: futureDate,
+        ),
+      );
+
+      await pumpPaywall(tester);
+
+      expect(find.text('Your Pro Subscription is Active'), findsOneWidget);
+      expect(find.text('Manage Subscription'), findsOneWidget);
+      expect(find.text('Weekly'), findsNothing);
+      expect(find.text('Yearly'), findsNothing);
+      expect(find.text('MOST POPULAR'), findsNothing);
+      expect(find.text('BEST VALUE'), findsNothing);
     });
   });
 }

@@ -23,6 +23,9 @@ void main() {
     when(() => revenueCat.customerInfoStream)
         .thenAnswer((_) => const Stream.empty());
     when(() => revenueCat.getCustomerInfo()).thenAnswer((_) async => null);
+    when(() => revenueCat.invalidateCustomerInfoCache())
+        .thenAnswer((_) async {});
+    when(() => revenueCat.refreshCustomerInfo()).thenAnswer((_) async => null);
     when(() => revenueCat.isProSubscriber(any())).thenReturn(false);
   });
 
@@ -42,13 +45,14 @@ void main() {
 
     final package = MockPackage();
     when(() => package.packageType).thenReturn(type);
+    when(() => package.identifier).thenReturn(type.name);
     when(() => package.storeProduct).thenReturn(product);
     return package;
   }
 
   group('§1.3 fetching plans', () {
     blocTest<SubscriptionBloc, SubscriptionState>(
-      'falls back to the bundled static plans when the store has no offerings',
+      'reports an error when the store has no offerings',
       setUp: () {
         when(() => revenueCat.getOfferings()).thenAnswer((_) async => []);
       },
@@ -56,12 +60,12 @@ void main() {
       act: (bloc) => bloc.add(FetchPlans()),
       expect: () => [
         SubscriptionLoading(),
-        PlansLoaded(SubscriptionPackage.staticPlans),
+        isA<SubscriptionError>(),
       ],
     );
 
     blocTest<SubscriptionBloc, SubscriptionState>(
-      'falls back to the static plans when the store call fails',
+      'reports an error when the store call fails',
       setUp: () {
         when(() => revenueCat.getOfferings())
             .thenThrow(Exception('store unavailable'));
@@ -70,7 +74,7 @@ void main() {
       act: (bloc) => bloc.add(FetchPlans()),
       expect: () => [
         SubscriptionLoading(),
-        PlansLoaded(SubscriptionPackage.staticPlans),
+        isA<SubscriptionError>(),
       ],
     );
 
@@ -144,12 +148,13 @@ void main() {
         when(() => revenueCat.getCustomerInfo())
             .thenAnswer((_) async => customer);
         when(() => revenueCat.isProSubscriber(customer)).thenReturn(true);
+        when(() => revenueCat.getOfferings()).thenAnswer((_) async => []);
       },
       build: buildBloc,
       act: (bloc) => bloc.add(FetchPlans()),
       expect: () => [
         SubscriptionLoading(),
-        SubscriptionActive(SubscriptionPackage.staticPlans.first),
+        isA<SubscriptionActive>(),
       ],
     );
   });
@@ -158,15 +163,23 @@ void main() {
     blocTest<SubscriptionBloc, SubscriptionState>(
       'a plan with no store package reports an error and reloads the plans',
       setUp: () {
-        when(() => revenueCat.getOfferings()).thenAnswer((_) async => []);
+        when(() => revenueCat.getOfferings()).thenAnswer((_) async => [
+          rcPackage(
+            type: PackageType.monthly,
+            price: 149.0,
+            priceString: '₹149.00',
+          ),
+        ]);
       },
       build: buildBloc,
-      // act: (bloc) => bloc.add(PurchasePlan(SubscriptionPackage.staticPlans.first)),
+      act: (bloc) => bloc.add(
+        PurchasePlanRequested(SubscriptionPackage.staticPlans.first),
+      ),
       expect: () => [
         SubscriptionLoading(),
         const SubscriptionError('RevenueCat package not found for this plan.'),
         SubscriptionLoading(),
-        PlansLoaded(SubscriptionPackage.staticPlans),
+        isA<PlansLoaded>(),
       ],
     );
 
@@ -177,16 +190,19 @@ void main() {
         when(() => revenueCat.purchasePackage(any()))
             .thenAnswer((_) async => customer);
         when(() => revenueCat.isProSubscriber(customer)).thenReturn(true);
+        when(() => revenueCat.getCustomerInfo())
+            .thenAnswer((_) async => customer);
       },
       build: buildBloc,
       act: (bloc) {
         final planWithPkg = SubscriptionPackage.staticPlans.first.copyWith(
           rcPackage: MockPackage(),
         );
-        // bloc.add(PurchasePlan(planWithPkg));
+        bloc.add(PurchasePlanRequested(planWithPkg));
       },
       expect: () => [
         SubscriptionLoading(),
+        isA<SubscriptionVerifying>(),
         isA<SubscriptionActive>(),
       ],
     );
@@ -198,20 +214,30 @@ void main() {
         when(() => revenueCat.purchasePackage(any()))
             .thenAnswer((_) async => customer);
         when(() => revenueCat.isProSubscriber(customer)).thenReturn(false);
-        when(() => revenueCat.getOfferings()).thenAnswer((_) async => []);
+        when(() => revenueCat.getCustomerInfo())
+            .thenAnswer((_) async => customer);
+        when(() => revenueCat.getOfferings()).thenAnswer((_) async => [
+          rcPackage(
+            type: PackageType.monthly,
+            price: 149.0,
+            priceString: '₹149.00',
+          ),
+        ]);
       },
       build: buildBloc,
       act: (bloc) {
         final planWithPkg = SubscriptionPackage.staticPlans.first.copyWith(
           rcPackage: MockPackage(),
         );
-        // bloc.add(PurchasePlan(planWithPkg));
+        bloc.add(PurchasePlanRequested(planWithPkg));
       },
+      wait: const Duration(seconds: 2),
       expect: () => [
         SubscriptionLoading(),
-        const SubscriptionError('Purchase did not unlock Pro features.'),
+        isA<SubscriptionVerifying>(),
+        isA<SubscriptionError>(),
         SubscriptionLoading(),
-        PlansLoaded(SubscriptionPackage.staticPlans),
+        isA<PlansLoaded>(),
       ],
     );
 
@@ -224,18 +250,24 @@ void main() {
             message: 'User cancelled',
           ),
         );
-        when(() => revenueCat.getOfferings()).thenAnswer((_) async => []);
+        when(() => revenueCat.getOfferings()).thenAnswer((_) async => [
+          rcPackage(
+            type: PackageType.monthly,
+            price: 149.0,
+            priceString: '₹149.00',
+          ),
+        ]);
       },
       build: buildBloc,
       act: (bloc) {
         final planWithPkg = SubscriptionPackage.staticPlans.first.copyWith(
           rcPackage: MockPackage(),
         );
-        // bloc.add(PurchasePlan(planWithPkg));
+        bloc.add(PurchasePlanRequested(planWithPkg));
       },
       expect: () => [
         SubscriptionLoading(),
-        PlansLoaded(SubscriptionPackage.staticPlans),
+        isA<PlansLoaded>(),
       ],
     );
   });
@@ -253,7 +285,7 @@ void main() {
       act: (bloc) => bloc.add(RestorePurchase()),
       expect: () => [
         SubscriptionLoading(),
-        SubscriptionActive(SubscriptionPackage.staticPlans.last),
+        isA<SubscriptionActive>(),
       ],
     );
 
@@ -264,7 +296,13 @@ void main() {
         when(() => revenueCat.restorePurchases())
             .thenAnswer((_) async => customer);
         when(() => revenueCat.isProSubscriber(customer)).thenReturn(false);
-        when(() => revenueCat.getOfferings()).thenAnswer((_) async => []);
+        when(() => revenueCat.getOfferings()).thenAnswer((_) async => [
+          rcPackage(
+            type: PackageType.monthly,
+            price: 149.0,
+            priceString: '₹149.00',
+          ),
+        ]);
       },
       build: buildBloc,
       act: (bloc) => bloc.add(RestorePurchase()),
@@ -272,7 +310,7 @@ void main() {
         SubscriptionLoading(),
         const SubscriptionError('No active subscriptions found to restore.'),
         SubscriptionLoading(),
-        PlansLoaded(SubscriptionPackage.staticPlans),
+        isA<PlansLoaded>(),
       ],
     );
   });

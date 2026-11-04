@@ -87,6 +87,19 @@ class RevenueCatService {
     }
   }
 
+  Future<void> invalidateCustomerInfoCache() async {
+    try {
+      await Purchases.invalidateCustomerInfoCache();
+    } catch (e) {
+      debugPrint('Error invalidating customer info cache: $e');
+    }
+  }
+
+  Future<CustomerInfo?> refreshCustomerInfo() async {
+    await invalidateCustomerInfoCache();
+    return await getCustomerInfo();
+  }
+
   Future<SubscriptionStatusDetails> getSubscriptionDetails() async {
     final customerInfo = await getCustomerInfo();
     return SubscriptionStatusDetails.fromCustomerInfo(customerInfo);
@@ -121,27 +134,18 @@ class RevenueCatService {
         active['pro'];
     if (activeEntitlement?.isActive == true) return true;
 
-    // 2. Any active entitlement in RevenueCat (case-insensitive / custom naming)
-    for (final entitlement in active.values) {
-      if (entitlement.isActive) return true;
-    }
-
-    // 3. Fallback: Check active subscriptions directly from store receipt
-    const knownProductIds = [
-      PaymentConstants.kProductWeekly,
-      PaymentConstants.kProductMonthly,
-      PaymentConstants.kProductYearly,
-    ];
-    if (customerInfo.activeSubscriptions.any((id) =>
-        knownProductIds.contains(id) || id.contains('seafarer_pro'))) {
-      return true;
-    }
-
-    // 4. Fallback: Check all purchased product identifiers
-    if (customerInfo.allPurchasedProductIdentifiers.any((id) =>
-        knownProductIds.contains(id) || id.contains('seafarer_pro'))) {
-      return true;
-    }
+    // 2. Fallback: Check active subscriptions directly from store receipt
+    try {
+      const knownProductIds = [
+        PaymentConstants.kProductWeekly,
+        PaymentConstants.kProductMonthly,
+        PaymentConstants.kProductYearly,
+      ];
+      if (customerInfo.activeSubscriptions.any((id) =>
+          knownProductIds.contains(id) || id.contains('seafarer_pro'))) {
+        return true;
+      }
+    } catch (_) {}
 
     return false;
   }
@@ -150,16 +154,31 @@ class RevenueCatService {
   Future<List<Package>> getOfferings() async {
     try {
       final offerings = await Purchases.getOfferings();
-      final selectedOffering =
-          offerings.getOffering(PaymentConstants.kOfferingId);
-
-      if (selectedOffering != null) {
-        return selectedOffering.availablePackages;
+      if (offerings.current == null) {
+        debugPrint('⚠️ [RevenueCatService] offerings.current is null');
       }
-      return [];
-    } catch (e) {
-      debugPrint('Error fetching offerings: $e');
-      return [];
+
+      final selectedOffering =
+          offerings.getOffering(PaymentConstants.kOfferingId) ?? offerings.current;
+
+      if (selectedOffering == null) {
+        debugPrint(
+          '⚠️ [RevenueCatService] No offering found for id "${PaymentConstants.kOfferingId}" and current offering is null',
+        );
+        return [];
+      }
+
+      if (selectedOffering.availablePackages.isEmpty) {
+        debugPrint(
+          '⚠️ [RevenueCatService] Offering "${selectedOffering.identifier}" has empty availablePackages',
+        );
+        return [];
+      }
+
+      return selectedOffering.availablePackages;
+    } catch (e, stack) {
+      debugPrint('❌ [RevenueCatService] Error fetching offerings: $e\n$stack');
+      rethrow;
     }
   }
 

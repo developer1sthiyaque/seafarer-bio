@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:seafarer_bio_data/core/config/environment.dart';
 import 'package:seafarer_bio_data/core/constants/payment_constants.dart';
 import 'package:seafarer_bio_data/core/services/revenuecat_service.dart';
 
@@ -101,7 +102,10 @@ void main() {
 
   group('§1.3 entitlement identifier', () {
     test('is the id configured in the RevenueCat dashboard', () {
-      expect(PaymentConstants.kProEntitlementId, 'pro');
+      expect(
+        PaymentConstants.kProEntitlementId,
+        Environment.instance.isDev ? 'premium' : 'pro',
+      );
     });
   });
 }

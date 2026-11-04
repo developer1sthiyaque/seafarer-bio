@@ -3,8 +3,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:purchases_ui_flutter/purchases_ui_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:seafarer_bio_data/core/constants/app_routes.dart';
 import 'package:seafarer_bio_data/core/constants/payment_constants.dart';
+import 'package:seafarer_bio_data/core/utils/premium_gate.dart';
 import 'package:seafarer_bio_data/features/personal_details/presentation/bloc/personal_info_bloc.dart';
 import 'package:seafarer_bio_data/features/personal_details/presentation/bloc/personal_info_event.dart';
 import 'package:seafarer_bio_data/features/personal_details/presentation/bloc/personal_info_state.dart';
@@ -23,6 +26,16 @@ class SubscriptionPage extends StatefulWidget {
 
 class _SubscriptionPageState extends State<SubscriptionPage> {
   bool _hasNavigatedOnSuccess = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        context.read<SubscriptionBloc>().add(FetchPlans());
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -113,12 +126,75 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
             );
           }
 
+          final profileState = context.watch<ProfileBloc>().state;
+          final isEntitled = PremiumGate.isPremium(
+            subscriptionState: state,
+            profileState: profileState,
+          );
+
+          if (isEntitled) {
+            return _buildActiveSubscriptionView(context, state, profileState);
+          }
+
           List<SubscriptionPackage> plans = [];
           if (state is PlansLoaded) {
             plans = state.plans;
-          } else if (state is SubscriptionInitial ||
-              state is SubscriptionError) {
+          } else if (state.offerings.isNotEmpty) {
+            plans = state.offerings;
+          } else if (state is SubscriptionInitial) {
             plans = SubscriptionPackage.staticPlans;
+          }
+
+          if (plans.isEmpty) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24.0,
+                  vertical: 48.0,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(
+                      Icons.error_outline,
+                      color: AppColors.error,
+                      size: 48,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      state is SubscriptionError
+                          ? state.message
+                          : 'Unable to load subscription plans.',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontFamily: 'Plus Jakarta Sans',
+                        fontSize: 15,
+                        color: AppColors.primaryContainer,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        context.read<SubscriptionBloc>().add(FetchPlans());
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 28,
+                          vertical: 12,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: const Text('Retry'),
+                    ),
+                  ],
+                ),
+              ),
+            );
           }
 
           final cancellationPlatformText = Platform.isIOS
@@ -253,49 +329,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                   const SizedBox(height: 4),
 
                   // Legal Links: Terms of Use (EULA) & Privacy Policy
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      TextButton(
-                        onPressed: () => _showLegalDialog(
-                          context,
-                          'Terms of Use (EULA)',
-                          PaymentConstants.kTermsOfUseUrl,
-                          'By subscribing to Seafarer Pro, you agree to our standard end-user license agreement and subscription terms. Subscriptions automatically renew unless cancelled.',
-                        ),
-                        child: const Text(
-                          'Terms of Use',
-                          style: TextStyle(
-                            fontFamily: 'Plus Jakarta Sans',
-                            color: AppColors.onSurfaceVariant,
-                            fontSize: 12,
-                            decoration: TextDecoration.underline,
-                          ),
-                        ),
-                      ),
-                      const Text(
-                        '•',
-                        style: TextStyle(color: AppColors.onSurfaceVariant),
-                      ),
-                      TextButton(
-                        onPressed: () => _showLegalDialog(
-                          context,
-                          'Privacy Policy',
-                          PaymentConstants.kPrivacyPolicyUrl,
-                          'We respect your privacy. Your personal details and document data are protected and never sold.',
-                        ),
-                        child: const Text(
-                          'Privacy Policy',
-                          style: TextStyle(
-                            fontFamily: 'Plus Jakarta Sans',
-                            color: AppColors.onSurfaceVariant,
-                            fontSize: 12,
-                            decoration: TextDecoration.underline,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                  _buildLegalLinks(context),
                   const SizedBox(height: 24),
                 ],
               ),
@@ -303,6 +337,306 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
           );
         },
       ),
+    );
+  }
+
+  Widget _buildActiveSubscriptionView(
+    BuildContext context,
+    SubscriptionState state,
+    ProfileState profileState,
+  ) {
+    String planName = 'Seafarer Pro';
+    if (state is SubscriptionActive) {
+      planName = state.plan.name;
+    } else if (profileState is ProfileLoaded &&
+        profileState.profile.isPremiumPaid) {
+      planName = 'Pro Member';
+    }
+
+    DateTime? expiresAt;
+    if (state is SubscriptionActive && state.expirationDate != null) {
+      expiresAt = state.expirationDate;
+    } else if (profileState is ProfileLoaded &&
+        profileState.profile.premiumExpiresAt != null) {
+      expiresAt = profileState.profile.premiumExpiresAt;
+    }
+
+    String expiryText = '';
+    if (expiresAt != null) {
+      final formatted =
+          '${expiresAt.day.toString().padLeft(2, '0')}/${expiresAt.month.toString().padLeft(2, '0')}/${expiresAt.year}';
+      expiryText = 'Renews on $formatted';
+    }
+
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Emblem & Badge
+            Center(
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                decoration: BoxDecoration(
+                  color: AppColors.surfaceContainerLow,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: AppColors.secondary.withValues(alpha: 0.4),
+                    width: 1,
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: const [
+                    Icon(Icons.anchor, size: 16, color: AppColors.secondary),
+                    SizedBox(width: 6),
+                    Text(
+                      'SEAFARER PRO',
+                      style: TextStyle(
+                        fontFamily: 'Plus Jakarta Sans',
+                        color: AppColors.secondary,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 1.5,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            const Text(
+              'Your Pro Subscription is Active',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: 'Plus Jakarta Sans',
+                color: AppColors.primaryContainer,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            // Active Plan Card
+            Container(
+              decoration: BoxDecoration(
+                color: AppColors.surfaceContainerLowest,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: AppColors.secondary, width: 2),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color(0x0A0B1F3A),
+                    blurRadius: 12,
+                    offset: Offset(0, 4),
+                  ),
+                ],
+              ),
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            planName,
+                            style: const TextStyle(
+                              fontFamily: 'Plus Jakarta Sans',
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.primaryContainer,
+                            ),
+                          ),
+                          if (expiryText.isNotEmpty) ...[
+                            const SizedBox(height: 4),
+                            Text(
+                              expiryText,
+                              style: const TextStyle(
+                                fontFamily: 'Plus Jakarta Sans',
+                                fontSize: 12,
+                                color: AppColors.outline,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.secondary,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Text(
+                          'ACTIVE',
+                          style: TextStyle(
+                            fontFamily: 'Plus Jakarta Sans',
+                            color: Colors.white,
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  const Divider(height: 1, color: AppColors.outlineVariant),
+                  const SizedBox(height: 14),
+                  ...[
+                    'Advanced DOCX Export',
+                    'Professional Templates',
+                    'Cloud Storage & Sync',
+                    'Priority Support',
+                  ].map(
+                    (benefit) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.check_circle,
+                            color: AppColors.secondary,
+                            size: 18,
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Text(
+                              benefit,
+                              style: const TextStyle(
+                                fontFamily: 'Plus Jakarta Sans',
+                                color: AppColors.onSurface,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            // Manage Subscription Button
+            ElevatedButton.icon(
+              onPressed: () async {
+                try {
+                  await RevenueCatUI.presentCustomerCenter();
+                } catch (_) {
+                  final url = Platform.isIOS
+                      ? Uri.parse(
+                          'https://apps.apple.com/account/subscriptions',
+                        )
+                      : Uri.parse(
+                          'https://play.google.com/store/account/subscriptions',
+                        );
+                  if (await canLaunchUrl(url)) {
+                    await launchUrl(url, mode: LaunchMode.externalApplication);
+                  }
+                }
+                if (context.mounted) {
+                  context.read<SubscriptionBloc>().add(FetchPlans());
+                }
+              },
+              icon: const Icon(Icons.settings, color: Colors.white),
+              label: const Text(
+                'Manage Subscription',
+                style: TextStyle(
+                  fontFamily: 'Plus Jakarta Sans',
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                  color: Colors.white,
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primaryContainer,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // Restore Purchases Button
+            TextButton(
+              onPressed: () {
+                context.read<SubscriptionBloc>().add(RestorePurchase());
+              },
+              child: const Text(
+                'Restore Purchases',
+                style: TextStyle(
+                  fontFamily: 'Plus Jakarta Sans',
+                  color: AppColors.primaryContainer,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                  decoration: TextDecoration.underline,
+                ),
+              ),
+            ),
+            const SizedBox(height: 4),
+
+            // Legal Links
+            _buildLegalLinks(context),
+            const SizedBox(height: 24),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLegalLinks(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        TextButton(
+          onPressed: () => _showLegalDialog(
+            context,
+            'Terms of Use (EULA)',
+            PaymentConstants.kTermsOfUseUrl,
+            'By subscribing to Seafarer Pro, you agree to our standard end-user license agreement and subscription terms. Subscriptions automatically renew unless cancelled.',
+          ),
+          child: const Text(
+            'Terms of Use',
+            style: TextStyle(
+              fontFamily: 'Plus Jakarta Sans',
+              color: AppColors.onSurfaceVariant,
+              fontSize: 12,
+              decoration: TextDecoration.underline,
+            ),
+          ),
+        ),
+        const Text(
+          '•',
+          style: TextStyle(color: AppColors.onSurfaceVariant),
+        ),
+        TextButton(
+          onPressed: () => _showLegalDialog(
+            context,
+            'Privacy Policy',
+            PaymentConstants.kPrivacyPolicyUrl,
+            'We respect your privacy. Your personal details and document data are protected and never sold.',
+          ),
+          child: const Text(
+            'Privacy Policy',
+            style: TextStyle(
+              fontFamily: 'Plus Jakarta Sans',
+              color: AppColors.onSurfaceVariant,
+              fontSize: 12,
+              decoration: TextDecoration.underline,
+            ),
+          ),
+        ),
+      ],
     );
   }
 

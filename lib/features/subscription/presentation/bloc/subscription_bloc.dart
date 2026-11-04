@@ -47,17 +47,36 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     Emitter<SubscriptionState> emit, {
     SubscriptionPackage? purchasedPackage,
   }) {
-    final active = customerInfo?.entitlements.active;
+    EntitlementInfos? entitlements;
+    try {
+      entitlements = customerInfo?.entitlements;
+    } catch (_) {}
+    final active = entitlements?.active;
     final isPro = (active != null &&
             active.containsKey(PaymentConstants.kProEntitlementId) &&
             (active[PaymentConstants.kProEntitlementId]?.isActive ?? false)) ||
         _revenueCatService.isProSubscriber(customerInfo);
 
+    final currentOfferings = state.offerings;
+
     if (isPro) {
+      DateTime? expDate;
+      final proEntitlement = active?[PaymentConstants.kProEntitlementId];
+      if (proEntitlement?.expirationDate != null) {
+        expDate = DateTime.tryParse(proEntitlement!.expirationDate!);
+      }
+
       final planToEmit =
-          purchasedPackage ?? SubscriptionPackage.staticPlans.first;
+          purchasedPackage ??
+          (currentOfferings.isNotEmpty
+              ? currentOfferings.first
+              : SubscriptionPackage.staticPlans.first);
       if (state is! SubscriptionActive) {
-        emit(SubscriptionActive(planToEmit));
+        emit(SubscriptionActive(
+          planToEmit,
+          expirationDate: expDate,
+          offerings: currentOfferings,
+        ));
       }
     } else {
       if (state is SubscriptionActive) {
@@ -77,51 +96,112 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     FetchPlans event,
     Emitter<SubscriptionState> emit,
   ) async {
-    emit(SubscriptionLoading());
+    emit(SubscriptionLoading(offerings: state.offerings));
     try {
+      await _revenueCatService.invalidateCustomerInfoCache();
       final customerInfo = await _revenueCatService.getCustomerInfo();
-      final active = customerInfo?.entitlements.active;
+      EntitlementInfos? entitlements;
+      try {
+        entitlements = customerInfo?.entitlements;
+      } catch (_) {}
+      final active = entitlements?.active;
       final isPro = (active != null &&
               active.containsKey(PaymentConstants.kProEntitlementId) &&
               (active[PaymentConstants.kProEntitlementId]?.isActive ?? false)) ||
           _revenueCatService.isProSubscriber(customerInfo);
 
-      if (isPro) {
-        emit(SubscriptionActive(SubscriptionPackage.staticPlans.first));
+      DateTime? expDate;
+      final proEntitlement = active?[PaymentConstants.kProEntitlementId];
+      if (proEntitlement?.expirationDate != null) {
+        expDate = DateTime.tryParse(proEntitlement!.expirationDate!);
+      }
+      final isExpired = expDate != null && expDate.isBefore(DateTime.now());
+
+      // Fetch live offerings
+      List<Package> packages = [];
+      try {
+        packages = await _revenueCatService.getOfferings();
+      } catch (e) {
+        debugPrint('⚠️ [SubscriptionBloc] Error fetching offerings: $e');
+        if (isPro && !isExpired) {
+          emit(SubscriptionActive(
+            SubscriptionPackage.staticPlans.first,
+            expirationDate: expDate,
+            offerings: state.offerings,
+          ));
+          return;
+        }
+        emit(SubscriptionError(
+          'Failed to load subscription plans: $e',
+          offerings: state.offerings,
+        ));
         return;
       }
 
-      final packages = await _revenueCatService.getOfferings();
-      final plans = SubscriptionPackage.staticPlans.map((staticPlan) {
-        Package? matchingPackage;
-        try {
-          if (staticPlan.id == 'weekly_plan') {
-            matchingPackage =
-                packages.firstWhere((p) => p.packageType == PackageType.weekly);
-          } else if (staticPlan.id == 'monthly_plan') {
-            matchingPackage = packages
-                .firstWhere((p) => p.packageType == PackageType.monthly);
-          } else if (staticPlan.id == 'yearly_plan') {
-            matchingPackage =
-                packages.firstWhere((p) => p.packageType == PackageType.annual);
-          }
-        } catch (_) {}
+      List<SubscriptionPackage> plans = [];
+      if (packages.isNotEmpty) {
+        plans = SubscriptionPackage.staticPlans.map((staticPlan) {
+          Package? matchingPackage;
+          try {
+            if (staticPlan.id == 'weekly_plan') {
+              matchingPackage = packages.firstWhere(
+                (p) =>
+                    p.packageType == PackageType.weekly ||
+                    p.identifier.toLowerCase().contains('weekly'),
+              );
+            } else if (staticPlan.id == 'monthly_plan') {
+              matchingPackage = packages.firstWhere(
+                (p) =>
+                    p.packageType == PackageType.monthly ||
+                    p.identifier.toLowerCase().contains('monthly'),
+              );
+            } else if (staticPlan.id == 'yearly_plan') {
+              matchingPackage = packages.firstWhere(
+                (p) =>
+                    p.packageType == PackageType.annual ||
+                    p.identifier.toLowerCase().contains('yearly') ||
+                    p.identifier.toLowerCase().contains('annual'),
+              );
+            }
+          } catch (_) {}
 
-        if (matchingPackage != null) {
-          return staticPlan.copyWith(
-            price: matchingPackage.storeProduct.price,
-            currency: matchingPackage.storeProduct.currencyCode,
-            priceString: matchingPackage.storeProduct.priceString,
-            rcPackage: matchingPackage,
-          );
-        }
-        return staticPlan;
-      }).toList();
+          if (matchingPackage != null) {
+            return staticPlan.copyWith(
+              price: matchingPackage.storeProduct.price,
+              currency: matchingPackage.storeProduct.currencyCode,
+              priceString: matchingPackage.storeProduct.priceString,
+              rcPackage: matchingPackage,
+            );
+          }
+          return staticPlan;
+        }).toList();
+      }
+
+      if (isPro && !isExpired) {
+        emit(SubscriptionActive(
+          SubscriptionPackage.staticPlans.first,
+          expirationDate: expDate,
+          offerings: plans.isNotEmpty ? plans : state.offerings,
+        ));
+        return;
+      }
+
+      if (plans.isEmpty || packages.isEmpty) {
+        debugPrint('⚠️ [SubscriptionBloc] Offerings packages are empty');
+        emit(SubscriptionError(
+          'No subscription plans available at this time. Please try again later.',
+          offerings: state.offerings,
+        ));
+        return;
+      }
 
       emit(PlansLoaded(plans));
     } catch (e) {
       debugPrint('Failed to fetch plans: $e');
-      emit(PlansLoaded(SubscriptionPackage.staticPlans));
+      emit(SubscriptionError(
+        'Failed to load subscription plans: $e',
+        offerings: state.offerings,
+      ));
     }
   }
 
@@ -129,46 +209,72 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     PurchasePlanRequested event,
     Emitter<SubscriptionState> emit,
   ) async {
-    emit(SubscriptionLoading());
+    emit(SubscriptionLoading(offerings: state.offerings));
     try {
       if (event.package.rcPackage == null) {
         emit(
-          const SubscriptionError('RevenueCat package not found for this plan.'),
+          SubscriptionError(
+            'RevenueCat package not found for this plan.',
+            offerings: state.offerings,
+          ),
         );
         add(FetchPlans());
         return;
       }
 
       // Ensure user ID is bound before purchase
-      final currentUser = FirebaseAuth.instance.currentUser;
-      if (currentUser != null && currentUser.uid.isNotEmpty) {
-        debugPrint(
-            '🔑 [SubscriptionBloc] Ensuring identified user before purchase: ${currentUser.uid}');
-        await _revenueCatService.logIn(currentUser.uid);
-      }
+      try {
+        final currentUser = FirebaseAuth.instance.currentUser;
+        if (currentUser != null && currentUser.uid.isNotEmpty) {
+          debugPrint(
+              '🔑 [SubscriptionBloc] Ensuring identified user before purchase: ${currentUser.uid}');
+          await _revenueCatService.logIn(currentUser.uid);
+        }
+      } catch (_) {}
 
       await _revenueCatService.purchasePackage(
         event.package.rcPackage!,
       );
 
       // Transition to verifying state to avoid optimistic offline entitlement flicker
-      emit(const SubscriptionVerifying('Verifying purchase with store...'));
+      emit(SubscriptionVerifying(
+        'Verifying purchase with store...',
+        state.offerings,
+      ));
 
       bool verified = false;
-      CustomerInfo? verifiedInfo;
+      CustomerInfo? verifiedInfo = await _revenueCatService.getCustomerInfo();
+      EntitlementInfos? vEntitlements;
+      try {
+        vEntitlements = verifiedInfo?.entitlements;
+      } catch (_) {}
+      final initialActive = vEntitlements?.active;
+      if ((initialActive != null &&
+              initialActive.containsKey(PaymentConstants.kProEntitlementId) &&
+              (initialActive[PaymentConstants.kProEntitlementId]?.isActive ?? false)) ||
+          _revenueCatService.isProSubscriber(verifiedInfo)) {
+        verified = true;
+      }
 
-      for (int attempt = 1; attempt <= 3; attempt++) {
-        await Future.delayed(Duration(milliseconds: 1000 * attempt));
-        try {
-          await Purchases.syncPurchases();
-        } catch (_) {}
-        verifiedInfo = await _revenueCatService.getCustomerInfo();
-        final active = verifiedInfo?.entitlements.active;
-        if (active != null &&
-            active.containsKey(PaymentConstants.kProEntitlementId) &&
-            (active[PaymentConstants.kProEntitlementId]?.isActive ?? false)) {
-          verified = true;
-          break;
+      if (!verified) {
+        for (int attempt = 1; attempt <= 3; attempt++) {
+          await Future.delayed(Duration(milliseconds: 200 * attempt));
+          try {
+            await Purchases.syncPurchases();
+          } catch (_) {}
+          verifiedInfo = await _revenueCatService.getCustomerInfo();
+          EntitlementInfos? retryEntitlements;
+          try {
+            retryEntitlements = verifiedInfo?.entitlements;
+          } catch (_) {}
+          final active = retryEntitlements?.active;
+          if ((active != null &&
+                  active.containsKey(PaymentConstants.kProEntitlementId) &&
+                  (active[PaymentConstants.kProEntitlementId]?.isActive ?? false)) ||
+              _revenueCatService.isProSubscriber(verifiedInfo)) {
+            verified = true;
+            break;
+          }
         }
       }
 
@@ -180,8 +286,9 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
         );
       } else {
         emit(
-          const SubscriptionError(
+          SubscriptionError(
             'Purchase could not be verified by the store. Please tap "Restore Purchases" if charged.',
+            offerings: state.offerings,
           ),
         );
         add(FetchPlans());
@@ -192,10 +299,16 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
         add(FetchPlans());
         return;
       }
-      emit(SubscriptionError('Failed to purchase plan: ${e.message ?? e.code}'));
+      emit(SubscriptionError(
+        'Failed to purchase plan: ${e.message ?? e.code}',
+        offerings: state.offerings,
+      ));
       add(FetchPlans());
     } catch (e) {
-      emit(SubscriptionError('Failed to purchase plan: $e'));
+      emit(SubscriptionError(
+        'Failed to purchase plan: $e',
+        offerings: state.offerings,
+      ));
       add(FetchPlans());
     }
   }
@@ -204,24 +317,35 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     RestorePurchase event,
     Emitter<SubscriptionState> emit,
   ) async {
-    emit(SubscriptionLoading());
+    emit(SubscriptionLoading(offerings: state.offerings));
     try {
       final customerInfo = await _revenueCatService.restorePurchases();
-      final active = customerInfo?.entitlements.active;
-      final isPro = active != null &&
-          active.containsKey(PaymentConstants.kProEntitlementId) &&
-          (active[PaymentConstants.kProEntitlementId]?.isActive ?? false);
+      EntitlementInfos? entitlements;
+      try {
+        entitlements = customerInfo?.entitlements;
+      } catch (_) {}
+      final active = entitlements?.active;
+      final isPro = (active != null &&
+              active.containsKey(PaymentConstants.kProEntitlementId) &&
+              (active[PaymentConstants.kProEntitlementId]?.isActive ?? false)) ||
+          _revenueCatService.isProSubscriber(customerInfo);
 
       if (isPro && customerInfo != null) {
         _applyCustomerInfo(customerInfo, emit);
       } else {
         emit(
-          const SubscriptionError('No active subscriptions found to restore.'),
+          SubscriptionError(
+            'No active subscriptions found to restore.',
+            offerings: state.offerings,
+          ),
         );
         add(FetchPlans());
       }
     } catch (e) {
-      emit(SubscriptionError('Failed to restore purchases: $e'));
+      emit(SubscriptionError(
+        'Failed to restore purchases: $e',
+        offerings: state.offerings,
+      ));
       add(FetchPlans());
     }
   }
